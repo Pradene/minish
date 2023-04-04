@@ -16,9 +16,7 @@ void	get_cmd(t_data *data)
 {
 	char	*prompt;
 	char	*s;
-	t_list	*tokens;
 
-	tokens = NULL;
 	prompt = get_prompt();
 	if (!prompt)
 		error(NULL);
@@ -26,14 +24,7 @@ void	get_cmd(t_data *data)
 	free(prompt);
 	if (!s)
 		ex();
-	get_tokens(&tokens, s);
-	parse(&data->cmds, tokens);
-	ft_lstclear(&tokens);
-	// EXECUTION
-	// builtin(&data->env, s);
-	// execute(s, data->env);
-	print_cmds(data->cmds);
-	clear_cmds(&data->cmds);
+	parse(&data->root, s);
 	add_history(s);
 	free(s);
 }

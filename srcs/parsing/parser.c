@@ -12,148 +12,114 @@
 
 #include "../../includes/minishell.h"
 
-void	clear_cmds(t_cmd **cmds)
+static int	isredir(char *s)
 {
-	t_cmd	*cc;
-
-	if (!cmds)
-		return ;
-	cc = (*cmds);
-	while ((*cmds))
-	{
-		cc = ((*cmds))->next;
-		ft_lstclear(&cc->arg);
-		free((*cmds));
-		(*cmds) = cc;
-	}
-}
-
-t_cmd	*last_cmd(t_cmd *cmds)
-{
-	t_cmd	*cc;
-
-	if (!cmds)
-		return (NULL);
-	cc = cmds;
-	while (cc->next)
-		cc = cc->next;
-	return (cc);
-}
-
-void	next_cmd(t_cmd **cmds, t_cmd *cmd)
-{
-	if (!cmds)
-		return ;
-	if (*cmds)
-		last_cmd(*cmds)->next = cmd;
-	else
-		*cmds = cmd;
-}
-
-t_cmd	*new_cmd(void)
-{
-	t_cmd	*cmd;
-
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (NULL);
-	cmd->arg = NULL;
-	cmd->redir = NONE;
-	cmd->rfile = NULL;
-	cmd->next = NULL;
-	return (cmd);
-}
-
-void	print_cmds(t_cmd *cmds)
-{
-	t_cmd	*cc;
-	t_list	*current;
-
-	if (!cmds)
-		return ;
-	cc = cmds;
-	while (cc)
-	{
-		if (!cc->arg)
-			continue ;
-		current = cc->arg;
-		printf("args: ");
-		while (current)
-		{
-			printf("%s ", current->s);
-			current = current->next;
-		}
-		printf("\n");
-		printf("redir: %d, file: %s \n", cc->redir, cc->rfile);
-		cc = cc->next;
-	}
-}
-
-int	check_redir(char *s)
-{
-	if (strcmp(s, "<") == 0
-		|| strcmp(s, "<<") == 0
-		|| strcmp(s, ">") == 0
-		|| strcmp(s, ">>") == 0)
+	if (!strcmp(s, ">>")
+		|| !strcmp(s, "<<")
+		|| !strcmp(s, ">")
+		|| !strcmp(s, "<"))
 		return (1);
 	return (0);
 }
 
-t_redir	get_redir(char *s)
+static int	issep(char *s)
 {
-	if (strcmp(s, "<") == 0)
-		return (IN);
-	else if (strcmp(s, "<<") == 0)
-		return (DBL_IN);
-	else if (strcmp(s, ">") == 0)
-		return (OUT);
-	else if (strcmp(s, ">>") == 0)
-		return (DBL_OUT);
+	if (!strcmp(s, "||")
+		|| !strcmp(s, "&&")
+		|| !strcmp(s, "|")
+		|| !strcmp(s, "&")
+		|| !strcmp(s, ";"))
+		return (1);
+	return (0);
+}
+
+void	redir(t_node *node, char *redir_type)
+{
+	if (!strcmp(redir_type, ">>"))
+		node->redir_type = DBL_OUT;
+	else if (!strcmp(redir_type, "<<"))
+		node->redir_type = DBL_IN;
+	else if (!strcmp(redir_type, ">"))
+		node->redir_type = OUT;
+	else if (!strcmp(redir_type, "<"))
+		node->redir_type = IN;
 	else
-		return (NONE);
+		node->redir_type = NONE;
 }
 
-void	next_arg(t_list **lst, char *s)
+static void	redir_file(t_node *node, char *redir_file)
 {
-	t_list	*arg;
-
-	arg = malloc(sizeof(t_list));
-	if (!arg)
+	if (isredir(redir_file) || issep(redir_file))
 		return ;
-	arg->s = strdup(s);
-	arg->next = NULL;
-	ft_lstadd(lst, arg);
+	node->redir_file = strdup(redir_file);
+	if (!node->redir_file)
+		return ;
 }
 
-void	parse(t_cmd **cmds, t_list *tokens)
+static t_node	*new_node(void)
 {
-	t_list	*cc;
-	t_cmd	*cmd;
+	t_node	*node;
 
-	cmd = new_cmd();
-	if (!cmd)
+	node = malloc(sizeof(t_node));
+	if (!node)
+		return (NULL);
+	node->s = NULL;
+	node->redir_type = NONE;
+	node->redir_file = NULL;
+	node->left = NULL;
+	node->right = NULL;
+	return (node);
+}
+
+static void	create_child(t_node **node, char *sep)
+{
+	t_node	*left;
+	t_node	*right;
+
+	left = new_node();
+	right = new_node();
+	if (!left || !right)
 		return ;
-	cc = tokens;
-	while (cc)
+	left->s = (*node)->s;
+	(*node)->s = strdup(sep);
+	(*node)->left = left;
+	(*node)->right = right;
+	(*node) = (*node)->right;
+}
+
+static void	print_tree(t_node *node)
+{
+	if (!node)
+		return ;
+	print_tree(node->left);
+	printf("%s \n", node->s);
+	print_tree(node->right);
+}
+
+void	parse(t_node **root, char *s)
+{
+	char	*token;
+	char	*tmp;
+	t_node	*cmd;
+
+	(*root) = new_node();
+	if (!(*root))
+		return ;
+	cmd = *root;
+	tmp = s;
+	token = next_token(&tmp);
+	while (token)
 	{
-		if (strcmp(cc->s, "|") != 0 && !check_redir(cc->s))
-			next_arg(&cmd->arg, cc->s);
-		if (check_redir(cc->s))
-		{
-			cmd->redir = get_redir(cc->s);
-			cc = cc->next;
-			if (!cc || !strcmp(cc->s, "|") || check_redir(cc->s))
-				break ;
-			cmd->rfile = cc->s;
-		}
-		if (strcmp(cc->s, "|") == 0)
-		{
-			next_cmd(cmds, cmd);
-			cmd = new_cmd();
-			if (!cmd)
-				return ;
-		}
-		cc = cc->next;
+		if (cmd->redir_type && !cmd->redir_file)
+			redir_file(cmd, token);
+		else if (isredir(token))
+			redir(cmd, token);
+		else if (issep(token))
+			create_child(&cmd, token);
+		else
+			cmd->s = ft_stradd(cmd->s, strcat(token, " "));
+		free(token);
+		token = next_token(&tmp);
 	}
-	next_cmd(cmds, cmd);
+	print_tree(*root);
 }

@@ -55,11 +55,21 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+typedef struct s_node
+{
+	char			*s;
+	t_redir			redir_type;
+	char			*redir_file;
+	struct s_node	*left;
+	struct s_node	*right;
+}	t_node;
+
 typedef struct s_data
 {
 	char	**env;
 	int		exit;
 	t_cmd	*cmds;
+	t_node	*root;
 }	t_data;
 
 // UTILS
@@ -93,12 +103,10 @@ void	set_attribute(void);
 void	d_free(char **ss);
 
 // PARSER
-void	print_cmds(t_cmd *cmds);
-void	clear_cmds(t_cmd **cmds);
-void	parse(t_cmd **cmds, t_list *tokens);
+void	parse(t_node **root, char *s);
 
 // TOKENS
-void	get_tokens(t_list **tokens, char *s);
+char	*next_token(char **s);
 
 // LEXER
 char	*lexer(char *command);
