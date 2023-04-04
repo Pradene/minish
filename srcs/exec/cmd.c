@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:11:08 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/14 22:11:22 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/04/04 17:49:35 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	get_cmd(t_data *data)
 {
 	char	*prompt;
 	char	*s;
+	char	*cmd;
 	t_list	*tokens;
 
 	tokens = NULL;
@@ -26,7 +27,9 @@ void	get_cmd(t_data *data)
 	free(prompt);
 	if (!s)
 		ex();
-	get_tokens(&tokens, s);
+	cmd = lexer(s);
+	printf("zebi : %s\n", cmd);
+	get_tokens(&tokens, cmd);
 	parse(&data->cmds, tokens);
 	ft_lstclear(&tokens);
 	// EXECUTION
