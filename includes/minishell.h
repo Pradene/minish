@@ -96,6 +96,7 @@ void	ft_lstprint(t_list *lst);
 void	error(char *msg);
 int		cmp_env(char *env, char *key);
 char	*get_env(char **env, char *s);
+char	**env(char **envp);
 int		last_index(char *s, int c);
 char	*get_prompt(void);
 void	sig_handler(int sig);
@@ -103,6 +104,7 @@ void	set_attribute(void);
 void	d_free(char **ss);
 
 // PARSER
+void	free_tree(t_node **node);
 void	parse(t_node **root, char *s);
 
 // TOKENS
@@ -120,7 +122,6 @@ void	get_cmd(t_data *data);
 void	builtin(char ***env, char *s);
 void	cd(char **env, char *path);
 void	echo(char *s, bool nl);
-char	**env(char **envp);
 void	print_env(char **env);
 void	ex(void);
 char	**export(char **env, char *new);

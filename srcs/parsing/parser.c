@@ -96,6 +96,15 @@ static void	print_tree(t_node *node)
 	print_tree(node->right);
 }
 
+void	free_tree(t_node **node)
+{
+	if (!(*node))
+		return ;
+	free_tree(&(*node)->left);
+	free_tree(&(*node)->right);
+	free((*node)->s);
+}
+
 void	parse(t_node **root, char *s)
 {
 	char	*token;

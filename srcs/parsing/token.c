@@ -76,6 +76,5 @@ char	*next_token(char **s)
 		return (*s += 1, strdup(")"));
 	else if (**s == ';')
 		return (*s += 1, strdup(";"));
-	else
-		return (handle_other(s));
+	return (handle_other(s));
 }
