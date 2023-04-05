@@ -24,8 +24,8 @@ void	get_cmd(t_data *data)
 	free(prompt);
 	if (!s)
 		ex();
+	parse(&data->root, &s);
 	add_history(s);
-	parse(&data->root, s);
-	free_tree(&data->root);
+	// free_tree(&data->root);
 	free(s);
 }

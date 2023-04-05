@@ -47,14 +47,6 @@ typedef enum e_redir
 	DBL_OUT
 }	t_redir;
 
-typedef struct s_cmd
-{
-	t_list			*arg;
-	t_redir			redir;
-	char			*rfile;
-	struct s_cmd	*next;
-}	t_cmd;
-
 typedef struct s_node
 {
 	char			*s;
@@ -68,7 +60,6 @@ typedef struct s_data
 {
 	char	**env;
 	int		exit;
-	t_cmd	*cmds;
 	t_node	*root;
 }	t_data;
 
@@ -88,6 +79,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*ft_lstlast(t_list *lst);
+int		ft_lstsize(t_list *lst);
 void	ft_lstadd(t_list **lst, t_list *new);
 void	ft_lstclear(t_list **lst);
 void	ft_lstprint(t_list *lst);
@@ -104,11 +96,15 @@ void	set_attribute(void);
 void	d_free(char **ss);
 
 // PARSER
+void	parse(t_node **root, char **s);
+
+// TREE
+void	print_tree(t_node *node);
 void	free_tree(t_node **node);
-void	parse(t_node **root, char *s);
 
 // TOKENS
 char	*next_token(char **s);
+t_list	*tokens(char **s);
 
 // LEXER
 char	*lexer(char *command);

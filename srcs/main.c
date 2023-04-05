@@ -21,7 +21,7 @@ int	main(int ac, char **av, char **envp)
 		exit(EXIT_FAILURE);
 	data.env = env(envp);
 	data.exit = 0;
-	data.cmds = NULL;
+	data.root = NULL;
 	set_attribute();
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
