@@ -20,7 +20,7 @@ t_list	*get_token(char **s)
 	tmp = next_token(s);
 	if (!tmp)
 		return (NULL);
-	lst =  malloc(sizeof(t_list));
+	lst = malloc(sizeof(t_list));
 	if (!lst)
 		return (NULL);
 	lst->s = tmp;
@@ -36,7 +36,7 @@ t_list	*tokens(char **s)
 
 	tmp = *s;
 	lst = NULL;
-	new =  get_token(&tmp);
+	new = get_token(&tmp);
 	if (!new)
 		return (NULL);
 	while (new)
@@ -115,7 +115,7 @@ t_list	*go(t_list *lst, int index)
 	t_list	*e;
 
 	e = lst;
-	while (index--)
+	while (e && index--)
 		e = e->next;
 	return (e);
 }
@@ -170,5 +170,4 @@ void	parse(t_node **root, char **s)
 	}
 	ft_lstclear(&lst);
 	print_tree(*root);
-	free_tree(root);
 }
