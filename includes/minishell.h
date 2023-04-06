@@ -99,6 +99,8 @@ void	d_free(char **ss);
 void	parse(t_node **root, char **s);
 
 // TREE
+t_node	*create_node(t_list *lst, int first, int last);
+t_node	*create_tree(t_list *lst, int first, int last);
 void	print_tree(t_node *node);
 void	free_tree(t_node **node);
 

@@ -19,13 +19,17 @@ void	free_tree(t_node **node)
 	free_tree(&(*node)->left);
 	free_tree(&(*node)->right);
 	free((*node)->s);
+	free((*node));
 }
 
 void	print_tree(t_node *node)
 {
 	if (!node)
 		return ;
+	if (!strcmp(node->s, "("))
+		printf("%s \n", node->s);
 	print_tree(node->left);
-	printf("%s \n", node->s);
+	if (strcmp(node->s, "("))
+		printf("%s \n", node->s);
 	print_tree(node->right);
 }
