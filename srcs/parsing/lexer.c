@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/07 20:02:33 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/07 20:16:52 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,26 @@ static void	quote_status(char c, int *quote)
 
 char	*fill_new_cmd(int i, int j, char *cmds)
 {
-	char	*ans;
+	char	*ans1;
+	char	*ans2;
 	char	*var;
+	char	*tmp;
 
-	var = getenv(ft_substr(cmds, i, j - i));
-	printf("subvar: %s\n", ft_substr(cmds, i, j - i));
+	tmp = ft_substr(cmds, i, j - i);
+	var = getenv(tmp);
+	free(tmp);
+	//printf("subvar: %s\n", ft_substr(cmds, i, j - i));
 	printf("var: %s\n", var);
 	//if (!lex)
 	//{
-		ans = ft_strjoin(ft_substr(cmds, 0, i - 1), var);
-		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds) - j));
+		tmp = ft_substr(cmds, 0, i - 1);
+		ans1 = ft_strjoin(tmp, var);
+		free(tmp);
+		tmp = ft_substr(cmds, j, ft_strlen(cmds) - j);
+		ans2 = ft_strjoin(ans1, tmp);
+		free(tmp);
+		if (ans1)
+			free(ans1);
 	//}
 	/* else
 	{
@@ -44,8 +54,9 @@ char	*fill_new_cmd(int i, int j, char *cmds)
 		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds) - j));
 		//free(lex);
 	} */
-	printf("cd: %s\n", ans);
-	return (ans);
+	free(cmds);
+	printf("cd: %s\n", ans2);
+	return (ans2);
 }
 
 char	*lexer(char *command)

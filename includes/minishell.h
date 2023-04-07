@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/04 17:49:40 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/07 20:13:59 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char	*ft_stradd(char *s1, char *s2);
 char	**ft_split(const char *s, char c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*ft_lstlast(t_list *lst);
 int		ft_lstsize(t_list *lst);

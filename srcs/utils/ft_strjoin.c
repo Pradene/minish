@@ -6,13 +6,13 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 18:55:08 by tmalless          #+#    #+#             */
-/*   Updated: 2023/03/20 13:29:29 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/07 20:17:43 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	size_t	size;
 	size_t	i;
@@ -36,5 +36,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 		j++;
 	}
+/* 	free(s1);
+	free(s2); */
 	return (join);
 }

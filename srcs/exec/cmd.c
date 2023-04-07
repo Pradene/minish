@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:11:08 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/07 19:30:38 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/07 20:19:00 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	get_cmd(t_data *data)
 	if (!s)
 		ex();
 	cmd = lexer(s);
+	free(cmd);
 	/* printf("zebi : %s\n", cmd);
 	get_tokens(&tokens, cmd);
 	parse(&data->cmds, tokens);
