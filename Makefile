@@ -20,7 +20,8 @@ MINISHELL_FILES	= error.c \
 
 PARSING_FILES =	lexer.c \
 				parser.c \
-				token.c
+				token.c \
+				tree.c
 
 UTILS_FILES	= ft_bzero.c \
 			ft_calloc.c \

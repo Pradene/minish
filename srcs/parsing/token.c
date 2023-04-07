@@ -25,61 +25,56 @@ static void	quote_status(char c, int *quote)
 		return ;
 }
 
-static char	*handle_other(char *s, int *i)
+static char	*handle_other(char **s)
 {
 	int		quote;
 	int		tmp;
 	char	*str;
 
+	if (!(**s))
+		return (NULL);
 	quote = 0;
 	str = calloc(4096, sizeof(char));
 	if (!str)
 		return (NULL);
-	while (s[*i])
+	while (**s)
 	{
 		tmp = quote;
-		quote_status(s[*i], &quote);
-		if (tmp == quote)
-			strncat(str, &s[*i], 1);
-		if ((!quote && strchr(" <>|", s[*i + 1])) || !s[*i + 1])
+		quote_status(**s, &quote);
+		if ((!quote && strchr("\t\n\v\f\r <>|&();", **s)))
 			break ;
-		*i += 1;
+		if (tmp == quote)
+			strncat(str, *s, 1);
+		*s += 1;
 	}
 	return (str);
 }
 
-static char	*next_token(char *s, int *i)
+char	*next_token(char **s)
 {
-	if (!strncmp(&s[*i], ">>", 2))
-		return (*i += 1, strdup(">>"));
-	else if (!strncmp(&s[*i], "<<", 2))
-		return (*i += 1, strdup("<<"));
-	else if (s[*i] == '|')
-		return (strdup("|"));
-	else if (s[*i] == '>')
-		return (strdup(">"));
-	else if (s[*i] == '<')
-		return (strdup("<"));
-	else
-		return (handle_other(s, i));
-	return (NULL);
-}
-
-void	get_tokens(t_list **tokens, char *s)
-{
-	int		i;
-	t_list	*arg;
-
-	i = -1;
-	while (s[++i])
-	{
-		if (s[i] == ' ')
-			continue ;
-		arg = malloc(sizeof(t_list));
-		if (!arg)
-			return ;
-		arg->s = next_token(s, &i);
-		arg->next = NULL;
-		ft_lstadd(tokens, arg);
-	}
+	while (**s && strchr("\t\n\v\f\r ", **s))
+		*s += 1;
+	if (!strncmp(*s, "||", 2))
+		return (*s += 2, strdup("||"));
+	else if (!strncmp(*s, "&&", 2))
+		return (*s += 2, strdup("&&"));
+	else if (!strncmp(*s, ">>", 2))
+		return (*s += 2, strdup(">>"));
+	else if (!strncmp(*s, "<<", 2))
+		return (*s += 2, strdup("<<"));
+	else if (**s == '|')
+		return (*s += 1, strdup("|"));
+	else if (**s == '&')
+		return (*s += 1, strdup("&"));
+	else if (**s == '>')
+		return (*s += 1, strdup(">"));
+	else if (**s == '<')
+		return (*s += 1, strdup("<"));
+	else if (**s == '(')
+		return (*s += 1, strdup("("));
+	else if (**s == ')')
+		return (*s += 1, strdup(")"));
+	else if (**s == ';')
+		return (*s += 1, strdup(";"));
+	return (handle_other(s));
 }

@@ -49,19 +49,20 @@ typedef enum e_redir
 	DBL_OUT
 }	t_redir;
 
-typedef struct s_cmd
+typedef struct s_node
 {
-	t_list			*arg;
-	t_redir			redir;
-	char			*rfile;
-	struct s_cmd	*next;
-}	t_cmd;
+	char			*s;
+	t_redir			redir_type;
+	char			*redir_file;
+	struct s_node	*left;
+	struct s_node	*right;
+}	t_node;
 
 typedef struct s_data
 {
 	char	**env;
 	int		exit;
-	t_cmd	*cmds;
+	t_node	*root;
 }	t_data;
 
 // UTILS
@@ -80,6 +81,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*ft_lstlast(t_list *lst);
+int		ft_lstsize(t_list *lst);
 void	ft_lstadd(t_list **lst, t_list *new);
 void	ft_lstclear(t_list **lst);
 void	ft_lstprint(t_list *lst);
@@ -88,6 +90,7 @@ void	ft_lstprint(t_list *lst);
 void	error(char *msg);
 int		cmp_env(char *env, char *key);
 char	*get_env(char **env, char *s);
+char	**env(char **envp);
 int		last_index(char *s, int c);
 char	*get_prompt(void);
 void	sig_handler(int sig);
@@ -95,12 +98,17 @@ void	set_attribute(void);
 void	d_free(char **ss);
 
 // PARSER
-void	print_cmds(t_cmd *cmds);
-void	clear_cmds(t_cmd **cmds);
-void	parse(t_cmd **cmds, t_list *tokens);
+void	parse(t_node **root, char **s);
+
+// TREE
+t_node	*create_node(t_list *lst, int first, int last);
+t_node	*create_tree(t_list *lst, int first, int last);
+void	print_tree(t_node *node);
+void	free_tree(t_node **node);
 
 // TOKENS
-void	get_tokens(t_list **tokens, char *s);
+char	*next_token(char **s);
+t_list	*tokens(char **s);
 
 // LEXER
 char	*lexer(char *command);
@@ -114,7 +122,6 @@ void	get_cmd(t_data *data);
 void	builtin(char ***env, char *s);
 void	cd(char **env, char *path);
 void	echo(char *s, bool nl);
-char	**env(char **envp);
 void	print_env(char **env);
 void	ex(void);
 char	**export(char **env, char *new);
