@@ -47,11 +47,31 @@ typedef enum e_redir
 	DBL_OUT
 }	t_redir;
 
+typedef enum e_type
+{
+	ERR = 0,
+	CMD,
+	PIPE,
+	DBL_PIPE,
+	AMP,
+	DBL_AMP,
+	SEMICOL,
+	OPEN_BRACKET,
+	CLOSE_BRACKET,
+}	t_type;
+
+typedef struct s_rlist
+{
+	t_redir			type;
+	char			*file;
+	struct s_rlist	*next;
+}	t_rlist;
+
 typedef struct s_node
 {
+	t_type			type;
 	char			*s;
-	t_redir			redir_type;
-	char			*redir_file;
+	t_rlist			*redir;
 	struct s_node	*left;
 	struct s_node	*right;
 }	t_node;
