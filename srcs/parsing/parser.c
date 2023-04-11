@@ -54,9 +54,9 @@ static t_node	*new_node(void)
 	node = malloc(sizeof(t_node));
 	if (!node)
 		return (NULL);
+	node->type = ERR;
 	node->s = NULL;
-	node->redir_type = NONE;
-	node->redir_file = NULL;
+	node->redir = NULL;
 	node->left = NULL;
 	node->right = NULL;
 	return (node);
@@ -173,8 +173,37 @@ int	search_closebrackets(t_list *lst, int first, int last)
 
 void	free_node(t_node *node)
 {
-	free(node->s);
+	if (node->type == ERR)
+		return ;
+	if (node->type == CMD)
+		free(node->s);
+	else
+	{
+		if (node->right)
+			free_node(node->right);
+		if (node->left)
+			free_node(node->left);
+	}
 	free(node);
+}
+
+t_type	get_type(char *s)
+{
+	if (!strcmp(s, "("))
+		return (OPEN_BRACKET);
+	else if (!strcmp(s, ")"))
+		return (CLOSE_BRACKET);
+	else if (!strcmp(s, "||"))
+		return (DBL_PIPE);
+	else if (!strcmp(s, "|"))
+		return (PIPE);
+	else if (!strcmp(s, "&&"))
+		return (DBL_AMP);
+	else if (!strcmp(s, "&"))
+		return (AMP);
+	else if (!strcmp(s, ";"))
+		return (SEMICOL);
+	return (ERR);
 }
 
 t_node	*create_node(t_list *lst, int first, int last)
@@ -192,9 +221,7 @@ t_node	*create_node(t_list *lst, int first, int last)
 	new = new_node();
 	if (!new)
 		return (NULL);
-	new->s = strdup(token->s);
-	if (!new->s)
-		return (free(new), NULL);
+	new->type = get_type(token->s);
 	new->left = create_tree(lst, first, first + pos);
 	if (!new->left)
 		return (free_node(new), NULL);
@@ -202,6 +229,86 @@ t_node	*create_node(t_list *lst, int first, int last)
 	if (!new->right)
 		return (free_node(new), NULL);
 	return (new);
+}
+
+int	isredir(char *s)
+{
+	if (!strcmp(s, ">"))
+		return (1);
+	else if (!strcmp(s, ">>"))
+		return (1);
+	else if (!strcmp(s, "<"))
+		return (1);
+	else if (!strcmp(s, "<<"))
+		return (1);
+	return (0);
+}
+
+int issep(char *s)
+{
+	if (!strcmp(s, "("))
+		return (1);
+	else if (!strcmp(s, ")"))
+		return (1);
+	else if (!strcmp(s, "||"))
+		return (1);
+	else if (!strcmp(s, "|"))
+		return (1);
+	else if (!strcmp(s, "&&"))
+		return (1);
+	else if (!strcmp(s, "&"))
+		return (1);
+	else if (!strcmp(s, ";"))
+		return (1);
+	return (0);
+}
+
+t_rlist	*rllast(t_rlist * rl)
+{
+	t_rlist	*current;
+
+	if (!rl)
+		return (NULL);
+	current = rl;
+	while (current)
+		current = current->next;
+	return (current);
+}
+
+void	rladd(t_rlist **rl, t_rlist *new)
+{
+	if (!rl || !(*rl))
+		return ;
+	if ((*rl))
+		rllast((*rl))->next = new;
+	else
+		(*rl) = new;
+}
+
+int	create_redir(t_rlist **lst, t_list **current)
+{
+	t_rlist	*new;
+
+	new = malloc(sizeof(t_rlist));
+	if (!new)
+		return (0);
+	if (!strcmp((*current)->s, ">>"))
+		new->type = DBL_OUT;
+	else if (!strcmp((*current)->s, ">"))
+		new->type = OUT;
+	else if (!strcmp((*current)->s, "<<"))
+		new->type = DBL_IN;
+	else if (!strcmp((*current)->s, "<"))
+		new->type = IN;
+	if (!(*current)->next)
+		return (free(new), 0);
+	(*current) = (*current)->next;
+	if (isredir((*current)->s) || issep((*current)->s))
+		return (free(new), 0);
+	new->file = strdup((*current)->s);
+	new->next = NULL;
+	rladd(lst, new);
+	return (1);
 }
 
 t_node	*create_leaf(t_list *lst, int first, int last)
@@ -215,11 +322,20 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 	new = new_node();
 	if (!new)
 		return (NULL);
+	new->type = CMD;
 	while (current && first < last)
 	{
-		new->s = ft_stradd(new->s, strcat(current->s, " "));
-		if (!new->s)
-			return (NULL);
+		if (isredir(current->s))
+		{
+			if (!create_redir(&new->redir, &current))
+				return (free(new), NULL);
+		}
+		else
+		{
+			new->s = ft_stradd(new->s, strcat(current->s, " "));
+			if (!new->s)
+				return (free(new), NULL);
+		}
 		current = current->next;
 		++first;
 	}
@@ -236,11 +352,11 @@ t_node	*create_child(t_list *lst, int first, int last)
 	new = new_node();
 	if (!new)
 		return (NULL);
-	new->s = strdup("(");
+	new->type = OPEN_BRACKET;
 	new->right = new_node();
 	if (!new->right)
 		return (free_node(new), NULL);
-	new->right->s = strdup(")");
+	new->right->type = CLOSE_BRACKET;
 	new->left = create_tree(lst, first + 1, last - 1);
 	if (!new->left)
 		return (free_node(new), NULL);
