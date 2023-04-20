@@ -12,41 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-t_list	*get_token(char **s)
-{
-	t_list	*lst;
-	char	*tmp;
-
-	tmp = next_token(s);
-	if (!tmp)
-		return (NULL);
-	lst = malloc(sizeof(t_list));
-	if (!lst)
-		return (NULL);
-	lst->s = tmp;
-	lst->next = NULL;
-	return (lst);
-}
-
-t_list	*tokens(char **s)
-{
-	t_list	*lst;
-	t_list	*new;
-	char	*tmp;
-
-	tmp = *s;
-	lst = NULL;
-	new = get_token(&tmp);
-	if (!new)
-		return (NULL);
-	while (new)
-	{
-		ft_lstadd(&lst, new);
-		new = get_token(&tmp);
-	}
-	return (lst);
-}
-
 static t_node	*new_node(void)
 {
 	t_node	*node;
@@ -171,22 +136,6 @@ int	search_closebrackets(t_list *lst, int first, int last)
 	return (-1);
 }
 
-void	free_node(t_node *node)
-{
-	if (node->type == ERR)
-		return ;
-	if (node->type == CMD)
-		free(node->s);
-	else
-	{
-		if (node->right)
-			free_node(node->right);
-		if (node->left)
-			free_node(node->left);
-	}
-	free(node);
-}
-
 t_type	get_type(char *s)
 {
 	if (!strcmp(s, "("))
@@ -244,7 +193,7 @@ int	isredir(char *s)
 	return (0);
 }
 
-int issep(char *s)
+int	issep(char *s)
 {
 	if (!strcmp(s, "("))
 		return (1);
@@ -263,21 +212,21 @@ int issep(char *s)
 	return (0);
 }
 
-t_rlist	*rllast(t_rlist * rl)
+t_rlist	*rllast(t_rlist *rl)
 {
 	t_rlist	*current;
 
 	if (!rl)
 		return (NULL);
 	current = rl;
-	while (current)
+	while (current->next)
 		current = current->next;
 	return (current);
 }
 
 void	rladd(t_rlist **rl, t_rlist *new)
 {
-	if (!rl || !(*rl))
+	if (!rl)
 		return ;
 	if ((*rl))
 		rllast((*rl))->next = new;
@@ -323,12 +272,13 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 	if (!new)
 		return (NULL);
 	new->type = CMD;
-	while (current && first < last)
+	while (current && ++first <= last)
 	{
 		if (isredir(current->s))
 		{
 			if (!create_redir(&new->redir, &current))
 				return (free(new), NULL);
+			first += 1;
 		}
 		else
 		{
@@ -337,7 +287,6 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 				return (free(new), NULL);
 		}
 		current = current->next;
-		++first;
 	}
 	return (new);
 }

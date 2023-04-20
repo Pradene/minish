@@ -12,15 +12,39 @@
 
 #include "../../includes/minishell.h"
 
-void	free_tree(t_node **node)
+void	free_rlist(t_rlist **lst)
 {
-	if (!node || !(*node))
+	t_rlist	*current;
+
+	if (!lst)
 		return ;
-	free_tree(&(*node)->left);
-	free_tree(&(*node)->right);
-	if ((*node)->s)
-		free((*node)->s);
-	free((*node));
+	while ((*lst))
+	{
+		current = ((*lst))->next;
+		free((*lst)->file);
+		free((*lst));
+		(*lst) = current;
+	}
+}
+
+void	free_cmd(t_node *node)
+{
+	if (node->s)
+		free(node->s);
+	free_rlist(&node->redir);
+}
+
+void	free_node(t_node *node)
+{
+	if (!node || node->type == ERR)
+		return ;
+	else if (node->type == CMD)
+		free_cmd(node);
+	if (node->right)
+		free_node(node->right);
+	if (node->left)
+		free_node(node->left);
+	free(node);
 }
 
 void	print_cmd(t_node *node)
@@ -45,6 +69,26 @@ void	print_cmd(t_node *node)
 		printf("CLOSE_BRACKET\n");
 }
 
+void	print_redir(t_rlist *lst)
+{
+	t_rlist	*current;
+
+	current = lst;
+	while (current)
+	{
+		if (current->type == IN)
+			printf("IN ");
+		else if (current->type == DBL_IN)
+			printf("DBL_IN ");
+		else if (current->type == OUT)
+			printf("OUT ");
+		else if (current->type == DBL_OUT)
+			printf("DBL_OUT ");
+		printf("%s\n", current->file);
+		current = current->next;
+	}
+}
+
 void	print_tree(t_node *node)
 {
 	if (!node)
@@ -54,5 +98,7 @@ void	print_tree(t_node *node)
 	print_tree(node->left);
 	if (node->type != OPEN_BRACKET)
 		print_cmd(node);
+	if (node->redir != NULL)
+		print_redir(node->redir);
 	print_tree(node->right);
 }

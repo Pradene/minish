@@ -26,7 +26,8 @@ void	get_cmd(t_data *data)
 		ex();
 	parse(&data->root, &s);
 	add_history(s);
-	free_tree(&data->root);
+	exec(data, data->root);
+	free_node(data->root);
 	data->root = NULL;
 	free(s);
 }

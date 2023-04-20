@@ -122,17 +122,17 @@ void	parse(t_node **root, char **s);
 t_node	*create_node(t_list *lst, int first, int last);
 t_node	*create_tree(t_list *lst, int first, int last);
 void	print_tree(t_node *node);
-void	free_tree(t_node **node);
+void	free_node(t_node *node);
 
 // TOKENS
-char	*next_token(char **s);
 t_list	*tokens(char **s);
 
 // LEXER
 char	*lexer(char *command);
 
 // EXEC
-void	execute(char *command, char **envp);
+void	execute(char *command, char **env);
+void	exec(t_data *data, t_node *node);
 char	*get_path(char **env, char *cmd);
 void	get_cmd(t_data *data);
 
