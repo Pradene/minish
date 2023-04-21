@@ -38,15 +38,6 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-typedef enum e_redir
-{
-	NONE = 0,
-	IN,
-	DBL_IN,
-	OUT,
-	DBL_OUT
-}	t_redir;
-
 typedef enum e_type
 {
 	ERR = 0,
@@ -60,18 +51,16 @@ typedef enum e_type
 	CLOSE_BRACKET,
 }	t_type;
 
-typedef struct s_rlist
-{
-	t_redir			type;
-	char			*file;
-	struct s_rlist	*next;
-}	t_rlist;
-
 typedef struct s_node
 {
 	t_type			type;
-	char			*s;
-	t_rlist			*redir;
+	char			*cmd;
+	char			*in;
+	char			*dbl_in;
+	char			*out;
+	char			*dbl_out;
+	int				fd_in;
+	int				fd_out;
 	struct s_node	*left;
 	struct s_node	*right;
 }	t_node;

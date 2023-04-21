@@ -12,26 +12,10 @@
 
 #include "../../includes/minishell.h"
 
-void	free_rlist(t_rlist **lst)
-{
-	t_rlist	*current;
-
-	if (!lst)
-		return ;
-	while ((*lst))
-	{
-		current = ((*lst))->next;
-		free((*lst)->file);
-		free((*lst));
-		(*lst) = current;
-	}
-}
-
 void	free_cmd(t_node *node)
 {
-	if (node->s)
-		free(node->s);
-	free_rlist(&node->redir);
+	if (node->cmd)
+		free(node->cmd);
 }
 
 void	free_node(t_node *node)
@@ -44,7 +28,27 @@ void	free_node(t_node *node)
 		free_node(node->right);
 	if (node->left)
 		free_node(node->left);
+	if (node->in)
+		free(node->in);
+	if (node->dbl_in)
+		free(node->dbl_in);
+	if (node->out)
+		free(node->out);
+	if (node->dbl_out)
+		free(node->dbl_out);
 	free(node);
+}
+
+void	print_redir(t_node *node)
+{
+	if (node->in)
+		printf("IN: %s\n", node->in);
+	else if (node->dbl_in)
+		printf("DBL_IN: %s\n", node->dbl_in);
+	else if (node->out)
+		printf("OUT: %s\n", node->out);
+	else if (node->dbl_out)
+		printf("DBL_OUT: %s\n", node->dbl_out);
 }
 
 void	print_cmd(t_node *node)
@@ -52,7 +56,7 @@ void	print_cmd(t_node *node)
 	if (node->type == ERR)
 		printf("ERR\n");
 	else if (node->type == CMD)
-		printf("CMD: %s\n", node->s);
+		printf("CMD: %s\n", node->cmd);
 	else if (node->type == PIPE)
 		printf("PIPE\n");
 	else if (node->type == DBL_PIPE)
@@ -69,26 +73,6 @@ void	print_cmd(t_node *node)
 		printf("CLOSE_BRACKET\n");
 }
 
-void	print_redir(t_rlist *lst)
-{
-	t_rlist	*current;
-
-	current = lst;
-	while (current)
-	{
-		if (current->type == IN)
-			printf("IN ");
-		else if (current->type == DBL_IN)
-			printf("DBL_IN ");
-		else if (current->type == OUT)
-			printf("OUT ");
-		else if (current->type == DBL_OUT)
-			printf("DBL_OUT ");
-		printf("%s\n", current->file);
-		current = current->next;
-	}
-}
-
 void	print_tree(t_node *node)
 {
 	if (!node)
@@ -98,7 +82,6 @@ void	print_tree(t_node *node)
 	print_tree(node->left);
 	if (node->type != OPEN_BRACKET)
 		print_cmd(node);
-	if (node->redir != NULL)
-		print_redir(node->redir);
+	print_redir(node);
 	print_tree(node->right);
 }

@@ -45,15 +45,28 @@ void	exec_cmd(t_data *data, t_node *node)
 	if (pid == -1)
 		return ;
 	if (pid == 0)
-		execute(node->s, data->env);
-	else
-		wait(NULL);
+	{
+		if (node->fd_in != -1)
+			dup2(node->fd_in, STDIN_FILENO);
+		if (node->fd_out != -1)
+			dup2(node->fd_out, STDOUT_FILENO);
+		execute(node->cmd, data->env);
+	}
+	waitpid(pid, NULL, 0);
 }
 
 void	exec_pipe(t_data *data, t_node *left, t_node *right)
 {
+	int	fd[2];
+
+	if (pipe(fd) == -1)
+		return ;
+	left->fd_out = fd[1];
+	right->fd_in = fd[0];
 	exec(data, left);
+	close(fd[1]);
 	exec(data, right);
+	close(fd[0]);
 }
 
 void	exec_semicol(t_data *data, t_node *left, t_node *right)
@@ -62,18 +75,34 @@ void	exec_semicol(t_data *data, t_node *left, t_node *right)
 	exec(data, right);
 }
 
+void	exec_or(t_data *data, t_node *left, t_node *right)
+{
+	exec(data, left);
+	if (data->exit)
+		exec(data, right);
+}
+
+void	exec_and(t_data *data, t_node *left, t_node *right)
+{
+	exec(data, left);
+	if (!data->exit)
+		exec(data, right);
+}
+
 void	exec(t_data *data, t_node *node)
 {
+	if (!node)
+		return ;
 	if (node->type == CMD)
 		exec_cmd(data, node);
 	else if (node->type == PIPE)
 		exec_pipe(data, node->left, node->right);
 	else if (node->type == DBL_PIPE)
-		printf("Implementation to do\n");
+		exec_or(data, node->left, node->right);
 	else if (node->type == AMP)
 		printf("Implementation to do\n");
 	else if (node->type == DBL_AMP)
-		printf("Implementation to do\n");
+		exec_and(data, node->left, node->right);
 	else if (node->type == SEMICOL)
 		exec_semicol(data, node->left, node->right);
 	else if (node->type == OPEN_BRACKET)
