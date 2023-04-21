@@ -55,14 +55,27 @@ void	exec_cmd(t_data *data, t_node *node)
 	waitpid(pid, NULL, 0);
 }
 
+void	connect_cmd(t_node *left, t_node *right, int fd[2])
+{
+	t_node	*c;
+
+	c = left;
+	while (c->type != CMD)
+		c = c->right;
+	c->fd_out = fd[1];
+	c = right;
+	while (c->type != CMD)
+		c = c->left;
+	c->fd_in = fd[0];
+}
+
 void	exec_pipe(t_data *data, t_node *left, t_node *right)
 {
 	int	fd[2];
 
 	if (pipe(fd) == -1)
 		return ;
-	left->fd_out = fd[1];
-	right->fd_in = fd[0];
+	connect_cmd(left, right, fd);
 	exec(data, left);
 	close(fd[1]);
 	exec(data, right);

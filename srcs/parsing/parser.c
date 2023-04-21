@@ -328,10 +328,6 @@ void	parse(t_node **root, char **s)
 		return ;
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
-	{
-		ft_lstclear(&lst);
 		printf("Error\n");
-	}
 	ft_lstclear(&lst);
-	print_tree(*root);
 }
