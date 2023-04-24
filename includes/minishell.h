@@ -30,6 +30,10 @@
 
 # include <termios.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 # define BUFFER_SIZE 4096
 
 typedef struct s_list
@@ -120,7 +124,6 @@ t_list	*tokens(char **s);
 char	*lexer(char *command);
 
 // EXEC
-void	execute(char *command, char **env);
 void	exec(t_data *data, t_node *node);
 char	*get_path(char **env, char *cmd);
 void	get_cmd(t_data *data);

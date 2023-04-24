@@ -12,14 +12,15 @@
 
 #include "../../includes/minishell.h"
 
-void	execute(char *command, char **env)
+void	execute(t_data *data, t_node *node, char **env)
 {
 	char	*cmd_line;
 	char	**cmds;
 	char	*path;
 	int		i;
 
-	cmd_line = lexer(command);
+	(void)data;
+	cmd_line = lexer(node->cmd);
 	cmds = ft_split(cmd_line, ' ');
 	if (!cmds)
 		error(NULL);
@@ -50,7 +51,7 @@ void	exec_cmd(t_data *data, t_node *node)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)
 			dup2(node->fd_out, STDOUT_FILENO);
-		execute(node->cmd, data->env);
+		execute(data, node, data->env);
 	}
 	waitpid(pid, NULL, 0);
 }
