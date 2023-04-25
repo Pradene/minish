@@ -60,9 +60,9 @@ typedef struct s_node
 	t_type			type;
 	char			*cmd;
 	char			*in;
-	char			*dbl_in;
+	char			*in2;
 	char			*out;
-	char			*dbl_out;
+	char			*out2;
 	int				fd_in;
 	int				fd_out;
 	struct s_node	*left;

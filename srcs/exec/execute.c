@@ -12,15 +12,29 @@
 
 #include "../../includes/minishell.h"
 
-void	execute(t_data *data, t_node *node, char **env)
+void	open_files(t_data *data, t_node *node)
+{
+	(void)data;
+	if (node->out || node->out2)
+		close(node->fd_out);
+	if (node->out)
+		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	else if (node->out2)
+		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	if (node->in)
+		close(node->fd_in);
+	if (node->in)
+		node->fd_in = open(node->in, O_RDONLY, 0777);
+}
+
+void	execute(t_data *data, char *cmd, char **env)
 {
 	char	*cmd_line;
 	char	**cmds;
 	char	*path;
-	int		i;
 
 	(void)data;
-	cmd_line = lexer(node->cmd);
+	cmd_line = lexer(cmd);
 	cmds = ft_split(cmd_line, ' ');
 	if (!cmds)
 		error(NULL);
@@ -28,11 +42,8 @@ void	execute(t_data *data, t_node *node, char **env)
 	if (!path)
 	{
 		printf("%s: command not found\n", cmds[0]);
-		i = -1;
-		while (cmds[++i])
-			free(cmds[i]);
-		free(cmds);
-		exit(EXIT_FAILURE);
+		d_free(cmds);
+		exit(127);
 	}
 	if (execve(path, cmds, env) == -1)
 		error(cmds[0]);
@@ -41,19 +52,23 @@ void	execute(t_data *data, t_node *node, char **env)
 void	exec_cmd(t_data *data, t_node *node)
 {
 	pid_t	pid;
+	int		exit;
 
+	exit = 0;
 	pid = fork();
 	if (pid == -1)
 		return ;
 	if (pid == 0)
 	{
+		open_files(data, node);
 		if (node->fd_in != -1)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)
 			dup2(node->fd_out, STDOUT_FILENO);
-		execute(data, node, data->env);
+		execute(data, node->cmd, data->env);
 	}
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &exit, 0);
+	data->exit = WEXITSTATUS(exit);
 }
 
 void	connect_cmd(t_node *left, t_node *right, int fd[2])
@@ -120,7 +135,5 @@ void	exec(t_data *data, t_node *node)
 	else if (node->type == SEMICOL)
 		exec_semicol(data, node->left, node->right);
 	else if (node->type == OPEN_BRACKET)
-		printf("Implementation to do\n");
-	else if (node->type == CLOSE_BRACKET)
-		printf("Implementation to do\n");
+		exec(data, node->left);
 }

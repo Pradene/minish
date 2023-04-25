@@ -22,9 +22,9 @@ static t_node	*new_node(void)
 	node->type = ERR;
 	node->cmd = NULL;
 	node->in = NULL;
-	node->dbl_in = NULL;
+	node->in2 = NULL;
 	node->out = NULL;
-	node->dbl_out = NULL;
+	node->out2 = NULL;
 	node->fd_in = -1;
 	node->fd_out = -1;
 	node->left = NULL;
@@ -187,37 +187,37 @@ void	handle_redir(t_node *node, char *type, char *file)
 	{
 		if (node->out)
 			free(node->out);
-		if (node->dbl_out)
-			free(node->dbl_out);
-		node->dbl_out = NULL;
+		if (node->out2)
+			free(node->out2);
+		node->out2 = NULL;
 		node->out = strdup(file);
 	}
 	else if (!strcmp(type, ">>"))
 	{
 		if (node->out)
 			free(node->out);
-		if (node->dbl_out)
-			free(node->dbl_out);
+		if (node->out2)
+			free(node->out2);
 		node->out = NULL;
-		node->dbl_out = strdup(file);
+		node->out2 = strdup(file);
 	}
 	else if (!strcmp(type, "<"))
 	{
 		if (node->in)
 			free(node->in);
-		if (node->dbl_in)
-			free(node->dbl_in);
-		node->dbl_in = NULL;
+		if (node->in2)
+			free(node->in2);
+		node->in2 = NULL;
 		node->in = strdup(file);
 	}
 	else if (!strcmp(type, "<<"))
 	{
 		if (node->in)
 			free(node->in);
-		if (node->dbl_in)
-			free(node->dbl_in);
+		if (node->in2)
+			free(node->in2);
 		node->in = NULL;
-		node->dbl_in = strdup(file);
+		node->in2 = strdup(file);
 	}
 }
 

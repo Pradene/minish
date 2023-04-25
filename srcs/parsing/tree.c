@@ -30,12 +30,12 @@ void	free_node(t_node *node)
 		free_node(node->left);
 	if (node->in)
 		free(node->in);
-	if (node->dbl_in)
-		free(node->dbl_in);
+	if (node->in2)
+		free(node->in2);
 	if (node->out)
 		free(node->out);
-	if (node->dbl_out)
-		free(node->dbl_out);
+	if (node->out2)
+		free(node->out2);
 	free(node);
 }
 
@@ -43,12 +43,12 @@ void	print_redir(t_node *node)
 {
 	if (node->in)
 		printf("IN: %s\n", node->in);
-	else if (node->dbl_in)
-		printf("DBL_IN: %s\n", node->dbl_in);
+	else if (node->in2)
+		printf("DBL_IN: %s\n", node->in2);
 	else if (node->out)
 		printf("OUT: %s\n", node->out);
-	else if (node->dbl_out)
-		printf("DBL_OUT: %s\n", node->dbl_out);
+	else if (node->out2)
+		printf("DBL_OUT: %s\n", node->out2);
 }
 
 void	print_cmd(t_node *node)
