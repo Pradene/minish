@@ -15,15 +15,17 @@
 int	check_quotes(char *s)
 {
 	int	i;
-	int status;
+	int	status;
 
+	if (!s)
+		return (0);
 	i = -1;
 	status = 0;
 	while (s[++i])
 	{
 		if (!status && s[i] == '\"')
 			status = 2;
-		else if (!status && s[i] =='\'')
+		else if (!status && s[i] == '\'')
 			status = 1;
 		else if ((status == 1 && s[i] == '\'')
 			|| (status == 2 && s[i] == '\"'))

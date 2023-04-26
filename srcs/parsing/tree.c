@@ -56,7 +56,7 @@ void	print_cmd(t_node *node)
 	if (node->type == ERR)
 		printf("ERR\n");
 	else if (node->type == CMD)
-		printf("CMD: %s\n", node->cmd);
+		printf("CMD: %s\n", node->cmd[0]);
 	else if (node->type == PIPE)
 		printf("PIPE\n");
 	else if (node->type == DBL_PIPE)

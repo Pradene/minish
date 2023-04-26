@@ -16,6 +16,8 @@ void	d_free(char **ss)
 {
 	int	i;
 
+	if (!ss)
+		return ;
 	i = -1;
 	while (ss[++i])
 		free(ss[i]);

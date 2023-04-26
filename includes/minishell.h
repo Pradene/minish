@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/26 14:24:38 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 15:00:22 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef enum e_type
 typedef struct s_node
 {
 	t_type			type;
-	char			*cmd;
+	char			**cmd;
 	char			*in;
 	char			*in2;
 	char			*out;
@@ -130,7 +130,8 @@ char	*get_path(char **env, char *cmd);
 void	get_cmd(t_data *data);
 
 // BUILT-IN
-void	builtin(char ***env, char *s);
+int		is_builtin(char *s);
+void	builtin(char ***env, char **cmd);
 void	cd(char **env, char *path);
 void	echo(char *s, bool nl);
 void	print_env(char **env);
