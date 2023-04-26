@@ -78,3 +78,38 @@ char	*next_token(char **s)
 		return (*s += 1, strdup(";"));
 	return (handle_other(s));
 }
+
+t_list	*get_token(char **s)
+{
+	t_list	*lst;
+	char	*tmp;
+
+	tmp = next_token(s);
+	if (!tmp)
+		return (NULL);
+	lst = malloc(sizeof(t_list));
+	if (!lst)
+		return (NULL);
+	lst->s = tmp;
+	lst->next = NULL;
+	return (lst);
+}
+
+t_list	*tokens(char **s)
+{
+	t_list	*lst;
+	t_list	*new;
+	char	*tmp;
+
+	tmp = *s;
+	lst = NULL;
+	new = get_token(&tmp);
+	if (!new)
+		return (NULL);
+	while (new)
+	{
+		ft_lstadd(&lst, new);
+		new = get_token(&tmp);
+	}
+	return (lst);
+}

@@ -12,41 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-t_list	*get_token(char **s)
-{
-	t_list	*lst;
-	char	*tmp;
-
-	tmp = next_token(s);
-	if (!tmp)
-		return (NULL);
-	lst = malloc(sizeof(t_list));
-	if (!lst)
-		return (NULL);
-	lst->s = tmp;
-	lst->next = NULL;
-	return (lst);
-}
-
-t_list	*tokens(char **s)
-{
-	t_list	*lst;
-	t_list	*new;
-	char	*tmp;
-
-	tmp = *s;
-	lst = NULL;
-	new = get_token(&tmp);
-	if (!new)
-		return (NULL);
-	while (new)
-	{
-		ft_lstadd(&lst, new);
-		new = get_token(&tmp);
-	}
-	return (lst);
-}
-
 static t_node	*new_node(void)
 {
 	t_node	*node;
@@ -55,23 +20,32 @@ static t_node	*new_node(void)
 	if (!node)
 		return (NULL);
 	node->type = ERR;
-	node->s = NULL;
-	node->redir = NULL;
+	node->cmd = NULL;
+	node->in = NULL;
+	node->in2 = NULL;
+	node->out = NULL;
+	node->out2 = NULL;
+	node->fd_in = -1;
+	node->fd_out = -1;
 	node->left = NULL;
 	node->right = NULL;
 	return (node);
 }
 
-t_list	*find(t_list *lst, char *token, int *pos, int size)
+t_list	*search_token(t_list *lst, char *token, int *pos, int size)
 {
 	t_list	*e;
+	t_list	*c;
 	int		brackets;
 	int		current;
 
+	if (!lst)
+		return (NULL);
+	c = NULL;
 	e = lst;
 	current = 0;
 	brackets = 0;
-	while (e && size--)
+	while (size--)
 	{
 		if (!strcmp(e->s, "("))
 			brackets++;
@@ -80,31 +54,31 @@ t_list	*find(t_list *lst, char *token, int *pos, int size)
 		else if (!brackets && !strcmp(e->s, token))
 		{
 			*pos = current;
-			return (e);
+			c = e;
 		}
 		e = e->next;
 		current++;
 	}
-	return (NULL);
+	return (c);
 }
 
-t_list	*find_sep(t_list *lst, int *pos, int size)
+t_list	*search_sep(t_list *lst, int *pos, int size)
 {
 	t_list	*token;
 
-	token = find(lst, ";", pos, size);
+	token = search_token(lst, ";", pos, size);
 	if (token)
 		return (token);
-	token = find(lst, "||", pos, size);
+	token = search_token(lst, "||", pos, size);
 	if (token)
 		return (token);
-	token = find(lst, "&&", pos, size);
+	token = search_token(lst, "&&", pos, size);
 	if (token)
 		return (token);
-	token = find(lst, "|", pos, size);
+	token = search_token(lst, "|", pos, size);
 	if (token)
 		return (token);
-	token = find(lst, "&", pos, size);
+	token = search_token(lst, "&", pos, size);
 	if (token)
 		return (token);
 	return (NULL);
@@ -118,21 +92,6 @@ t_list	*go(t_list *lst, int index)
 	while (e && index--)
 		e = e->next;
 	return (e);
-}
-
-t_list	*find_brackets(t_list *lst, int first, int last)
-{
-	t_list	*e;
-
-	e = go(lst, first);
-	while (e && first < last)
-	{
-		if (!strcmp(e->s, "("))
-			return (e);
-		e = e->next;
-		first++;
-	}
-	return (NULL);
 }
 
 int	search_openbrackets(t_list *lst, int first, int last)
@@ -171,22 +130,6 @@ int	search_closebrackets(t_list *lst, int first, int last)
 	return (-1);
 }
 
-void	free_node(t_node *node)
-{
-	if (node->type == ERR)
-		return ;
-	if (node->type == CMD)
-		free(node->s);
-	else
-	{
-		if (node->right)
-			free_node(node->right);
-		if (node->left)
-			free_node(node->left);
-	}
-	free(node);
-}
-
 t_type	get_type(char *s)
 {
 	if (!strcmp(s, "("))
@@ -206,31 +149,6 @@ t_type	get_type(char *s)
 	return (ERR);
 }
 
-t_node	*create_node(t_list *lst, int first, int last)
-{
-	t_list	*token;
-	t_list	*current;
-	t_node	*new;
-	int		pos;
-
-	pos = -1;
-	current = go(lst, first);
-	token = find_sep(current, &pos, last - first);
-	if (!token || pos <= 0 || pos >= last - first - 1)
-		return (NULL);
-	new = new_node();
-	if (!new)
-		return (NULL);
-	new->type = get_type(token->s);
-	new->left = create_tree(lst, first, first + pos);
-	if (!new->left)
-		return (free_node(new), NULL);
-	new->right = create_tree(lst, first + pos + 1, last);
-	if (!new->right)
-		return (free_node(new), NULL);
-	return (new);
-}
-
 int	isredir(char *s)
 {
 	if (!strcmp(s, ">"))
@@ -244,7 +162,7 @@ int	isredir(char *s)
 	return (0);
 }
 
-int issep(char *s)
+int	issep(char *s)
 {
 	if (!strcmp(s, "("))
 		return (1);
@@ -263,52 +181,44 @@ int issep(char *s)
 	return (0);
 }
 
-t_rlist	*rllast(t_rlist * rl)
+void	handle_redir(t_node *node, char *type, char *file)
 {
-	t_rlist	*current;
-
-	if (!rl)
-		return (NULL);
-	current = rl;
-	while (current)
-		current = current->next;
-	return (current);
-}
-
-void	rladd(t_rlist **rl, t_rlist *new)
-{
-	if (!rl || !(*rl))
-		return ;
-	if ((*rl))
-		rllast((*rl))->next = new;
-	else
-		(*rl) = new;
-}
-
-int	create_redir(t_rlist **lst, t_list **current)
-{
-	t_rlist	*new;
-
-	new = malloc(sizeof(t_rlist));
-	if (!new)
-		return (0);
-	if (!strcmp((*current)->s, ">>"))
-		new->type = DBL_OUT;
-	else if (!strcmp((*current)->s, ">"))
-		new->type = OUT;
-	else if (!strcmp((*current)->s, "<<"))
-		new->type = DBL_IN;
-	else if (!strcmp((*current)->s, "<"))
-		new->type = IN;
-	if (!(*current)->next)
-		return (free(new), 0);
-	(*current) = (*current)->next;
-	if (isredir((*current)->s) || issep((*current)->s))
-		return (free(new), 0);
-	new->file = strdup((*current)->s);
-	new->next = NULL;
-	rladd(lst, new);
-	return (1);
+	if (!strcmp(type, ">"))
+	{
+		if (node->out)
+			free(node->out);
+		if (node->out2)
+			free(node->out2);
+		node->out2 = NULL;
+		node->out = strdup(file);
+	}
+	else if (!strcmp(type, ">>"))
+	{
+		if (node->out)
+			free(node->out);
+		if (node->out2)
+			free(node->out2);
+		node->out = NULL;
+		node->out2 = strdup(file);
+	}
+	else if (!strcmp(type, "<"))
+	{
+		if (node->in)
+			free(node->in);
+		if (node->in2)
+			free(node->in2);
+		node->in2 = NULL;
+		node->in = strdup(file);
+	}
+	else if (!strcmp(type, "<<"))
+	{
+		if (node->in)
+			free(node->in);
+		if (node->in2)
+			free(node->in2);
+		node->in = NULL;
+		node->in2 = strdup(file);
+	}
 }
 
 t_node	*create_leaf(t_list *lst, int first, int last)
@@ -323,21 +233,23 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 	if (!new)
 		return (NULL);
 	new->type = CMD;
-	while (current && first < last)
+	while (current && ++first <= last)
 	{
 		if (isredir(current->s))
 		{
-			if (!create_redir(&new->redir, &current))
+			if (first + 1 > last)
 				return (free(new), NULL);
+			handle_redir(new, current->s, current->next->s);
+			current = current->next;
+			first += 1;
 		}
 		else
 		{
-			new->s = ft_stradd(new->s, strcat(current->s, " "));
-			if (!new->s)
+			new->cmd = ft_stradd(new->cmd, strcat(current->s, " "));
+			if (!new->cmd)
 				return (free(new), NULL);
 		}
 		current = current->next;
-		++first;
 	}
 	return (new);
 }
@@ -363,6 +275,31 @@ t_node	*create_child(t_list *lst, int first, int last)
 	return (new);
 }
 
+t_node	*create_node(t_list *lst, int first, int last)
+{
+	t_list	*token;
+	t_list	*current;
+	t_node	*new;
+	int		pos;
+
+	pos = -1;
+	current = go(lst, first);
+	token = search_sep(current, &pos, last - first);
+	if (!token || pos <= 0 || pos >= last - first - 1)
+		return (NULL);
+	new = new_node();
+	if (!new)
+		return (NULL);
+	new->type = get_type(token->s);
+	new->left = create_tree(lst, first, first + pos);
+	if (!new->left)
+		return (free_node(new), NULL);
+	new->right = create_tree(lst, first + pos + 1, last);
+	if (!new->right)
+		return (free_node(new), NULL);
+	return (new);
+}
+
 t_node	*create_tree(t_list *lst, int first, int last)
 {
 	t_list	*current;
@@ -372,7 +309,7 @@ t_node	*create_tree(t_list *lst, int first, int last)
 	pos = -1;
 	new = NULL;
 	current = go(lst, first);
-	if (find_sep(current, &pos, last - first))
+	if (search_sep(current, &pos, last - first))
 		new = create_node(lst, first, last);
 	else if (search_openbrackets(lst, first, last) != -1
 		|| search_closebrackets(lst, first, last) != -1)
@@ -391,10 +328,6 @@ void	parse(t_node **root, char **s)
 		return ;
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
-	{
-		ft_lstclear(&lst);
 		printf("Error\n");
-	}
 	ft_lstclear(&lst);
-	print_tree(*root);
 }

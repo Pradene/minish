@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/07 20:13:59 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:24:38 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@
 # include <termios.h>
 
 # include <dirent.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 # define BUFFER_SIZE 4096
 
@@ -39,15 +42,6 @@ typedef struct s_list
 	char			*s;
 	struct s_list	*next;
 }	t_list;
-
-typedef enum e_redir
-{
-	NONE = 0,
-	IN,
-	DBL_IN,
-	OUT,
-	DBL_OUT
-}	t_redir;
 
 typedef enum e_type
 {
@@ -62,18 +56,16 @@ typedef enum e_type
 	CLOSE_BRACKET,
 }	t_type;
 
-typedef struct s_rlist
-{
-	t_redir			type;
-	char			*file;
-	struct s_rlist	*next;
-}	t_rlist;
-
 typedef struct s_node
 {
 	t_type			type;
-	char			*s;
-	t_rlist			*redir;
+	char			*cmd;
+	char			*in;
+	char			*in2;
+	char			*out;
+	char			*out2;
+	int				fd_in;
+	int				fd_out;
 	struct s_node	*left;
 	struct s_node	*right;
 }	t_node;
@@ -124,17 +116,16 @@ void	parse(t_node **root, char **s);
 t_node	*create_node(t_list *lst, int first, int last);
 t_node	*create_tree(t_list *lst, int first, int last);
 void	print_tree(t_node *node);
-void	free_tree(t_node **node);
+void	free_node(t_node *node);
 
 // TOKENS
-char	*next_token(char **s);
 t_list	*tokens(char **s);
 
 // LEXER
 char	*lexer(char *command);
 
 // EXEC
-void	execute(char *command, char **envp);
+void	exec(t_data *data, t_node *node);
 char	*get_path(char **env, char *cmd);
 void	get_cmd(t_data *data);
 
