@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/07 18:57:02 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:08:29 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 {
 	int	i;
 	int	j;
-	int k;
+	int	k;
 
 	i = 0;
 	k = 0;
@@ -75,7 +75,7 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 
 char	**create_motif(char *cmd, char **motif)
 {
-	int i;
+	int	i;
 	int	m_count;
 
 	i = 0;
@@ -203,7 +203,8 @@ char	**wild_carder(char *cmd, int i, int j, int k)
 
 int main(int ac, char **av)
 {
-	char **s;
+	char	**s;
+	
 	printf("%s\n", av[1]);
 	s = wild_carder(av[1], 0, 0, 0);
 	int i = 0;
