@@ -27,26 +27,25 @@ void	open_files(t_data *data, t_node *node)
 		node->fd_in = open(node->in, O_RDONLY, 0777);
 }
 
-void	execute(t_data *data, char *cmd, char **env)
+void	execute(t_data *data, char **cmd, char **env)
 {
-	char	*cmd_line;
-	char	**cmds;
+	// char	*cmd_line;
+	// char	**cmds;
 	char	*path;
 
 	(void)data;
-	cmd_line = lexer(cmd);
-	cmds = ft_split(cmd_line, ' ');
-	if (!cmds)
-		error(NULL);
-	path = get_path(env, cmds[0]);
+	// cmd_line = lexer(cmd);
+	// if (!cmds)
+	// 	error(NULL);
+	path = get_path(env, cmd[0]);
 	if (!path)
 	{
-		printf("%s: command not found\n", cmds[0]);
-		d_free(cmds);
+		printf("%s: command not found\n", cmd[0]);
+		d_free(cmd);
 		exit(127);
 	}
-	if (execve(path, cmds, env) == -1)
-		error(cmds[0]);
+	if (execve(path, cmd, env) == -1)
+		error(cmd[0]);
 }
 
 void	exec_cmd(t_data *data, t_node *node)
@@ -54,6 +53,8 @@ void	exec_cmd(t_data *data, t_node *node)
 	pid_t	pid;
 	int		exit;
 
+	if (is_builtin(node->cmd[0]))
+		return (builtin(&data->env, node->cmd));
 	exit = 0;
 	pid = fork();
 	if (pid == -1)

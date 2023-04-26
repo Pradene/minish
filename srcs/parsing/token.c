@@ -28,7 +28,6 @@ static void	quote_status(char c, int *quote)
 static char	*handle_other(char **s)
 {
 	int		quote;
-	int		tmp;
 	char	*str;
 
 	if (!(**s))
@@ -39,12 +38,10 @@ static char	*handle_other(char **s)
 		return (NULL);
 	while (**s)
 	{
-		tmp = quote;
-		quote_status(**s, &quote);
 		if ((!quote && strchr("\t\n\v\f\r <>|&();", **s)))
 			break ;
-		if (tmp == quote)
-			strncat(str, *s, 1);
+		strncat(str, *s, 1);
+		quote_status(**s, &quote);
 		*s += 1;
 	}
 	return (str);

@@ -221,6 +221,46 @@ void	handle_redir(t_node *node, char *type, char *file)
 	}
 }
 
+int	get_size(char **ss)
+{
+	int c;
+
+	if (!ss)
+		return (0);
+	c = 0;
+	while (ss[c])
+		c += 1;
+	return (c);
+}
+
+char	**add_to_cmd(char **cmds, char *cmd)
+{
+	char	**new;
+	int		size;
+	int		i;
+
+	if (!cmd)
+		return (cmds);
+	size = get_size(cmds) + 1;
+	new = malloc(sizeof(char *) * (size + 1));
+	if (!new)
+		return (d_free(cmds), NULL);
+	new[size] = NULL;
+	i = 0;
+	while (cmds && cmds[i])
+	{
+		new[i] = strdup(cmds[i]);
+		if (!new[i])
+			return (d_free(new), cmds);
+		i += 1;
+	}
+	new[i] = strdup(cmd);
+	if (!new[i])
+		return (d_free(new), cmds);
+	d_free(cmds);
+	return (new);
+}
+
 t_node	*create_leaf(t_list *lst, int first, int last)
 {
 	t_node	*new;
@@ -245,9 +285,9 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 		}
 		else
 		{
-			new->cmd = ft_stradd(new->cmd, strcat(current->s, " "));
+			new->cmd = add_to_cmd(new->cmd, current->s);
 			if (!new->cmd)
-				return (free(new), NULL);
+				return (free_node(new), NULL);
 		}
 		current = current->next;
 	}
