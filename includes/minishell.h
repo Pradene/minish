@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/26 15:00:22 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 16:24:59 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ int		ft_lstsize(t_list *lst);
 void	ft_lstadd(t_list **lst, t_list *new);
 void	ft_lstclear(t_list **lst);
 void	ft_lstprint(t_list *lst);
+char	*ft_strnstr(const char *big, const char *little, size_t len);
 
 // MINISHELL
 void	error(char *msg);
@@ -123,6 +124,7 @@ t_list	*tokens(char **s);
 
 // LEXER
 char	*lexer(char *command);
+char	**lex(char **cmds);
 
 // EXEC
 void	exec(t_data *data, t_node *node);
@@ -139,5 +141,9 @@ void	ex(void);
 char	**export(char **env, char *new);
 void	pwd(void);
 char	**unset(char **env, char *key);
+
+// WILD CARD
+char	**wild_carder(char *cmd);
+char	**wild_card(char **cmds);
 
 #endif

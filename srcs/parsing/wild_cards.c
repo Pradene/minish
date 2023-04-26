@@ -6,11 +6,12 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/17 16:08:29 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 16:28:46 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //#include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 #include <dirent.h>
 #include <stdio.h>
@@ -165,7 +166,7 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-char	**wild_carder(char *cmd, int i, int j, int k)
+char	**wild_carder(char *cmd)
 {
 	struct dirent	*lecture;
 	DIR				*rep;
@@ -201,7 +202,57 @@ char	**wild_carder(char *cmd, int i, int j, int k)
 	return (ans);
 }
 
-int main(int ac, char **av)
+int	tab_size(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+char	**wild_card(char **cmds)
+{
+	int	i;
+	int	j;
+	int	k;
+	char **new_cmd;
+	char **old_cmd;
+	char **dirs;
+
+	i = -1;
+	old_cmd = cmds;
+	while (cmds[++i])
+	{
+		j = 0;
+		k = 0;
+		if (ft_strchr(cmds[i], '*'))
+		{
+			dirs = wild_carder(cmds[i]);
+			new_cmd = ft_calloc(tab_size(dirs) + i, sizeof(char *));
+			while (j < i)
+			{
+				new_cmd[j] = old_cmd[j];
+				j++;
+			}
+			while (dirs[k])
+			{
+				new_cmd[j] = dirs[k];
+				printf("Deontay : %s\n", new_cmd[j]);
+				k++;
+				j++;
+			}
+			old_cmd = new_cmd;
+		}
+	}
+	if (new_cmd)
+		return (new_cmd);
+	else
+		return (old_cmd);
+}
+
+/* int main(int ac, char **av)
 {
 	char	**s;
 	
@@ -215,4 +266,4 @@ int main(int ac, char **av)
 	}
 	free(s);
 	return (0);
-}
+} */

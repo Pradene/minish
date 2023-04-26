@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/20 13:57:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 16:35:21 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,26 @@ void	open_files(t_data *data, t_node *node)
 
 void	execute(t_data *data, char **cmd, char **env)
 {
-	// char	*cmd_line;
+	char	**cmd_line;
 	// char	**cmds;
 	char	*path;
 
 	(void)data;
-	// cmd_line = lexer(cmd);
+	cmd_line = lex(cmd);
+	cmd_line = wild_card(cmd_line);
+	for (int i = 0; cmd_line[i]; i++)
+		printf("new one : %s\n", cmd_line[i]);
 	// if (!cmds)
 	// 	error(NULL);
-	path = get_path(env, cmd[0]);
+	path = get_path(env, cmd_line[0]);
 	if (!path)
 	{
-		printf("%s: command not found\n", cmd[0]);
-		d_free(cmd);
+		printf("%s: command not found\n", cmd_line[0]);
+		d_free(cmd_line);
 		exit(127);
 	}
-	if (execve(path, cmd, env) == -1)
-		error(cmd[0]);
+	if (execve(path, cmd_line, env) == -1)
+		error(cmd_line[0]);
 }
 
 void	exec_cmd(t_data *data, t_node *node)

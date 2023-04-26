@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/07 20:16:52 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/04/26 15:37:47 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ char	*lexer(char *command)
 		if (command[i] == '$')
 		{
 			j = i + 1;
+			if (j >= ft_strlen(command))
+				 break ;
 			if (!ft_strchr(" ?", command[j]) && quotes != 1)
 			{
 				while (command[j] && !ft_strchr("$ \'\"", command[j]))
@@ -86,4 +88,14 @@ char	*lexer(char *command)
 	}
 	//free(lexed_cmds);
 	return (command);
+}
+
+char	**lex(char **cmds)
+{
+	int	i;
+
+	i = -1;
+	while (cmds[++i])
+		cmds[i] = lexer(cmds[i]);
+	return (cmds);
 }
