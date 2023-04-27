@@ -29,19 +29,19 @@ int	is_builtin(char *s)
 	return (0);
 }
 
-void	builtin(char ***env, char **cmd)
+void	builtin(t_data *data, t_node *node)
 {
-	if (!strncmp(cmd[0], "cd", 2))
-		cd(*env, "./srcs");
-	else if (!strncmp(cmd[0], "echo", 4))
-		echo("echo\n", 0);
-	else if (!strncmp(cmd[0], "env", 3))
-		print_env(*env);
-	else if (!strncmp(cmd[0], "exit", 4))
-		ex();
-	else if (!strncmp(cmd[0], "export", 6))
-		*env = export(*env, "COOL=COOL");
-	else if (!strncmp(cmd[0], "unset", 5))
-		*env = unset(*env, "COOLe");
+	if (!strncmp(node->cmd[0], "cd", 2))
+		cd(data, node);
+	else if (!strncmp(node->cmd[0], "echo", 4))
+		echo(data, node);
+	else if (!strncmp(node->cmd[0], "env", 3))
+		print_env(data, node);
+	else if (!strncmp(node->cmd[0], "exit", 4))
+		ex(data, node);
+	else if (!strncmp(node->cmd[0], "export", 6))
+		data->env = export(data, node);
+	else if (!strncmp(node->cmd[0], "unset", 5))
+		data->env = unset(data, node);
 	return ;
 }

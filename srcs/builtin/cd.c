@@ -31,17 +31,26 @@ static void	change_env(char **env, char *key, char *nvalue)
 	}
 }
 
-void	cd(char **env, char *path)
+void	cd(t_data *data, t_node *node)
 {
 	char	old_pwd[BUFFER_SIZE];
 	char	pwd[BUFFER_SIZE];
 
+	if (get_size(node->cmd) > 2)
+	{
+		g_exit = 1;
+		printf("%s: too may arguments\n", node->cmd[0]);
+		return ;
+	}
 	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
 		return ;
-	if (chdir(path) == -1)
-		perror(path);
+	if (chdir(node->cmd[1]) == -1)
+	{
+		g_exit = 1;
+		perror(node->cmd[1]);
+	}
 	if (getcwd(pwd, BUFFER_SIZE) == NULL)
 		return ;
-	change_env(env, "OLDPWD", old_pwd);
-	change_env(env, "PWD", pwd);
+	change_env(data->env, "OLDPWD", old_pwd);
+	change_env(data->env, "PWD", pwd);
 }

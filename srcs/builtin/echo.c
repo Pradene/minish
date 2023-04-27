@@ -12,9 +12,8 @@
 
 #include "../../includes/minishell.h"
 
-void	echo(char *s, bool nl)
+void	echo(t_data *data, t_node *node)
 {
-	printf("%s", s);
-	if (nl)
-		printf("\n");
+	(void)data;
+	printf("%s", node->cmd[0]);
 }

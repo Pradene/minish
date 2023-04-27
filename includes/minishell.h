@@ -36,6 +36,8 @@
 
 # define BUFFER_SIZE 4096
 
+extern int	g_exit;
+
 typedef struct s_list
 {
 	char			*s;
@@ -72,7 +74,6 @@ typedef struct s_node
 typedef struct s_data
 {
 	char	**env;
-	int		exit;
 	t_node	*root;
 }	t_data;
 
@@ -107,6 +108,7 @@ char	*get_prompt(void);
 void	sig_handler(int sig);
 void	set_attribute(void);
 void	d_free(char **ss);
+int		get_size(char **ss);
 
 // PARSER
 void	parse(t_node **root, char **s);
@@ -121,7 +123,7 @@ void	free_node(t_node *node);
 t_list	*tokens(char **s);
 
 // LEXER
-char	*lexer(char *command);
+char	**lexer(char **command);
 
 // EXEC
 void	exec(t_data *data, t_node *node);
@@ -130,13 +132,13 @@ void	get_cmd(t_data *data);
 
 // BUILT-IN
 int		is_builtin(char *s);
-void	builtin(char ***env, char **cmd);
-void	cd(char **env, char *path);
-void	echo(char *s, bool nl);
-void	print_env(char **env);
-void	ex(void);
-char	**export(char **env, char *new);
-void	pwd(void);
-char	**unset(char **env, char *key);
+void	builtin(t_data *data, t_node *node);
+void	cd(t_data *data, t_node *node);
+void	echo(t_data *data, t_node *node);
+void	print_env(t_data *data, t_node *node);
+void	ex(t_data *data, t_node *node);
+char	**export(t_data *data, t_node *node);
+void	pwd(t_data *data, t_node *node);
+char	**unset(t_data *data, t_node *node);
 
 #endif

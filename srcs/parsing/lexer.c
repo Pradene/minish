@@ -18,8 +18,6 @@ char	*fill_new_cmd(int i, int j, char *lex, char *cmds)
 	char	*var;
 
 	var = getenv(ft_substr(cmds, i, j - i));
-	printf("subvar: %s\n", ft_substr(cmds, i, j - i));
-	printf("var: %s\n", var);
 	if (!lex)
 	{
 		ans = ft_strjoin(ft_substr(cmds, 0, i - 1), var);
@@ -30,11 +28,11 @@ char	*fill_new_cmd(int i, int j, char *lex, char *cmds)
 		ans = ft_strjoin(ft_substr(lex, 0, i - 1), var);
 		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds - j)));
 	}
-	printf("cd: %s\n", ans);
+	// printf("cd: %s\n", ans);
 	return (ans);
 }
 
-char	*lexer(char *command)
+char	*lex(char *command)
 {
 	int		i;
 	int		j;
@@ -42,24 +40,47 @@ char	*lexer(char *command)
 
 	i = 0;
 	lexed_cmds = NULL;
+	// printf("fhf\n");
 	while (command[i])
 	{
 		if (command[i] == '$')
 		{
+			// printf("fd\n");
 			j = i + 1;
+			if ((int)j >= (int)strlen(command))
+				break ;
 			if (ft_strchr(" ?", command[j]))
 				i++;
 			else
 			{
-				while (!ft_strchr(" ", command[j]))
+				while (j < (int)strlen(command) && !ft_strchr(" ", command[j]))
 					j++;
 				lexed_cmds = fill_new_cmd(i + 1, j, lexed_cmds, command);
 			}
 		}
 		i++;
 	}
+	// printf("ok");
+	// printf("fhf : %s\n", lexed_cmds);
+	// printf("cmd : %s\n", command);
 	if (lexed_cmds)
 		return (lexed_cmds);
 	else
 		return (command);
+}
+
+char	**lexer(char **cmds)
+{
+	int i;
+
+	if (!cmds)
+		return (NULL);
+	i = -1;
+	while (cmds[++i])
+	{
+		// printf("%d\n", i);
+		cmds[i] = lex(cmds[i]);
+		// printf("%s\n", cmds[i]);
+	}
+	return (cmds);
 }

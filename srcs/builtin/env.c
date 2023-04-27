@@ -12,11 +12,14 @@
 
 #include "../../includes/minishell.h"
 
-void	print_env(char **env)
+void	print_env(t_data *data, t_node *node)
 {
 	int	i;
 
+	(void)node;
+	if (!data->env)
+		return ;
 	i = -1;
-	while (env[++i])
-		printf("%s \n", env[i]);
+	while (data->env[++i])
+		printf("%s \n", data->env[i]);
 }

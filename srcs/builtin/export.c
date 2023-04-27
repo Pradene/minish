@@ -12,28 +12,28 @@
 
 #include "../../includes/minishell.h"
 
-char	**export(char **env, char *new)
+char	**export(t_data *data, t_node *node)
 {
 	int		c;
 	char	**e;
 
 	c = -1;
-	while (env[++c])
+	while (data->env[++c])
 		continue ;
 	e = malloc(sizeof(char *) * (c + 1 + 1));
 	if (!e)
-		return (env);
+		return (data->env);
 	e[c + 1] = NULL;
 	c = -1;
-	while (env[++c])
+	while (data->env[++c])
 	{
-		e[c] = ft_strdup(env[c]);
+		e[c] = ft_strdup(data->env[c]);
 		if (!e[c])
-			return (d_free(e), env);
+			return (d_free(e), data->env);
 	}
-	e[c] = ft_strdup(new);
+	e[c] = ft_strdup(node->cmd[1]);
 	if (!e[c])
-		return (d_free(e), env);
-	d_free(env);
+		return (d_free(e), data->env);
+	d_free(data->env);
 	return (e);
 }

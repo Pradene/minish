@@ -12,10 +12,12 @@
 
 #include "../../includes/minishell.h"
 
-void	pwd(void)
+void	pwd(t_data *data, t_node *node)
 {
 	char	dir[BUFFER_SIZE];
 
+	(void)data;
+	(void)node;
 	if (getcwd(dir, BUFFER_SIZE) == NULL)
 		return ;
 	printf("%s\n", dir);
