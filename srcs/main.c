@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+int	g_exit = 0;
+
 int	main(int ac, char **av, char **envp)
 {
 	t_data	data;
@@ -19,8 +21,8 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (ac > 1)
 		exit(EXIT_FAILURE);
+	// g_exit = 0;
 	data.env = env(envp);
-	data.exit = 0;
 	data.root = NULL;
 	set_attribute();
 	signal(SIGQUIT, SIG_IGN);

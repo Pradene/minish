@@ -33,3 +33,15 @@ int	last_index(char *s, int c)
 	index = p - s;
 	return (index);
 }
+
+int	get_size(char **ss)
+{
+	int c;
+
+	if (!ss)
+		return (0);
+	c = 0;
+	while (ss[c])
+		c += 1;
+	return (c);
+}

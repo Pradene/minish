@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/26 15:37:47 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/02 15:14:09 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	quote_status(char c, int *quote)
 {
+<<<<<<< HEAD
 	if ((*quote == 1 && c == '\'')
 		|| (*quote == 2 && c == '\"'))
 		*quote = 0;
@@ -21,6 +22,17 @@ static void	quote_status(char c, int *quote)
 		*quote = 1;
 	else if (*quote == 0 && c == '\"')
 		*quote = 2;
+=======
+	char	*ans;
+	char	*var;
+
+	var = getenv(ft_substr(cmds, i, j - i));
+	if (!lex)
+	{
+		ans = ft_strjoin(ft_substr(cmds, 0, i - 1), var);
+		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds - j)));
+	}
+>>>>>>> main
 	else
 		return ;
 }
@@ -59,7 +71,7 @@ char	*fill_new_cmd(int i, int j, char *cmds)
 	return (ans2);
 }
 
-char	*lexer(char *command)
+char	*lex(char *command)
 {
 	int		i;
 	int		j;
@@ -73,6 +85,7 @@ char	*lexer(char *command)
 			quote_status(command[i], &quotes);
 		if (command[i] == '$')
 		{
+			// printf("fd\n");
 			j = i + 1;
 			if (j >= ft_strlen(command))
 				 break ;

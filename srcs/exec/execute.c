@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/26 16:35:21 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/02 15:13:17 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	exec_cmd(t_data *data, t_node *node)
 	int		exit;
 
 	if (is_builtin(node->cmd[0]))
-		return (builtin(&data->env, node->cmd));
+		return (builtin(data, node));
 	exit = 0;
 	pid = fork();
 	if (pid == -1)
@@ -72,7 +72,36 @@ void	exec_cmd(t_data *data, t_node *node)
 		execute(data, node->cmd, data->env);
 	}
 	waitpid(pid, &exit, 0);
-	data->exit = WEXITSTATUS(exit);
+	g_exit = WEXITSTATUS(exit);
+}
+
+void	exec_builtin(t_data *data, t_node *node)
+{
+	int	sstdin;
+	int	sstdout;
+
+	sstdin = dup(STDIN_FILENO);
+	sstdout = dup(STDOUT_FILENO);
+	dup2(STDOUT_FILENO, sstdout);
+	dup2(STDIN_FILENO, sstdin);
+	open_files(data, node);
+	if (node->fd_in != -1)
+		dup2(node->fd_in, STDIN_FILENO);
+	if (node->fd_out != -1)
+		dup2(node->fd_out, STDOUT_FILENO);
+	builtin(data, node);
+	dup2(sstdin, STDIN_FILENO);
+	dup2(sstdout, STDOUT_FILENO);
+	close(sstdin);
+	close(sstdout);
+}
+
+void	exec2(t_data *data, t_node *node)
+{
+	if (is_builtin(node->cmd[0]))
+		exec_builtin(data, node);
+	else
+		exec_cmd(data, node);
 }
 
 void	connect_cmd(t_node *left, t_node *right, int fd[2])
@@ -111,14 +140,14 @@ void	exec_semicol(t_data *data, t_node *left, t_node *right)
 void	exec_or(t_data *data, t_node *left, t_node *right)
 {
 	exec(data, left);
-	if (data->exit)
+	if (g_exit)
 		exec(data, right);
 }
 
 void	exec_and(t_data *data, t_node *left, t_node *right)
 {
 	exec(data, left);
-	if (!data->exit)
+	if (!g_exit)
 		exec(data, right);
 }
 
@@ -127,13 +156,13 @@ void	exec(t_data *data, t_node *node)
 	if (!node)
 		return ;
 	if (node->type == CMD)
-		exec_cmd(data, node);
+		exec2(data, node);
 	else if (node->type == PIPE)
 		exec_pipe(data, node->left, node->right);
 	else if (node->type == DBL_PIPE)
 		exec_or(data, node->left, node->right);
 	else if (node->type == AMP)
-		printf("Implementation to do\n");
+		printf("Error\n");
 	else if (node->type == DBL_AMP)
 		exec_and(data, node->left, node->right);
 	else if (node->type == SEMICOL)

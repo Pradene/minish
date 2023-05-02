@@ -12,8 +12,11 @@
 
 #include "../../includes/minishell.h"
 
-void	ex(void)
+void	ex(t_data *data, t_node *node)
 {
+	(void)data;
 	printf("exit\n");
-	exit(EXIT_FAILURE);
+	if (node->cmd[1])
+		exit(atoi(node->cmd[1]));
+	exit(0);
 }

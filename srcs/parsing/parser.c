@@ -221,18 +221,6 @@ void	handle_redir(t_node *node, char *type, char *file)
 	}
 }
 
-int	get_size(char **ss)
-{
-	int c;
-
-	if (!ss)
-		return (0);
-	c = 0;
-	while (ss[c])
-		c += 1;
-	return (c);
-}
-
 char	**add_to_cmd(char **cmds, char *cmd)
 {
 	char	**new;

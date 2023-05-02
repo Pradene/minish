@@ -33,28 +33,28 @@ static char	*find_env(char **env, char *key)
 	return (NULL);
 }
 
-char	**unset(char **env, char *key)
+char	**unset(t_data *data, t_node *node)
 {
 	int		i;
 	int		j;
 	int		size;
 	char	**e;
 
-	if (find_env(env, key) == NULL)
-		return (env);
-	size = size_env(env) - 1;
+	if (find_env(data->env, node->cmd[1]) == NULL)
+		return (data->env);
+	size = size_env(data->env) - 1;
 	e = malloc(sizeof(char *) * (size + 1));
 	if (!e)
-		return (env);
+		return (data->env);
 	e[size] = NULL;
 	i = -1;
 	j = -1;
-	while (env[++i])
+	while (data->env[++i])
 	{
-		if (cmp_env(env[i], key) == 0)
+		if (cmp_env(data->env[i], node->cmd[1]) == 0)
 			continue ;
-		e[++j] = ft_strdup(env[i]);
+		e[++j] = ft_strdup(data->env[i]);
 	}
-	d_free(env);
+	d_free(data->env);
 	return (e);
 }

@@ -47,7 +47,7 @@ void	get_cmd(t_data *data)
 	s = readline(prompt);
 	free(prompt);
 	if (!s)
-		ex();
+		exit(g_exit);
 	add_history(s);
 	if (check_quotes(s))
 		return (printf("Error\n"), free(s));
