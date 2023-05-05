@@ -38,18 +38,18 @@ void	cd(t_data *data, t_node *node)
 
 	if (get_size(node->cmd) > 2)
 	{
-		g_exit = 1;
 		printf("%s: too may arguments\n", node->cmd[0]);
+		g_exit = 1;
 		return ;
 	}
-	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
+	if (!getcwd(old_pwd, BUFFER_SIZE))
 		return ;
 	if (chdir(node->cmd[1]) == -1)
 	{
 		g_exit = 1;
 		perror(node->cmd[1]);
 	}
-	if (getcwd(pwd, BUFFER_SIZE) == NULL)
+	if (!getcwd(pwd, BUFFER_SIZE))
 		return ;
 	change_env(data->env, "OLDPWD", old_pwd);
 	change_env(data->env, "PWD", pwd);

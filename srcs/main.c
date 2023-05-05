@@ -21,8 +21,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (ac > 1)
 		exit(EXIT_FAILURE);
-	// g_exit = 0;
-	data.env = env(envp);
+	data.env = envcp(envp);
 	data.root = NULL;
 	set_attribute();
 	signal(SIGQUIT, SIG_IGN);

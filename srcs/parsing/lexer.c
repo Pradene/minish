@@ -28,7 +28,6 @@ char	*fill_new_cmd(int i, int j, char *lex, char *cmds)
 		ans = ft_strjoin(ft_substr(lex, 0, i - 1), var);
 		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds - j)));
 	}
-	// printf("cd: %s\n", ans);
 	return (ans);
 }
 
@@ -40,12 +39,10 @@ char	*lex(char *command)
 
 	i = 0;
 	lexed_cmds = NULL;
-	// printf("fhf\n");
 	while (command[i])
 	{
 		if (command[i] == '$')
 		{
-			// printf("fd\n");
 			j = i + 1;
 			if ((int)j >= (int)strlen(command))
 				break ;
@@ -60,9 +57,6 @@ char	*lex(char *command)
 		}
 		i++;
 	}
-	// printf("ok");
-	// printf("fhf : %s\n", lexed_cmds);
-	// printf("cmd : %s\n", command);
 	if (lexed_cmds)
 		return (lexed_cmds);
 	else
@@ -71,16 +65,12 @@ char	*lex(char *command)
 
 char	**lexer(char **cmds)
 {
-	int i;
+	int	i;
 
 	if (!cmds)
 		return (NULL);
 	i = -1;
 	while (cmds[++i])
-	{
-		// printf("%d\n", i);
 		cmds[i] = lex(cmds[i]);
-		// printf("%s\n", cmds[i]);
-	}
 	return (cmds);
 }

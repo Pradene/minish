@@ -267,6 +267,8 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 		{
 			if (first + 1 > last)
 				return (free(new), NULL);
+			if (issep(current->next->s) || isredir(current->next->s))
+				return (free(new), NULL);
 			handle_redir(new, current->s, current->next->s);
 			current = current->next;
 			first += 1;

@@ -12,6 +12,27 @@
 
 #include "../../includes/minishell.h"
 
+void	heredoc(char *limiter)
+{
+	char	*line;
+	int		fd;
+
+	fd = open(".heredoc", O_CREAT | O_TRUNC | O_WRONLY | O_RDONLY, 0777);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			return ;
+		if (!strcmp(limiter, line))
+			break ;
+		write(fd, line, strlen(line));
+		write(fd, "\n", 1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	unlink(".heredoc");
+}
+
 void	open_files(t_data *data, t_node *node)
 {
 	(void)data;
@@ -21,10 +42,12 @@ void	open_files(t_data *data, t_node *node)
 		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	else if (node->out2)
 		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	if (node->in)
+	if (node->in || node->in2)
 		close(node->fd_in);
 	if (node->in)
 		node->fd_in = open(node->in, O_RDONLY, 0777);
+	if (node->in2)
+		heredoc(node->in2);
 }
 
 void	execute(t_data *data, char **cmd, char **env)
