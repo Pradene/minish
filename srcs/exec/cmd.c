@@ -52,6 +52,7 @@ void	get_cmd(t_data *data)
 	if (check_quotes(s))
 		return (printf("Error\n"), free(s));
 	parse(&data->root, &s);
+	// print_tree(data->root);
 	exec(data, data->root);
 	free_node(data->root);
 	data->root = NULL;
