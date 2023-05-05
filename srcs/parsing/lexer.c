@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/02 17:13:35 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 15:35:39 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,32 @@ static void	quote_status(char c, int *quote)
 		return ;
 }
 
+char	*fill_var2(char *v_decl, int i, int j, int size)
+{
+	char	*var;
+	int		k;
+
+	k = 0;
+	var = ft_calloc(size + 1, sizeof(char));
+	if (!var)
+		return (NULL);
+	while (j < i)
+	{
+		var[k] = v_decl[j];
+		k++;
+		j++;
+	}
+	return (var);
+}
+
 char	*fill_var(char *v_decl)
 {
 	int		i;
 	int		j;
-	int		k;
 	int		size;
 	char	*var;
 
 	i = 0;
-	k = 0;
 	size = 0;
 	while (v_decl[i] && v_decl[i] != '=')
 		i++;
@@ -47,13 +63,7 @@ char	*fill_var(char *v_decl)
 		size++;
 		i++;
 	}
-	var = ft_calloc(size + 1, sizeof(char));
-	while (j < i)
-	{
-		var[k] = v_decl[j];
-		k++;
-		j++;
-	}
+	var = fill_var2(v_decl, i, j, size);
 	return (var);
 }
 
@@ -87,51 +97,33 @@ char	*fill_new_cmd(int i, int j, char *cmds, char **env)
 	tmp = ft_substr(cmds, i, j - i);
 	var = find_var(env, tmp);
 	free(tmp);
-	//printf("subvar: %s\n", ft_substr(cmds, i, j - i));
-	printf("var: %s\n", var);
-	//if (!lex)
-	//{
-		tmp = ft_substr(cmds, 0, i - 1);
-		ans1 = ft_strjoin(tmp, var);
-		free(tmp);
-		tmp = ft_substr(cmds, j, ft_strlen(cmds) - j);
-		ans2 = ft_strjoin(ans1, tmp);
-		free(tmp);
-		if (ans1)
-			free(ans1);
-	//}
-	/* else
-	{
-		ans = ft_strjoin(ft_substr(lex, 0, i - 1), var);
-		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds) - j));
-		//free(lex);
-	} */
+	tmp = ft_substr(cmds, 0, i - 1);
+	ans1 = ft_strjoin(tmp, var);
+	free(tmp);
+	tmp = ft_substr(cmds, j, ft_strlen(cmds) - j);
+	ans2 = ft_strjoin(ans1, tmp);
+	free(tmp);
+	if (ans1)
+		free(ans1);
 	free(cmds);
-	printf("cd: %s\n", ans2);
 	return (ans2);
 }
 
-char	*put_ret(char *cmd, int start, int end)
+char	*put_ret(char *cmd, int start, int end, int i, int j)
 {
 	char	*ret;
 	char	*new_cmd;
-	int		i;
-	int		j;
 
-	i = 0;
-	j = 0;
 	ret = ft_itoa(g_exit);
 	new_cmd = ft_calloc(ft_strlen(cmd) + ft_strlen(ret) + 1, sizeof(char));
-	while (i < start)
-	{
+	if (!new_cmd)
+		return (NULL);
+	while (++i < start)
 		new_cmd[i] = cmd[i];
-		i++;
-	}
-	while (ret[j])
+	while (ret[++j])
 	{
 		new_cmd[i] = ret[j];
 		i++;
-		j++;
 	}
 	while (cmd[end++])
 	{
@@ -140,15 +132,31 @@ char	*put_ret(char *cmd, int start, int end)
 	}
 	free(cmd);
 	free(ret);
-	printf("test : %s\n", new_cmd);
 	return (new_cmd);
+}
+
+char	*clean_cmd2(char *cmd, int i, int j, int quote_count)
+{
+	char	*new_cmd;
+
+	new_cmd = ft_calloc(ft_strlen(cmd) - quote_count + 1, sizeof(char));
+	if (!new_cmd)
+		return (NULL);
+	while (cmd[i])
+	{
+		if (ft_strchr("\'\"", cmd[i]))
+			i++;
+		new_cmd[j] = cmd[i];
+		i++;
+		j++;
+	}
 }
 
 char	*clean_cmd(char *cmd)
 {
-	int	i;
-	int	j;
-	int	quote_count;
+	int		i;
+	int		j;
+	int		quote_count;
 	char	*new_cmd;
 
 	i = 0;
@@ -163,25 +171,14 @@ char	*clean_cmd(char *cmd)
 		return (cmd);
 	i = 0;
 	j = 0;
-	new_cmd = ft_calloc(ft_strlen(cmd) - quote_count + 1, sizeof(char));
-	while (cmd[i])
-	{
-		if (ft_strchr("\'\"", cmd[i]))
-			i++;
-		new_cmd[j] = cmd[i];
-		i++;
-		j++;
-	}
+	new_cmd = clean_cmd2(cmd, i, j, quote_count);
 	return (new_cmd);
 }
 
-char	*lexer(char *command, char **env)
+char	*lexer(char *command, char **env, int i, int j)
 {
-	int		i;
-	int		j;
 	int		quotes;
 
-	i = 0;
 	quotes = 0;
 	while (command[i])
 	{
@@ -189,17 +186,15 @@ char	*lexer(char *command, char **env)
 			quote_status(command[i], &quotes);
 		if (command[i] == '$')
 		{
-			// printf("fd\n");
 			j = i + 1;
 			if (j >= ft_strlen(command))
-				 break ;
+				break ;
 			if (command[j] == '?' && quotes != 1)
-				command = put_ret(command, i, j);
+				command = put_ret(command, i, j, -1, -1);
 			else if (!ft_strchr(" ?", command[j]) && quotes != 1)
 			{
 				while (command[j] && !ft_strchr("$ \'\"", command[j]))
 					j++;
-				/* lexed_cmds = fill_new_cmd(i + 1, j, command); */
 				command = fill_new_cmd(i + 1, j, command, env);
 			}
 		}
@@ -215,6 +210,6 @@ char	**lex(char **cmds, char **env)
 
 	i = -1;
 	while (cmds[++i])
-		cmds[i] = lexer(cmds[i], env);
+		cmds[i] = lexer(cmds[i], env, 0, 0);
 	return (cmds);
 }

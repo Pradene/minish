@@ -27,6 +27,8 @@ char	*get_env(char **env, char *s)
 {
 	int	i;
 
+	if (!env)
+		return (NULL);
 	i = -1;
 	while (env[++i])
 	{
@@ -36,7 +38,7 @@ char	*get_env(char **env, char *s)
 	return (NULL);
 }
 
-char	**env(char **env)
+char	**envcp(char **env)
 {
 	int		c;
 	char	**envp;

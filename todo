@@ -1,4 +1,4 @@
 expansion
 heredoc
-builtin
-separator priorties
+export
+separator priorities

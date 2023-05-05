@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/02 14:01:37 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 15:43:59 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	**create_motif(char *cmd, char **motif)
 
 int	motif_size(char **motif)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!motif)
@@ -168,47 +168,45 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
+int	handle_star(char **cmd)
+{
+	if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] != '*')
+		return (0);
+	else if (cmd[0] == '*' && cmd[ft_strlen(cmd) - 1] != '*')
+		return (1);
+	else if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] == '*')
+		return (2);
+	else
+		return (3);
+}
+
 char	**wild_carder(char *cmd)
 {
 	struct dirent	*lecture;
 	DIR				*rep;
 	char			**ans;
 	char			**motif;
-	int				stars;
-	static int				d_number = 0;
+	static int		d_number = 0;
 
 	motif = NULL;
 	rep = NULL;
 	motif = create_motif(cmd, motif);
 	rep = opendir(".");
-	if (!rep)
-		printf("ca marche pas zbi \n");
 	ans = ft_calloc(sizeof(char *), 4096);
-	if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] != '*')
-		stars = 0;
-	else if (cmd[0] == '*' && cmd[ft_strlen(cmd) - 1] != '*')
-		stars = 1;
-	else if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] == '*')
-		stars = 2;
-	else
-		stars = 3;
+	if (!ans)
+		return (NULL);
 	lecture = readdir(rep);
 	while (lecture)
 	{
-		long pos = telldir(rep);
-		printf("ici meme : %ld\n", pos);
 		if (d_number > 4095)
 			break ;
-		if (corresponding_dir(lecture->d_name, motif, stars))
+		if (corresponding_dir(lecture->d_name, motif, handle_star(cmd)))
 		{
 			add_dir(lecture->d_name, ans);
 			d_number++;
 		}
-		//free(lecture);
 		lecture = readdir(rep);
 	}
-	//int v = closedir(rep);
-	//printf("Klose %d\n", v);
 	free_tab(motif);
 	return (ans);
 }
@@ -223,37 +221,28 @@ int	tab_size(char **tab)
 	return (i);
 }
 
-char	**wild_card(char **cmds)
+char	**wild_card(char **cmds, int i, int j, int k)
 {
-	int	i;
-	int	j;
-	int	k;
 	int n;
 	char **new_cmd;
 	char **old_cmd;
 	char **dirs;
 
-	i = -1;
 	old_cmd = cmds;
 	while (old_cmd[++i])
 	{
-		j = 0;
-		k = 0;
 		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
 		{
 			dirs = wild_carder(old_cmd[i]);
 			new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd), sizeof(char *));
-			printf("dirdir : %s\n", dirs[0]);
 			while (j < i)
 			{
 				new_cmd[j] = old_cmd[j];
 				j++;
 			}
-			printf("le d n'a pas fini de faire parler de lui ! %d\n", k);
 			while (dirs[k])
 			{
 				new_cmd[j] = dirs[k];
-				printf("Deontay : %s\n", new_cmd[j]);
 				k++;
 				j++;
 			}
@@ -261,19 +250,13 @@ char	**wild_card(char **cmds)
 			while (old_cmd[n])
 			{
 				new_cmd[j] = old_cmd[n];
-				printf("new_c : %s\n", new_cmd[j]);
 				j++;
 				n++;
 			}
 			free(old_cmd);
 			old_cmd = new_cmd;
-			//free(dirs);
-			//free(new_cmd);
 		}
 	}
-	int t = -1;
-	while (old_cmd[++t])
-		printf("c la nouvelle commande ca : %s\n", old_cmd[t]);
 	return (old_cmd);
 }
 

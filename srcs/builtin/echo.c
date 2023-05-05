@@ -14,6 +14,23 @@
 
 void	echo(t_data *data, t_node *node)
 {
+	int	i;
+	int	n;
+
 	(void)data;
-	printf("%s", node->cmd[0]);
+	n = 0;
+	i = 1;
+	if (node->cmd[i] && !strncmp(node->cmd[i++], "-n", 2))
+		n = 1;
+	else if (i > 1)
+		i -= 1;
+	while (node->cmd[i])
+	{
+		printf("%s", node->cmd[i]);
+		i += 1;
+		if (node->cmd[i])
+			printf(" ");
+	}
+	if (!n)
+		printf("\n");
 }

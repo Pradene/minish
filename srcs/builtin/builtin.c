@@ -36,7 +36,7 @@ void	builtin(t_data *data, t_node *node)
 	/* else if (!strncmp(node->cmd[0], "echo", 4))
 		echo(data, node); */
 	else if (!strncmp(node->cmd[0], "env", 3))
-		print_env(data, node);
+		env(data, node);
 	else if (!strncmp(node->cmd[0], "exit", 4))
 		ex(data, node);
 	else if (!strncmp(node->cmd[0], "export", 6))

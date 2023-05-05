@@ -36,7 +36,7 @@ int	last_index(char *s, int c)
 
 int	get_size(char **ss)
 {
-	int c;
+	int	c;
 
 	if (!ss)
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/02 16:19:09 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 15:45:34 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ char	*ft_itoa(int n);
 void	error(char *msg);
 int		cmp_env(char *env, char *key);
 char	*get_env(char **env, char *s);
-char	**env(char **envp);
+char	**envcp(char **envp);
 int		last_index(char *s, int c);
 char	*get_prompt(void);
 void	sig_handler(int sig);
@@ -139,7 +139,7 @@ int		is_builtin(char *s);
 void	builtin(t_data *data, t_node *node);
 void	cd(t_data *data, t_node *node);
 void	echo(t_data *data, t_node *node);
-void	print_env(t_data *data, t_node *node);
+void	env(t_data *data, t_node *node);
 void	ex(t_data *data, t_node *node);
 char	**export(t_data *data, t_node *node);
 void	pwd(t_data *data, t_node *node);
@@ -147,6 +147,6 @@ char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
 char	**wild_carder(char *cmd);
-char	**wild_card(char **cmds);
+char	**wild_card(char **cmds, int i, int j, int k);
 
 #endif

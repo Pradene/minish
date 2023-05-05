@@ -6,11 +6,32 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/04 16:23:17 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:32:04 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	heredoc(char *limiter)
+{
+	char	*line;
+	int		fd;
+
+	fd = open(".heredoc", O_CREAT | O_TRUNC | O_WRONLY | O_RDONLY, 0777);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			return ;
+		if (!strcmp(limiter, line))
+			break ;
+		write(fd, line, strlen(line));
+		write(fd, "\n", 1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	unlink(".heredoc");
+}
 
 void	open_files(t_data *data, t_node *node)
 {
@@ -21,10 +42,12 @@ void	open_files(t_data *data, t_node *node)
 		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	else if (node->out2)
 		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	if (node->in)
+	if (node->in || node->in2)
 		close(node->fd_in);
 	if (node->in)
 		node->fd_in = open(node->in, O_RDONLY, 0777);
+	if (node->in2)
+		heredoc(node->in2);
 }
 
 int	double_redir(t_node *tmp1, t_node *tmp2)
@@ -70,9 +93,7 @@ void	execute(t_data *data, char **cmd, char **env)
 
 	(void)data;
 	cmd_line = lex(cmd, data->env);
-	cmd_line = wild_card(cmd_line);
-	for (int i = 0; cmd_line[i]; i++)
-		printf("new one : %s\n", cmd_line[i]);
+	cmd_line = wild_card(cmd_line, -1, 0 , 0);
 	// if (!cmds)
 	// 	error(NULL);
 	path = get_path(env, cmd_line[0]);
