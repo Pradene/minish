@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/02 15:14:09 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/02 17:13:35 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	quote_status(char c, int *quote)
 {
-<<<<<<< HEAD
 	if ((*quote == 1 && c == '\'')
 		|| (*quote == 2 && c == '\"'))
 		*quote = 0;
@@ -22,22 +21,63 @@ static void	quote_status(char c, int *quote)
 		*quote = 1;
 	else if (*quote == 0 && c == '\"')
 		*quote = 2;
-=======
-	char	*ans;
-	char	*var;
-
-	var = getenv(ft_substr(cmds, i, j - i));
-	if (!lex)
-	{
-		ans = ft_strjoin(ft_substr(cmds, 0, i - 1), var);
-		ans = ft_strjoin(ans, ft_substr(cmds, j, ft_strlen(cmds - j)));
-	}
->>>>>>> main
 	else
 		return ;
 }
 
-char	*fill_new_cmd(int i, int j, char *cmds)
+char	*fill_var(char *v_decl)
+{
+	int		i;
+	int		j;
+	int		k;
+	int		size;
+	char	*var;
+
+	i = 0;
+	k = 0;
+	size = 0;
+	while (v_decl[i] && v_decl[i] != '=')
+		i++;
+	i++;
+	if (v_decl[i] && ft_strchr("\"\'", v_decl[i]))
+		i++;
+	j = i;
+	while (v_decl[i] && !ft_strchr("\"\'", v_decl[i]))
+	{
+		size++;
+		i++;
+	}
+	var = ft_calloc(size + 1, sizeof(char));
+	while (j < i)
+	{
+		var[k] = v_decl[j];
+		k++;
+		j++;
+	}
+	return (var);
+}
+
+char	*find_var(char **env, char *tmp)
+{
+	int		i;
+	int		j;
+	char	*var;
+
+	i = 0;
+	var = NULL;
+	while (env[i])
+	{
+		j = 0;
+		while (env[i][j] != '=')
+			j++;
+		if (!ft_strncmp(env[i], tmp, j))
+			var = fill_var(env[i]);
+		i++;
+	}
+	return (var);
+}
+
+char	*fill_new_cmd(int i, int j, char *cmds, char **env)
 {
 	char	*ans1;
 	char	*ans2;
@@ -45,7 +85,7 @@ char	*fill_new_cmd(int i, int j, char *cmds)
 	char	*tmp;
 
 	tmp = ft_substr(cmds, i, j - i);
-	var = getenv(tmp);
+	var = find_var(env, tmp);
 	free(tmp);
 	//printf("subvar: %s\n", ft_substr(cmds, i, j - i));
 	printf("var: %s\n", var);
@@ -71,7 +111,71 @@ char	*fill_new_cmd(int i, int j, char *cmds)
 	return (ans2);
 }
 
-char	*lex(char *command)
+char	*put_ret(char *cmd, int start, int end)
+{
+	char	*ret;
+	char	*new_cmd;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	ret = ft_itoa(g_exit);
+	new_cmd = ft_calloc(ft_strlen(cmd) + ft_strlen(ret) + 1, sizeof(char));
+	while (i < start)
+	{
+		new_cmd[i] = cmd[i];
+		i++;
+	}
+	while (ret[j])
+	{
+		new_cmd[i] = ret[j];
+		i++;
+		j++;
+	}
+	while (cmd[end++])
+	{
+		new_cmd[i] = cmd[end];
+		i++;
+	}
+	free(cmd);
+	free(ret);
+	printf("test : %s\n", new_cmd);
+	return (new_cmd);
+}
+
+char	*clean_cmd(char *cmd)
+{
+	int	i;
+	int	j;
+	int	quote_count;
+	char	*new_cmd;
+
+	i = 0;
+	quote_count = 0;
+	while (cmd[i])
+	{
+		if (ft_strchr("\'\"", cmd[i]))
+			quote_count++;
+		i++;
+	}
+	if (!quote_count)
+		return (cmd);
+	i = 0;
+	j = 0;
+	new_cmd = ft_calloc(ft_strlen(cmd) - quote_count + 1, sizeof(char));
+	while (cmd[i])
+	{
+		if (ft_strchr("\'\"", cmd[i]))
+			i++;
+		new_cmd[j] = cmd[i];
+		i++;
+		j++;
+	}
+	return (new_cmd);
+}
+
+char	*lexer(char *command, char **env)
 {
 	int		i;
 	int		j;
@@ -89,26 +193,28 @@ char	*lex(char *command)
 			j = i + 1;
 			if (j >= ft_strlen(command))
 				 break ;
-			if (!ft_strchr(" ?", command[j]) && quotes != 1)
+			if (command[j] == '?' && quotes != 1)
+				command = put_ret(command, i, j);
+			else if (!ft_strchr(" ?", command[j]) && quotes != 1)
 			{
 				while (command[j] && !ft_strchr("$ \'\"", command[j]))
 					j++;
 				/* lexed_cmds = fill_new_cmd(i + 1, j, command); */
-				command = fill_new_cmd(i + 1, j, command);
+				command = fill_new_cmd(i + 1, j, command, env);
 			}
 		}
 		i++;
 	}
-	//free(lexed_cmds);
+	command = clean_cmd(command);
 	return (command);
 }
 
-char	**lex(char **cmds)
+char	**lex(char **cmds, char **env)
 {
 	int	i;
 
 	i = -1;
 	while (cmds[++i])
-		cmds[i] = lexer(cmds[i]);
+		cmds[i] = lexer(cmds[i], env);
 	return (cmds);
 }

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/02 15:13:17 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/04 16:23:17 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,41 @@ void	open_files(t_data *data, t_node *node)
 		node->fd_in = open(node->in, O_RDONLY, 0777);
 }
 
+int	double_redir(t_node *tmp1, t_node *tmp2)
+{
+	if ((tmp1->in2 || tmp1->in || tmp1->out2 || tmp1->out)
+		&& (tmp2->in2 || tmp2->in || tmp2->out2 || tmp2->out))
+		return (1);
+	else
+		return (0);
+}
+
+int	check_tree(t_node *root)
+{
+	t_node	*tmp;
+	t_node	*tmp2;
+
+	if (!root)
+		return (1);
+	tmp = root;
+	printf("zbeubzbeub\n");
+	tmp2 = tmp->right;
+	if (tmp2)
+	{
+		printf("result 1 : %d\n", double_redir(tmp, tmp2));
+		if (double_redir(tmp, tmp2) || check_tree(tmp2))
+			return (printf("error\n"));
+	}
+	tmp = tmp->left;
+	if (tmp)
+	{
+		printf("result 2 : %d\n", double_redir(tmp, tmp2));
+		if (double_redir(tmp, tmp2) || check_tree(tmp))
+			return (printf("error\n"));
+	}
+	return (0);
+}
+
 void	execute(t_data *data, char **cmd, char **env)
 {
 	char	**cmd_line;
@@ -34,7 +69,7 @@ void	execute(t_data *data, char **cmd, char **env)
 	char	*path;
 
 	(void)data;
-	cmd_line = lex(cmd);
+	cmd_line = lex(cmd, data->env);
 	cmd_line = wild_card(cmd_line);
 	for (int i = 0; cmd_line[i]; i++)
 		printf("new one : %s\n", cmd_line[i]);
@@ -155,7 +190,9 @@ void	exec(t_data *data, t_node *node)
 {
 	if (!node)
 		return ;
-	if (node->type == CMD)
+	if (check_tree(node))
+		printf("Error\n");
+	else if (node->type == CMD)
 		exec2(data, node);
 	else if (node->type == PIPE)
 		exec_pipe(data, node->left, node->right);

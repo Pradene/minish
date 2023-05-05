@@ -38,7 +38,8 @@ UTILS_FILES	= ft_bzero.c \
 			ft_strncmp.c \
 			ft_strrchr.c \
 			ft_substr.c \
-			ft_strnstr.c
+			ft_strnstr.c \
+			ft_itoa.c
 
 MAIN	= main.c
 
