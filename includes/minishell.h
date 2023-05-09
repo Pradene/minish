@@ -100,6 +100,7 @@ void	ft_lstprint(t_list *lst);
 
 // MINISHELL
 void	error(char *msg);
+void	prerror(char *msg);
 int		cmp_env(char *env, char *key);
 char	*get_env(char **env, char *s);
 char	**envcp(char **envp);
@@ -134,7 +135,7 @@ void	get_cmd(t_data *data);
 int		is_builtin(char *s);
 void	builtin(t_data *data, t_node *node);
 void	cd(t_data *data, t_node *node);
-void	echo(t_data *data, t_node *node);
+void	echo(t_node *node);
 void	env(t_data *data, t_node *node);
 void	ex(t_data *data, t_node *node);
 char	**export(t_data *data, t_node *node);

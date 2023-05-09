@@ -34,7 +34,7 @@ void	builtin(t_data *data, t_node *node)
 	if (!strncmp(node->cmd[0], "cd", 2))
 		cd(data, node);
 	else if (!strncmp(node->cmd[0], "echo", 4))
-		echo(data, node);
+		echo(node);
 	else if (!strncmp(node->cmd[0], "env", 3))
 		env(data, node);
 	else if (!strncmp(node->cmd[0], "exit", 4))

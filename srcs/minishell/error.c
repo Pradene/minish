@@ -17,3 +17,8 @@ void	error(char *msg)
 	perror(msg);
 	exit(EXIT_FAILURE);
 }
+
+void	prerror(char *msg)
+{
+	write(2, msg, strlen(msg));
+}

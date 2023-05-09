@@ -38,7 +38,7 @@ void	cd(t_data *data, t_node *node)
 
 	if (get_size(node->cmd) > 2)
 	{
-		printf("%s: too may arguments\n", node->cmd[0]);
+		prerror("cd: too many arguments\n");
 		g_exit = 1;
 		return ;
 	}
