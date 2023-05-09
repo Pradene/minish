@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/05 16:32:04 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:14:29 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,16 @@ void	open_files(t_data *data, t_node *node)
 		heredoc(node->in2);
 }
 
-int	double_redir(t_node *tmp1, t_node *tmp2)
+/* int	double_redir(t_node *tmp1, t_node *tmp2)
 {
 	if ((tmp1->in2 || tmp1->in || tmp1->out2 || tmp1->out)
 		&& (tmp2->in2 || tmp2->in || tmp2->out2 || tmp2->out))
 		return (1);
 	else
 		return (0);
-}
+} */
 
-int	check_tree(t_node *root)
+/* int	check_tree(t_node *root)
 {
 	t_node	*tmp;
 	t_node	*tmp2;
@@ -89,7 +89,7 @@ int	check_tree(t_node *root)
 			return (printf("error\n"));
 	}
 	return (0);
-}
+} */
 
 void	execute(t_data *data, char **cmd, char **env)
 {
@@ -220,9 +220,9 @@ void	exec(t_data *data, t_node *node)
 {
 	if (!node)
 		return ;
-	if (check_tree(node))
-		printf("Error\n");
-	else if (node->type == CMD)
+/* 	if (check_tree(node))
+		printf("Error\n"); */
+	if (node->type == CMD)
 		exec2(data, node);
 	else if (node->type == PIPE)
 		exec_pipe(data, node->left, node->right);

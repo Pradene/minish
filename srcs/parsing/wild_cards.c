@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/05 15:43:59 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:17:44 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-int	handle_star(char **cmd)
+int	handle_star(char *cmd)
 {
 	if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] != '*')
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/05 15:45:34 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:15:12 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	free_node(t_node *node);
 t_list	*tokens(char **s);
 
 // LEXER
-char	*lexer(char *command, char **env);
+char	*lexer(char *command, char **env, int i, int j);
 char	**lex(char **cmds, char **env);
 
 // EXEC

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/05 15:35:39 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:15:47 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ char	*clean_cmd2(char *cmd, int i, int j, int quote_count)
 		i++;
 		j++;
 	}
+	return (new_cmd);
 }
 
 char	*clean_cmd(char *cmd)
