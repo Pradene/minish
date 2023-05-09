@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:11:08 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/14 22:11:22 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:59:48 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ void	get_cmd(t_data *data)
 {
 	char	*prompt;
 	char	*s;
+	//char	*cmd;
 
+	(void)data;
 	prompt = get_prompt();
 	if (!prompt)
 		error(NULL);

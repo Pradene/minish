@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/01 06:31:14 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:15:12 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 
 # include <termios.h>
 
+# include <dirent.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -90,13 +91,15 @@ char	*ft_stradd(char *s1, char *s2);
 char	**ft_split(const char *s, char c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*ft_lstlast(t_list *lst);
 int		ft_lstsize(t_list *lst);
 void	ft_lstadd(t_list **lst, t_list *new);
 void	ft_lstclear(t_list **lst);
 void	ft_lstprint(t_list *lst);
+char	*ft_strnstr(const char *big, const char *little, size_t len);
+char	*ft_itoa(int n);
 
 // MINISHELL
 void	error(char *msg);
@@ -124,7 +127,8 @@ void	free_node(t_node *node);
 t_list	*tokens(char **s);
 
 // LEXER
-char	**lexer(char **command);
+char	*lexer(char *command, char **env, int i, int j);
+char	**lex(char **cmds, char **env);
 
 // EXEC
 void	exec(t_data *data, t_node *node);
@@ -141,5 +145,9 @@ void	ex(t_data *data, t_node *node);
 char	**export(t_data *data, t_node *node);
 void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);
+
+// WILD CARD
+char	**wild_carder(char *cmd);
+char	**wild_card(char **cmds, int i, int j, int k);
 
 #endif

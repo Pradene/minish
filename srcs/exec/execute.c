@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/20 13:57:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:14:29 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,61 @@ void	open_files(t_data *data, t_node *node)
 		heredoc(node->in2);
 }
 
+/* int	double_redir(t_node *tmp1, t_node *tmp2)
+{
+	if ((tmp1->in2 || tmp1->in || tmp1->out2 || tmp1->out)
+		&& (tmp2->in2 || tmp2->in || tmp2->out2 || tmp2->out))
+		return (1);
+	else
+		return (0);
+} */
+
+/* int	check_tree(t_node *root)
+{
+	t_node	*tmp;
+	t_node	*tmp2;
+
+	if (!root)
+		return (1);
+	tmp = root;
+	printf("zbeubzbeub\n");
+	tmp2 = tmp->right;
+	if (tmp2)
+	{
+		printf("result 1 : %d\n", double_redir(tmp, tmp2));
+		if (double_redir(tmp, tmp2) || check_tree(tmp2))
+			return (printf("error\n"));
+	}
+	tmp = tmp->left;
+	if (tmp)
+	{
+		printf("result 2 : %d\n", double_redir(tmp, tmp2));
+		if (double_redir(tmp, tmp2) || check_tree(tmp))
+			return (printf("error\n"));
+	}
+	return (0);
+} */
+
 void	execute(t_data *data, char **cmd, char **env)
 {
-	char	**ncmd;
+	char	**cmd_line;
+	// char	**cmds;
 	char	*path;
 
 	(void)data;
-	ncmd = lexer(cmd);
-	if (!ncmd)
-		error(NULL);
-	path = get_path(env, cmd[0]);
+	cmd_line = lex(cmd, data->env);
+	cmd_line = wild_card(cmd_line, -1, 0 , 0);
+	// if (!cmds)
+	// 	error(NULL);
+	path = get_path(env, cmd_line[0]);
 	if (!path)
 	{
-		printf("%s: command not found\n", cmd[0]);
-		d_free(cmd);
+		printf("%s: command not found\n", cmd_line[0]);
+		d_free(cmd_line);
 		exit(127);
 	}
-	if (execve(path, cmd, env) == -1)
-		error(cmd[0]);
+	if (execve(path, cmd_line, env) == -1)
+		error(cmd_line[0]);
 }
 
 void	exec_cmd(t_data *data, t_node *node)
@@ -183,6 +220,8 @@ void	exec(t_data *data, t_node *node)
 {
 	if (!node)
 		return ;
+/* 	if (check_tree(node))
+		printf("Error\n"); */
 	if (node->type == CMD)
 		exec2(data, node);
 	else if (node->type == PIPE)

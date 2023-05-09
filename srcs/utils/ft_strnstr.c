@@ -1,42 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/09 18:55:08 by tmalless          #+#    #+#             */
-/*   Updated: 2023/04/07 20:17:43 by tmalless         ###   ########.fr       */
+/*   Created: 2022/11/08 18:26:00 by tmalless          #+#    #+#             */
+/*   Updated: 2023/04/07 16:38:26 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*ft_strjoin(char *s1, char *s2)
+static int	ft_cmp(const char *little, const char *big, size_t	len)
 {
-	size_t	size;
 	size_t	i;
-	size_t	j;
-	char	*join;
 
-	size = ft_strlen(s1) + ft_strlen(s2);
 	i = 0;
-	j = 0;
-	join = (char *) ft_calloc(size + 1, sizeof(char));
-	if (!join)
+	while (little[i] && little[i] == big[i] && i < len)
+		i++;
+	if (little[i] == '\0')
 		return (0);
-	while (s1[i])
+	else
+		return (1);
+}
+
+char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+
+	i = 0;
+	if (little[0] == '\0')
+		return ((char *)big);
+	while (big[i] && i < len)
 	{
-		join[i] = s1[i];
+		if (little[0] == big[i] && ft_cmp(little, &big[i], len - i) == 0)
+			return ((char *)&big[i]);
 		i++;
 	}
-	while (s2[j])
-	{
-		join[i] = s2[j];
-		i++;
-		j++;
-	}
-/* 	free(s1);
-	free(s2); */
-	return (join);
+	return (0);
 }

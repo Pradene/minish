@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 19:41:58 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/18 19:42:06 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/05/02 15:37:05 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	is_builtin(char *s)
 {
 	if (!strncmp(s, "cd", 2))
 		return (1);
-	else if (!strncmp(s, "echo", 4))
-		return (1);
+	/* else if (!strncmp(s, "echo", 4))
+		return (1); */
 	else if (!strncmp(s, "env", 3))
 		return (1);
 	else if (!strncmp(s, "exit", 4))

@@ -21,7 +21,8 @@ MINISHELL_FILES	= error.c \
 PARSING_FILES =	lexer.c \
 				parser.c \
 				token.c \
-				tree.c
+				tree.c \
+				wild_cards.c
 
 UTILS_FILES	= ft_bzero.c \
 			ft_calloc.c \
@@ -36,7 +37,9 @@ UTILS_FILES	= ft_bzero.c \
 			ft_strlen.c \
 			ft_strncmp.c \
 			ft_strrchr.c \
-			ft_substr.c
+			ft_substr.c \
+			ft_strnstr.c \
+			ft_itoa.c
 
 MAIN	= main.c
 
