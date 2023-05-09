@@ -358,6 +358,9 @@ void	parse(t_node **root, char **s)
 		return ;
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
-		printf("Error\n");
+	{
+		prerror("Syntax error");
+		g_exit = 2;
+	}
 	ft_lstclear(&lst);
 }

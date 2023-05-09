@@ -141,7 +141,7 @@ void	builtin(t_data *data, t_node *node);
 void	cd(t_data *data, t_node *node);
 void	echo(t_node *node);
 void	env(t_data *data, t_node *node);
-void	ex(t_data *data, t_node *node);
+void	ex(t_node *node);
 char	**export(t_data *data, t_node *node);
 void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);

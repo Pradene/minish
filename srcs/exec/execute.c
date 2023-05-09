@@ -56,58 +56,38 @@ void	open_files(t_data *data, t_node *node)
 		heredoc(node->in2);
 }
 
-/* int	double_redir(t_node *tmp1, t_node *tmp2)
-{
-	if ((tmp1->in2 || tmp1->in || tmp1->out2 || tmp1->out)
-		&& (tmp2->in2 || tmp2->in || tmp2->out2 || tmp2->out))
-		return (1);
-	else
-		return (0);
-} */
-
-/* int	check_tree(t_node *root)
-{
-	t_node	*tmp;
-	t_node	*tmp2;
-
-	if (!root)
-		return (1);
-	tmp = root;
-	printf("zbeubzbeub\n");
-	tmp2 = tmp->right;
-	if (tmp2)
-	{
-		printf("result 1 : %d\n", double_redir(tmp, tmp2));
-		if (double_redir(tmp, tmp2) || check_tree(tmp2))
-			return (printf("error\n"));
-	}
-	tmp = tmp->left;
-	if (tmp)
-	{
-		printf("result 2 : %d\n", double_redir(tmp, tmp2));
-		if (double_redir(tmp, tmp2) || check_tree(tmp))
-			return (printf("error\n"));
-	}
-	return (0);
-} */
-
 void	execute(t_data *data, char **cmd, char **env)
 {
 	char	**cmd_line;
-	// char	**cmds;
 	char	*path;
 
-	(void)data;
 	cmd_line = lex(cmd, data->env);
 	cmd_line = wild_card(cmd_line, -1, 0 , 0);
-	// if (!cmds)
-	// 	error(NULL);
+	if (!cmd_line)
+		error(NULL);
 	path = get_path(env, cmd_line[0]);
 	if (!path)
 	{
-		printf("%s: command not found\n", cmd_line[0]);
+		write(2, cmd_line[0], strlen(cmd_line[0]));
+		prerror(" : command not found\n");
 		d_free(cmd_line);
 		exit(127);
+	}
+	if (access(path, F_OK) == -1)
+	{
+		perror(cmd_line[0]);
+		exit(127);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		perror(cmd_line[0]);
+		exit(126);
+	}
+	if (opendir(path))
+	{
+		write(2, path, strlen(path));
+		prerror(" : Is a directory\n");
+		exit(126);
 	}
 	if (execve(path, cmd_line, env) == -1)
 		error(cmd_line[0]);
@@ -220,8 +200,6 @@ void	exec(t_data *data, t_node *node)
 {
 	if (!node)
 		return ;
-/* 	if (check_tree(node))
-		printf("Error\n"); */
 	if (node->type == CMD)
 		exec2(data, node);
 	else if (node->type == PIPE)

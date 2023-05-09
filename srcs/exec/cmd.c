@@ -38,9 +38,7 @@ void	get_cmd(t_data *data)
 {
 	char	*prompt;
 	char	*s;
-	//char	*cmd;
 
-	(void)data;
 	prompt = get_prompt();
 	if (!prompt)
 		error(NULL);
@@ -52,7 +50,6 @@ void	get_cmd(t_data *data)
 	if (check_quotes(s))
 		return (printf("Error\n"), free(s));
 	parse(&data->root, &s);
-	// print_tree(data->root);
 	exec(data, data->root);
 	free_node(data->root);
 	data->root = NULL;

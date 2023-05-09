@@ -40,6 +40,8 @@ char	**unset(t_data *data, t_node *node)
 	int		size;
 	char	**e;
 
+	if (!node->cmd[1])
+		return (data->env);
 	if (find_env(data->env, node->cmd[1]) == NULL)
 		return (data->env);
 	size = size_env(data->env) - 1;

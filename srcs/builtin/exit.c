@@ -12,12 +12,15 @@
 
 #include "../../includes/minishell.h"
 
-void	ex(t_data *data, t_node *node)
+void	ex(t_node *node)
 {
-	(void)data;
 	printf("exit\n");
 	if (get_size(node->cmd) > 2)
-		exit(1);
+	{
+		prerror("exit: too many arguments\n");
+		g_exit = 1;
+		return ;
+	}
 	if (node->cmd[1])
 		exit(atoi(node->cmd[1]));
 	exit(0);

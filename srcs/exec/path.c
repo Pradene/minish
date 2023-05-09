@@ -12,14 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static int	check_dir(char *path)
-{
-	if (access(path, F_OK | X_OK) == 0)
-		return (1);
-	error(path);
-	return (0);
-}
-
 static char	*rmdirfrompath(char *path)
 {
 	char	*s;
@@ -93,7 +85,7 @@ char	*get_path(char **env, char *cmd)
 	char	*path;
 
 	path = NULL;
-	if (cmd[0] == '/' && check_dir(cmd))
+	if (cmd[0] == '/')
 		return (cmd);
 	else if (cmd[0] == '.')
 		path = abs_path(cmd);

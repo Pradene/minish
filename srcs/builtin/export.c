@@ -17,22 +17,35 @@ void	handle_export(char **env)
 	int	i;
 	int	j;
 
-	i = 0;
-	while (env[i])
+	i = -1;
+	while (env[++i])
 	{
-		j = 0;
+		j = -1;
 		printf("declare -x ");
-		while (env[i][j] != '=')
-		{
+		while (env[i][++j] != '=')
 			printf("%c", env[i][j]);
-			j++;
-		}
 		printf("=\"");
 		while (env[i][++j])
 			printf("%c", env[i][j]);
 		printf("\"\n");
-		i++;
 	}
+}
+
+int	check_arg(char *arg)
+{
+	int	i;
+
+	i = -1;
+	if (isdigit(arg[0]))
+		return (1);
+	while (arg[++i] && arg[i] != '=')
+		continue ;
+	if (!arg[i])
+		return (1);
+	i += 1;
+	if (!arg[i])
+		return (1);
+	return (0);
 }
 
 char	**export(t_data *data, t_node *node)
@@ -40,15 +53,12 @@ char	**export(t_data *data, t_node *node)
 	int		c;
 	char	**e;
 
-	c = -1;
 	if (!node->cmd[1])
-	{
-		handle_export(data->env);
-		return (data->env);
-	}
+		return (handle_export(data->env), data->env);
+	c = -1;
 	while (data->env[++c])
 		continue ;
-	e = malloc(sizeof(char *) * (c + 1 + 1));
+	e = malloc(sizeof(char *) * (c + get_size(node->cmd)));
 	if (!e)
 		return (data->env);
 	e[c + 1] = NULL;
