@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/05 17:14:29 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:30:23 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,36 +54,14 @@ int	open_files(t_node *node)
 	return (0);
 }
 
-// void	open_files(t_data *data, t_node *node)
-// {
-// 	(void)data;
-// 	if (node->out || node->out2)
-// 	{
-// 		close(node->fd_out);
-// 		node->fd_out = -1;
-// 	}
-// 	if (node->out)
-// 		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-// 	else if (node->out2)
-// 		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
-// 	if (node->in || node->in2)
-// 	{
-// 		close(node->fd_in);
-// 		node->fd_in = -1;
-// 	}
-// 	if (node->in)
-// 		node->fd_in = open(node->in, O_RDONLY, 0777);
-// 	if (node->in2)
-// 		heredoc(node->in2);
-// }
-
 void	execute(t_data *data, char **cmd, char **env)
 {
 	char	**cmd_line;
 	char	*path;
 
 	cmd_line = lex(cmd, data->env);
-	cmd_line = wild_card(cmd_line, -1, 0 , 0);
+	cmd_line = wild_card(cmd_line, 0, 0, 0);
+	cmd_line = clean_cmd_tab(cmd_line);
 	if (!cmd_line)
 		error(NULL);
 	path = get_path(env, cmd_line[0]);
