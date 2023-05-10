@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:34:43 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/10 15:53:19 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:56:32 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_export(char **env)
 	{
 		j = 0;
 		printf("declare -x ");
-		while (env[i][j] != '=' || env[i][j])
+		while (env[i][j] != '=' && env[i][j])
 		{
 			printf("%c", env[i][j]);
 			j++;
@@ -33,10 +33,8 @@ void	handle_export(char **env)
 			while (env[i][++j])
 				printf("%c", env[i][j]);
 			printf("\"\n");
-			i++;
 		}
-		else
-			return ;
+		i++;
 	}
 }
 

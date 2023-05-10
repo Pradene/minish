@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 15:33:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:40:58 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 		while (cmd[i] != '*')
 			i++;
 		motif[k] = ft_substr(cmd, j, i - j);
-		printf("mot: %s\n", motif[k]);
+		//printf("mot: %s\n", motif[k]);
 		k++;
 		while (cmd[i] == '*')
 			i++;
@@ -245,10 +245,9 @@ char	**wild_card(char **cmds, int i, int j, int k)
 		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
 		{
 			dirs = wild_carder(old_cmd[i]);
-			printf("dirs : %s\n", dirs[0]);
 			if (dirs[0])
 			{
-				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd), sizeof(char *));
+				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
 				while (j < i)
 				{
 					new_cmd[j] = old_cmd[j];
@@ -276,7 +275,7 @@ char	**wild_card(char **cmds, int i, int j, int k)
 			else
 				free(dirs);
 		}
-		printf("asaksklas %d: %s\n",i , old_cmd[i]);
+		//printf("asaksklas %d: %s\n",i , old_cmd[i]);
 		i++;
 		k = 0;
 		j = 0;
@@ -284,7 +283,7 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	int t = 0;
 	while (old_cmd[t])
 	{
-		printf("zebi cmd : %s\n", old_cmd[t]);
+		//printf("zebi cmd : %s\n", old_cmd[t]);
 		t++;
 	}
 	return (old_cmd);

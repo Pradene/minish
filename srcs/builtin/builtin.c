@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 19:41:58 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/02 15:37:05 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:40:07 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	is_builtin(char *s)
 {
 	if (!strncmp(s, "cd", 2))
 		return (1);
-	/* else if (!strncmp(s, "echo", 4))
-		return (1); */
+	else if (!strncmp(s, "echo", 4))
+		return (1);
 	else if (!strncmp(s, "env", 3))
 		return (1);
 	else if (!strncmp(s, "exit", 4))
@@ -31,17 +31,22 @@ int	is_builtin(char *s)
 
 void	builtin(t_data *data, t_node *node)
 {
-	if (!strncmp(node->cmd[0], "cd", 2))
+	char **cmd_line;
+
+	cmd_line = lex(node->cmd, data->env);
+	cmd_line = wild_card(cmd_line, 0, 0, 0);
+	cmd_line = clean_cmd_tab(cmd_line);
+	if (!strncmp(cmd_line[0], "cd", 2))
 		cd(data, node);
-	/* else if (!strncmp(node->cmd[0], "echo", 4))
-		echo(data, node); */
-	else if (!strncmp(node->cmd[0], "env", 3))
+	else if (!strncmp(cmd_line[0], "echo", 4))
+		echo(data, node);
+	else if (!strncmp(cmd_line[0], "env", 3))
 		env(data, node);
-	else if (!strncmp(node->cmd[0], "exit", 4))
+	else if (!strncmp(cmd_line[0], "exit", 4))
 		ex(data, node);
-	else if (!strncmp(node->cmd[0], "export", 6))
+	else if (!strncmp(cmd_line[0], "export", 6))
 		data->env = export(data, node);
-	else if (!strncmp(node->cmd[0], "unset", 5))
+	else if (!strncmp(cmd_line[0], "unset", 5))
 		data->env = unset(data, node);
 	return ;
 }

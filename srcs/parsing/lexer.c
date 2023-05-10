@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 15:30:38 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:16:54 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ char	*lexer(char *command, char **env, int i, int j)
 		i++;
 	}
 	//command = clean_cmd(command, -1, -1, 0);
-	printf("command : %s\n", command);
+	//printf("command : %s\n", command);
 	return (command);
 }
 
