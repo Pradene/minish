@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 16:40:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 17:03:44 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@ int	ft_strlen(const char *str);
 void	*ft_calloc(size_t nmemb, size_t size);
 int	ft_strncmp(const char *s1, const char *s2, int n);
 
+/* static void	quote_status(char c, int *quote)
+{
+	if ((*quote == 1 && c == '\'')
+		|| (*quote == 2 && c == '\"'))
+		*quote = 0;
+	else if (*quote == 0 && c == '\'')
+		*quote = 1;
+	else if (*quote == 0 && c == '\"')
+		*quote = 2;
+	else
+		return ;
+}
+ */
 int	looking_for_a_star(char *s)
 {
 	int	i;
@@ -87,7 +100,7 @@ char	**create_motif(char *cmd, char **motif)
 	{
 		while (cmd[i] == '*')
 			i++;
-		if (cmd[i])
+		if (cmd[i] && !ft_strchr(" \'\"", cmd[i]))
 			m_count++;
 		else
 			break ;
@@ -242,7 +255,7 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	old_cmd = cmds;
 	while (old_cmd[i])
 	{
-		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
+		if (old_cmd[i] && ft_strchr(old_cmd[i], '*') && (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
 		{
 			dirs = wild_carder(old_cmd[i]);
 			if (dirs[0])
