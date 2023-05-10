@@ -33,28 +33,49 @@ void	heredoc(char *limiter)
 	close(fd);
 }
 
-void	open_files(t_data *data, t_node *node)
+int	open_files(t_node *node)
 {
-	(void)data;
 	if (node->out || node->out2)
-	{
 		close(node->fd_out);
-		node->fd_out = -1;
-	}
 	if (node->out)
 		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	else if (node->out2)
+	if (node->out2)
 		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	if ((node->out || node->out2) && node->fd_out == -1)
+		return (1);
 	if (node->in || node->in2)
-	{
 		close(node->fd_in);
-		node->fd_in = -1;
-	}
 	if (node->in)
 		node->fd_in = open(node->in, O_RDONLY, 0777);
+	if (node->in && node->fd_in == -1)
+		return (1);
 	if (node->in2)
 		heredoc(node->in2);
+	return (0);
 }
+
+// void	open_files(t_data *data, t_node *node)
+// {
+// 	(void)data;
+// 	if (node->out || node->out2)
+// 	{
+// 		close(node->fd_out);
+// 		node->fd_out = -1;
+// 	}
+// 	if (node->out)
+// 		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+// 	else if (node->out2)
+// 		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
+// 	if (node->in || node->in2)
+// 	{
+// 		close(node->fd_in);
+// 		node->fd_in = -1;
+// 	}
+// 	if (node->in)
+// 		node->fd_in = open(node->in, O_RDONLY, 0777);
+// 	if (node->in2)
+// 		heredoc(node->in2);
+// }
 
 void	execute(t_data *data, char **cmd, char **env)
 {
@@ -96,17 +117,18 @@ void	execute(t_data *data, char **cmd, char **env)
 void	exec_cmd(t_data *data, t_node *node)
 {
 	pid_t	pid;
-	int		exit;
+	int		e;
 
 	if (is_builtin(node->cmd[0]))
 		return (builtin(data, node));
-	exit = 0;
+	e = 0;
 	pid = fork();
 	if (pid == -1)
 		return ;
 	if (pid == 0)
 	{
-		open_files(data, node);
+		if (open_files(node))
+			exit(1);
 		if (node->in2)
 			node->fd_in = open(".heredoc", O_RDONLY, 0777);
 		if (node->fd_in != -1)
@@ -115,8 +137,8 @@ void	exec_cmd(t_data *data, t_node *node)
 			dup2(node->fd_out, STDOUT_FILENO);
 		execute(data, node->cmd, data->env);
 	}
-	waitpid(pid, &exit, 0);
-	g_exit = WEXITSTATUS(exit);
+	waitpid(pid, &e, 0);
+	g_exit = WEXITSTATUS(e);
 	unlink(".heredoc");
 }
 
@@ -129,7 +151,7 @@ void	exec_builtin(t_data *data, t_node *node)
 	sstdout = dup(STDOUT_FILENO);
 	dup2(STDOUT_FILENO, sstdout);
 	dup2(STDIN_FILENO, sstdin);
-	open_files(data, node);
+	open_files(node);
 	if (node->fd_in != -1)
 		dup2(node->fd_in, STDIN_FILENO);
 	if (node->fd_out != -1)

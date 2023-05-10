@@ -36,12 +36,11 @@ int	check_arg(char *arg)
 	int	i;
 
 	i = -1;
-	if (isdigit(arg[0]))
-		return (1);
 	while (arg[++i] && arg[i] != '=')
-		continue ;
+		if (!isalpha(arg[i]))
+			return (1);
 	if (!arg[i])
-		return (1);
+		return (0);
 	i += 1;
 	if (!arg[i])
 		return (1);
@@ -51,6 +50,7 @@ int	check_arg(char *arg)
 char	**export(t_data *data, t_node *node)
 {
 	int		c;
+	int		i;
 	char	**e;
 
 	if (!node->cmd[1])
@@ -69,7 +69,18 @@ char	**export(t_data *data, t_node *node)
 		if (!e[c])
 			return (d_free(e), data->env);
 	}
-	e[c] = ft_strdup(node->cmd[1]);
+	if (check_arg(node->cmd[1]))
+	{
+		prerror("Not a valid identifier");
+		g_exit = 1;
+		return (free(e), data->env);
+	}
+	i = 0;
+	while (node->cmd[++i])
+	{
+		if (!check_arg(node->cmd[i]))
+			e[c] = ft_strdup(node->cmd[i]);
+	}
 	if (!e[c])
 		return (d_free(e), data->env);
 	d_free(data->env);
