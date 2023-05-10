@@ -37,7 +37,6 @@ int	looking_for_a_star(char *s)
 			count++;
 		i++;
 	}
-	printf("d\n");
 	return (count);
 }
 
@@ -68,7 +67,6 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 		while (cmd[i] != '*')
 			i++;
 		motif[k] = ft_substr(cmd, j, i - j);
-		printf("mot: %s\n", motif[k]);
 		k++;
 		while (cmd[i] == '*')
 			i++;
@@ -245,10 +243,9 @@ char	**wild_card(char **cmds, int i, int j, int k)
 		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
 		{
 			dirs = wild_carder(old_cmd[i]);
-			printf("dirs : %s\n", dirs[0]);
 			if (dirs[0])
 			{
-				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd), sizeof(char *));
+				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
 				while (j < i)
 				{
 					new_cmd[j] = old_cmd[j];
@@ -276,32 +273,9 @@ char	**wild_card(char **cmds, int i, int j, int k)
 			else
 				free(dirs);
 		}
-		printf("asaksklas %d: %s\n",i , old_cmd[i]);
 		i++;
 		k = 0;
 		j = 0;
 	}
-	int t = 0;
-	while (old_cmd[t])
-	{
-		printf("zebi cmd : %s\n", old_cmd[t]);
-		t++;
-	}
 	return (old_cmd);
 }
-
-/* int main(int ac, char **av)
-{
-	char	**s;
-	
-	printf("%s\n", av[1]);
-	s = wild_carder(av[1], 0, 0, 0);
-	int i = 0;
-	while (s[i])
-	{
-		printf("%d : %s\n", i, s[i]);
-		i++;
-	}
-	free(s);
-	return (0);
-} */

@@ -42,7 +42,7 @@ char	*clean_cmd(char *cmd, int i, int j , int quote)
 {
 	char	*new_cmd;
 
-	new_cmd = ft_calloc(ft_strlen(cmd) - 1, sizeof(char));
+	new_cmd = ft_calloc(ft_strlen(cmd) + 1, sizeof(char));
 	if (!new_cmd)
 		return (NULL);
 	while (cmd[++i])

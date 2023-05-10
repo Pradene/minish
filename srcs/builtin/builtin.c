@@ -36,22 +36,23 @@ void	builtin(t_data *data, t_node *node)
 	char	**cmd_line;
 
 	cmd_line = lex(node->cmd, data->env);
-	cmd_line = wild_card(cmd_line, -1, 0 , 0);
+	// cmd_line = wild_card(cmd_line, -1, 0 , 0);
+	cmd_line = clean_cmd_tab(cmd_line);
 	if (!cmd_line)
 		error(NULL);
-	if (!strncmp(node->cmd[0], "cd", 2))
+	if (!strncmp(cmd_line[0], "cd", 2))
 		cd(data, node);
-	else if (!strncmp(node->cmd[0], "echo", 4))
+	else if (!strncmp(cmd_line[0], "echo", 4))
 		echo(node);
-	else if (!strncmp(node->cmd[0], "env", 3))
+	else if (!strncmp(cmd_line[0], "env", 3))
 		env(data, node);
-	else if (!strncmp(node->cmd[0], "exit", 4))
+	else if (!strncmp(cmd_line[0], "exit", 4))
 		ex(node);
-	else if (!strncmp(node->cmd[0], "export", 6))
+	else if (!strncmp(cmd_line[0], "export", 6))
 		data->env = export(data, node);
-	else if (!strncmp(node->cmd[0], "pwd", 3))
+	else if (!strncmp(cmd_line[0], "pwd", 3))
 		pwd(data, node);
-	else if (!strncmp(node->cmd[0], "unset", 5))
+	else if (!strncmp(cmd_line[0], "unset", 5))
 		data->env = unset(data, node);
 	return ;
 }

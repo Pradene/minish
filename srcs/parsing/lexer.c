@@ -160,8 +160,6 @@ char	*lexer(char *command, char **env, int i, int j)
 		}
 		i++;
 	}
-	//command = clean_cmd(command, -1, -1, 0);
-	printf("command : %s\n", command);
 	return (command);
 }
 

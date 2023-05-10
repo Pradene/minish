@@ -48,7 +48,7 @@ void	get_cmd(t_data *data)
 		exit(g_exit);
 	add_history(s);
 	if (check_quotes(s))
-		return (printf("Error\n"), free(s));
+		return (free(s));
 	parse(&data->root, &s);
 	exec(data, data->root);
 	free_node(data->root);

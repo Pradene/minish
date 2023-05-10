@@ -60,7 +60,7 @@ void	execute(t_data *data, char **cmd, char **env)
 	char	*path;
 
 	cmd_line = lex(cmd, data->env);
-	cmd_line = wild_card(cmd_line, 0, 0, 0);
+	// cmd_line = wild_card(cmd_line, 0, 0, 0);
 	cmd_line = clean_cmd_tab(cmd_line);
 	if (!cmd_line)
 		error(NULL);
@@ -207,7 +207,7 @@ void	exec(t_data *data, t_node *node)
 	else if (node->type == DBL_PIPE)
 		exec_or(data, node->left, node->right);
 	else if (node->type == AMP)
-		printf("Error\n");
+		return ;
 	else if (node->type == DBL_AMP)
 		exec_and(data, node->left, node->right);
 	else if (node->type == SEMICOL)
