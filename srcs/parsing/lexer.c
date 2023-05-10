@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/05 17:15:47 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:30:38 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,47 +135,6 @@ char	*put_ret(char *cmd, int start, int end, int i, int j)
 	return (new_cmd);
 }
 
-char	*clean_cmd2(char *cmd, int i, int j, int quote_count)
-{
-	char	*new_cmd;
-
-	new_cmd = ft_calloc(ft_strlen(cmd) - quote_count + 1, sizeof(char));
-	if (!new_cmd)
-		return (NULL);
-	while (cmd[i])
-	{
-		if (ft_strchr("\'\"", cmd[i]))
-			i++;
-		new_cmd[j] = cmd[i];
-		i++;
-		j++;
-	}
-	return (new_cmd);
-}
-
-char	*clean_cmd(char *cmd)
-{
-	int		i;
-	int		j;
-	int		quote_count;
-	char	*new_cmd;
-
-	i = 0;
-	quote_count = 0;
-	while (cmd[i])
-	{
-		if (ft_strchr("\'\"", cmd[i]))
-			quote_count++;
-		i++;
-	}
-	if (!quote_count)
-		return (cmd);
-	i = 0;
-	j = 0;
-	new_cmd = clean_cmd2(cmd, i, j, quote_count);
-	return (new_cmd);
-}
-
 char	*lexer(char *command, char **env, int i, int j)
 {
 	int		quotes;
@@ -192,7 +151,7 @@ char	*lexer(char *command, char **env, int i, int j)
 				break ;
 			if (command[j] == '?' && quotes != 1)
 				command = put_ret(command, i, j, -1, -1);
-			else if (!ft_strchr(" ?", command[j]) && quotes != 1)
+			else if (!ft_strchr(" \"\'?", command[j]) && quotes != 1)
 			{
 				while (command[j] && !ft_strchr("$ \'\"", command[j]))
 					j++;
@@ -201,7 +160,8 @@ char	*lexer(char *command, char **env, int i, int j)
 		}
 		i++;
 	}
-	command = clean_cmd(command);
+	//command = clean_cmd(command, -1, -1, 0);
+	printf("command : %s\n", command);
 	return (command);
 }
 

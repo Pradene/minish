@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/05 17:17:44 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:33:58 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ char	**wild_carder(char *cmd)
 		}
 		lecture = readdir(rep);
 	}
+	//closedir(rep);
 	free_tab(motif);
 	return (ans);
 }
@@ -221,41 +222,70 @@ int	tab_size(char **tab)
 	return (i);
 }
 
+int	cmd_nbrs(char **cmds)
+{
+	int i;
+
+	i = 0;
+	while (cmds[i])
+		i++;
+	return (i);
+}
+
 char	**wild_card(char **cmds, int i, int j, int k)
 {
-	int n;
-	char **new_cmd;
-	char **old_cmd;
-	char **dirs;
+	int		n;
+	char	**new_cmd;
+	char	**old_cmd;
+	char	**dirs;
 
 	old_cmd = cmds;
-	while (old_cmd[++i])
+	while (old_cmd[i])
 	{
 		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
 		{
 			dirs = wild_carder(old_cmd[i]);
-			new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd), sizeof(char *));
-			while (j < i)
+			printf("dirs : %s\n", dirs[0]);
+			if (dirs[0])
 			{
-				new_cmd[j] = old_cmd[j];
-				j++;
+				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd), sizeof(char *));
+				while (j < i)
+				{
+					new_cmd[j] = old_cmd[j];
+					j++;
+				}
+				k = 0;
+				while (dirs[k])
+				{
+					new_cmd[j] = dirs[k];
+					k++;
+					j++;
+				}
+				free(dirs);
+				n = i + 1;
+				i = j - 1;
+				while (old_cmd[n])
+				{
+					new_cmd[j] = old_cmd[n];
+					j++;
+					n++;
+				}
+				free(old_cmd);
+				old_cmd = new_cmd;
 			}
-			while (dirs[k])
-			{
-				new_cmd[j] = dirs[k];
-				k++;
-				j++;
-			}
-			n = i + 1;
-			while (old_cmd[n])
-			{
-				new_cmd[j] = old_cmd[n];
-				j++;
-				n++;
-			}
-			free(old_cmd);
-			old_cmd = new_cmd;
+			else
+				free(dirs);
 		}
+		printf("asaksklas %d: %s\n",i , old_cmd[i]);
+		i++;
+		k = 0;
+		j = 0;
+	}
+	int t = 0;
+	while (old_cmd[t])
+	{
+		printf("zebi cmd : %s\n", old_cmd[t]);
+		t++;
 	}
 	return (old_cmd);
 }

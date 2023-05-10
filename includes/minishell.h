@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/05 17:15:12 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:41:18 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,10 @@ t_list	*tokens(char **s);
 // LEXER
 char	*lexer(char *command, char **env, int i, int j);
 char	**lex(char **cmds, char **env);
+
+// CLEAN CMD
+char **clean_cmd_tab(char **tab);
+char	*clean_cmd(char *cmd, int i, int j , int quote);
 
 // EXEC
 void	exec(t_data *data, t_node *node);

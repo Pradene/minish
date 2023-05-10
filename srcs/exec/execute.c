@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/05 17:14:29 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:30:23 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,11 @@ void	execute(t_data *data, char **cmd, char **env)
 
 	(void)data;
 	cmd_line = lex(cmd, data->env);
-	cmd_line = wild_card(cmd_line, -1, 0 , 0);
+	cmd_line = wild_card(cmd_line, 0, 0, 0);
+	cmd_line = clean_cmd_tab(cmd_line);
+	int i = -1;
+	while (cmd_line[++i])
+		printf("mandco : %s\n", cmd_line[i]);
 	// if (!cmds)
 	// 	error(NULL);
 	path = get_path(env, cmd_line[0]);
