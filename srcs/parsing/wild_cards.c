@@ -6,11 +6,10 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 15:33:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:40:58 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "../../includes/minishell.h"
 #include "../../includes/minishell.h"
 
 #include <dirent.h>

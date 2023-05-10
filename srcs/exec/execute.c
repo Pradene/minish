@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/10 15:30:23 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:17:59 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,30 +56,29 @@ int	open_files(t_node *node)
 
 void	execute(t_data *data, char **cmd, char **env)
 {
-	char	**cmd_line;
 	char	*path;
 
-	cmd_line = lex(cmd, data->env);
-	// cmd_line = wild_card(cmd_line, 0, 0, 0);
-	cmd_line = clean_cmd_tab(cmd_line);
-	if (!cmd_line)
+	cmd = lex(cmd, data->env);
+	cmd = wild_card(cmd, 0, 0, 0);
+	cmd = clean_cmd_tab(cmd);
+	if (!cmd)
 		error(NULL);
-	path = get_path(env, cmd_line[0]);
+	path = get_path(env, cmd[0]);
 	if (!path)
 	{
-		write(2, cmd_line[0], strlen(cmd_line[0]));
+		write(2, cmd[0], strlen(cmd[0]));
 		prerror(" : command not found\n");
-		d_free(cmd_line);
+		d_free(cmd);
 		exit(127);
 	}
 	if (access(path, F_OK) == -1)
 	{
-		perror(cmd_line[0]);
+		perror(cmd[0]);
 		exit(127);
 	}
 	if (access(path, X_OK) == -1)
 	{
-		perror(cmd_line[0]);
+		perror(cmd[0]);
 		exit(126);
 	}
 	if (opendir(path))
@@ -88,8 +87,8 @@ void	execute(t_data *data, char **cmd, char **env)
 		prerror(" : Is a directory\n");
 		exit(126);
 	}
-	if (execve(path, cmd_line, env) == -1)
-		error(cmd_line[0]);
+	if (execve(path, cmd, env) == -1)
+		error(cmd[0]);
 }
 
 void	exec_cmd(t_data *data, t_node *node)
