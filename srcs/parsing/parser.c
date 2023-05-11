@@ -21,10 +21,7 @@ static t_node	*new_node(void)
 		return (NULL);
 	node->type = ERR;
 	node->cmd = NULL;
-	node->in = NULL;
-	node->in2 = NULL;
-	node->out = NULL;
-	node->out2 = NULL;
+	node->file = NULL;
 	node->fd_in = -1;
 	node->fd_out = -1;
 	node->left = NULL;
@@ -181,44 +178,32 @@ int	issep(char *s)
 	return (0);
 }
 
+int	create_redir(t_node *node, t_type type, char *file)
+{
+	t_node	*tmp;
+
+	tmp = node;
+	while (tmp->right)
+		tmp = tmp->right;
+	tmp->right = new_node();
+	if (!tmp->right)
+		return (1);
+	tmp = tmp->right;
+	tmp->type = type;
+	tmp->file = strdup(file);
+	return (0);
+}
+
 void	handle_redir(t_node *node, char *type, char *file)
 {
 	if (!strcmp(type, ">"))
-	{
-		if (node->out)
-			free(node->out);
-		if (node->out2)
-			free(node->out2);
-		node->out2 = NULL;
-		node->out = strdup(file);
-	}
+		create_redir(node, R_OUT, file);
 	else if (!strcmp(type, ">>"))
-	{
-		if (node->out)
-			free(node->out);
-		if (node->out2)
-			free(node->out2);
-		node->out = NULL;
-		node->out2 = strdup(file);
-	}
+		create_redir(node, R_OUT2, file);
 	else if (!strcmp(type, "<"))
-	{
-		if (node->in)
-			free(node->in);
-		if (node->in2)
-			free(node->in2);
-		node->in2 = NULL;
-		node->in = strdup(file);
-	}
+		create_redir(node, R_IN, file);
 	else if (!strcmp(type, "<<"))
-	{
-		if (node->in)
-			free(node->in);
-		if (node->in2)
-			free(node->in2);
-		node->in = NULL;
-		node->in2 = strdup(file);
-	}
+		create_redir(node, HEREDOC, file);
 }
 
 char	**add_to_cmd(char **cmds, char *cmd)
@@ -265,13 +250,12 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 	{
 		if (isredir(current->s))
 		{
-			if (first + 1 > last)
-				return (free(new), NULL);
-			if (issep(current->next->s) || isredir(current->next->s))
+			first += 1;
+			if (first > last \
+			|| issep(current->next->s) || isredir(current->next->s))
 				return (free(new), NULL);
 			handle_redir(new, current->s, current->next->s);
 			current = current->next;
-			first += 1;
 		}
 		else
 		{

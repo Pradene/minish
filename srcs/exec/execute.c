@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	heredoc(char *limiter)
+void	heredoc(t_node *node, char *limiter)
 {
 	char	*line;
 	int		fd;
@@ -31,26 +31,34 @@ void	heredoc(char *limiter)
 	}
 	free(line);
 	close(fd);
+	node->fd_in = open(".heredoc", O_RDONLY, 0777);
 }
 
 int	open_files(t_node *node)
 {
-	if (node->out || node->out2)
-		close(node->fd_out);
-	if (node->out)
-		node->fd_out = open(node->out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (node->out2)
-		node->fd_out = open(node->out2, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	if ((node->out || node->out2) && node->fd_out == -1)
-		return (1);
-	if (node->in || node->in2)
-		close(node->fd_in);
-	if (node->in)
-		node->fd_in = open(node->in, O_RDONLY, 0777);
-	if (node->in && node->fd_in == -1)
-		return (1);
-	if (node->in2)
-		heredoc(node->in2);
+	t_node	*tmp;
+
+	tmp = node->right;
+	while (tmp)
+	{
+		if (node->fd_out != -1)
+			close(node->fd_out);
+		if (tmp->type == R_OUT)
+			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		if (tmp->type == R_OUT2)
+			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+		if ((tmp->type == R_OUT || node->type == R_OUT2) && node->fd_out == -1)
+			return (1);
+		if (node->fd_in != -1)
+			close(node->fd_in);
+		if (tmp->type == R_IN)
+			node->fd_in = open(tmp->file, O_RDONLY, 0777);
+		if (tmp->type == R_IN && node->fd_in == -1)
+			return (1);
+		if (tmp->type == HEREDOC)
+			heredoc(node, tmp->file);
+		tmp = tmp->right;
+	}
 	return (0);
 }
 
@@ -106,8 +114,6 @@ void	exec_cmd(t_data *data, t_node *node)
 	{
 		if (open_files(node))
 			exit(1);
-		if (node->in2)
-			node->fd_in = open(".heredoc", O_RDONLY, 0777);
 		if (node->fd_in != -1)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)

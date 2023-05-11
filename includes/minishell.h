@@ -49,6 +49,10 @@ typedef enum e_type
 {
 	ERR = 0,
 	CMD,
+	R_OUT,
+	R_OUT2,
+	R_IN,
+	HEREDOC,
 	PIPE,
 	DBL_PIPE,
 	AMP,
@@ -62,10 +66,7 @@ typedef struct s_node
 {
 	t_type			type;
 	char			**cmd;
-	char			*in;
-	char			*in2;
-	char			*out;
-	char			*out2;
+	char			*file;
 	int				fd_in;
 	int				fd_out;
 	struct s_node	*left;
