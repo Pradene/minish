@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 16:16:54 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/11 10:07:49 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,32 @@ char	*find_var(char **env, char *tmp)
 	return (var);
 }
 
+char	*no_var(char *cmds, int i, int j)
+{
+	char	*new_cmds;
+	int		t;
+
+	t = 0;
+	printf("%s\n", cmds);
+	printf("%d %d %d %d\n", ft_strlen(cmds), i, j, ft_strlen(cmds) - (j - i));
+	if (ft_strlen(cmds) - (j - i) == 0)
+		return (" ");
+	new_cmds = ft_calloc(ft_strlen(cmds) - (j - i) + 1, sizeof(char));
+	while (t < i)
+	{
+		new_cmds[t] = cmds[t];
+		t++;
+	}
+	while (cmds[j])
+	{
+		new_cmds[t] = cmds[j];
+		t++;
+		j++;
+	}
+	free(cmds);
+	return (new_cmds);
+}
+
 char	*fill_new_cmd(int i, int j, char *cmds, char **env)
 {
 	char	*ans1;
@@ -97,6 +123,8 @@ char	*fill_new_cmd(int i, int j, char *cmds, char **env)
 	tmp = ft_substr(cmds, i, j - i);
 	var = find_var(env, tmp);
 	free(tmp);
+	if (!var)
+		return (no_var(cmds, i - 1, j));
 	tmp = ft_substr(cmds, 0, i - 1);
 	ans1 = ft_strjoin(tmp, var);
 	free(tmp);
@@ -165,6 +193,39 @@ char	*lexer(char *command, char **env, int i, int j)
 	return (command);
 }
 
+char	**clean_tab(char **cmd)
+{
+	int		i;
+	int		j;
+	int		empty_box;
+	char	**new_cmd;
+
+	i = 0;
+	empty_box = 0;
+	while (cmd[i])
+	{
+		printf("%d jj\n", empty_box);
+		if (strlen(cmd[i]) == 1 && cmd[i][0] == ' ')
+			empty_box++;
+		i++;
+	}
+	if (!empty_box)
+		return (cmd);
+	new_cmd = ft_calloc(tab_size(cmd) - empty_box + 1, sizeof(char *));
+	i = 0;
+	j = 0;
+	while (cmd[i])
+	{
+		if (strlen(cmd[i]) == 1 && cmd[i][0] == ' ')
+			i++;
+		new_cmd[j] = cmd[i];
+		i++;
+		j++;
+		printf("%s\n", new_cmd[j]);
+	}
+	return (new_cmd);
+}
+
 char	**lex(char **cmds, char **env)
 {
 	int	i;
@@ -172,5 +233,6 @@ char	**lex(char **cmds, char **env)
 	i = -1;
 	while (cmds[++i])
 		cmds[i] = lexer(cmds[i], env, 0, 0);
+	//cmds = clean_tab(cmds);
 	return (cmds);
 }

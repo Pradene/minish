@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/09 17:41:18 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/11 09:56:13 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,5 +152,6 @@ char	**unset(t_data *data, t_node *node);
 // WILD CARD
 char	**wild_carder(char *cmd);
 char	**wild_card(char **cmds, int i, int j, int k);
+int		tab_size(char **tab);
 
 #endif
