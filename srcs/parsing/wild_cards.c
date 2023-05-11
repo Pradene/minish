@@ -12,11 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-#include <dirent.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 int	ft_strlen(const char *str);
@@ -26,16 +21,15 @@ int	ft_strncmp(const char *s1, const char *s2, int n);
 int	looking_for_a_star(char *s)
 {
 	int	i;
+	int	size;
 	int	count;
 
-	i = 0;
+	size = ft_strlen(s);
+	i = -1;
 	count = 0;
-	while (i < ft_strlen(s))
-	{
+	while (++i < size)
 		if (s[i] == '*')
 			count++;
-		i++;
-	}
 	return (count);
 }
 
@@ -84,7 +78,7 @@ char	**create_motif(char *cmd, char **motif)
 	{
 		while (cmd[i] == '*')
 			i++;
-		if (cmd[i])
+		if (cmd[i] && !ft_strchr(" \'\"", cmd[i]))
 			m_count++;
 		else
 			break ;
@@ -239,7 +233,9 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	old_cmd = cmds;
 	while (old_cmd[i])
 	{
-		if (old_cmd[i] && ft_strchr(old_cmd[i], '*'))
+		k = 0;
+		j = 0;
+		if (old_cmd[i] && ft_strchr(old_cmd[i], '*') && (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
 		{
 			dirs = wild_carder(old_cmd[i]);
 			if (dirs[0])
@@ -250,7 +246,6 @@ char	**wild_card(char **cmds, int i, int j, int k)
 					new_cmd[j] = old_cmd[j];
 					j++;
 				}
-				k = 0;
 				while (dirs[k])
 				{
 					new_cmd[j] = dirs[k];
@@ -273,8 +268,6 @@ char	**wild_card(char **cmds, int i, int j, int k)
 				free(dirs);
 		}
 		i++;
-		k = 0;
-		j = 0;
 	}
 	return (old_cmd);
 }

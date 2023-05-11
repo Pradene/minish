@@ -14,8 +14,14 @@
 
 void	free_cmd(t_node *node)
 {
-	if (node->cmd)
-		free(node->cmd);
+	int	i;
+
+	if (!node->cmd)
+		return ;
+	i = -1;
+	while (node->cmd[++i])
+		free(node->cmd[i]);
+	free(node->cmd);
 }
 
 void	free_node(t_node *node)
