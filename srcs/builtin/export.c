@@ -71,17 +71,17 @@ char	**export(t_data *data, t_node *node)
 		if (!e[c])
 			return (d_free(e), data->env);
 	}
-	if (check_arg(node->cmd[1]))
-	{
-		prerror("Not a valid identifier");
-		g_exit = 1;
-		return (free(e), data->env);
-	}
 	i = 0;
 	while (node->cmd[++i])
 	{
 		if (!check_arg(node->cmd[i]))
 			e[c] = ft_strdup(node->cmd[i]);
+		else
+		{
+			write(2, node->cmd[i], strlen(node->cmd[i]));
+			prerror(": not a valid identifier\n");
+			g_exit = 1;
+		}
 	}
 	if (!e[c])
 		return (d_free(e), data->env);

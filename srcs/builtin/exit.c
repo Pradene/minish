@@ -12,8 +12,80 @@
 
 #include "../../includes/minishell.h"
 
+static int	absolute(int n)
+{
+	if (n < 0)
+		return (-n);
+	return (n);
+}
+
+static int	count(long long n)
+{
+	int	c;
+	int	d;
+
+	d = 1;
+	c = 0;
+	if (n < 0)
+		c++;
+	while (n || d == 1)
+	{
+		d = 0;
+		n /= 10;
+		c++;
+	}
+	return (c);
+}
+
+char	*itoll(long long n)
+{
+	int		c;
+	char	*str;
+	int		d;
+
+	d = 1;
+	c = count(n);
+	str = ft_calloc(c + 1, sizeof(char));
+	if (!str)
+		return (0);
+	if (n < 0)
+		*str = '-';
+	while (n || d == 1)
+	{
+		d = 0;
+		c--;
+		str[c] = absolute(n % 10) + 48;
+		n /= 10;
+	}
+	return (str);
+}
+
+int	intcmp(char *s1, char *s2)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	if (s1[i] == '+')
+		i += 1;
+	if (s2[j] == '+')
+		j += 1;
+	while (s1[i] || s2[j])
+	{
+		if (s1[i] != s2[j])
+			return (1);
+		i += 1;
+		j += 1;
+	}
+	return (0);
+}
+
 void	ex(t_node *node)
 {
+	long long	n;
+	char		*s;
+
 	printf("exit\n");
 	if (get_size(node->cmd) > 2)
 	{
@@ -22,6 +94,18 @@ void	ex(t_node *node)
 		return ;
 	}
 	if (node->cmd[1])
-		exit(atoi(node->cmd[1]));
+	{
+		n = atoll(node->cmd[1]);
+		s = itoll(n);
+		if (intcmp(s, node->cmd[1]))
+		{
+			write(2, node->cmd[1], strlen(node->cmd[1]));
+			prerror(": numeric argument required\n");
+			free(s);
+			exit(2);
+		}
+		free(s);
+		exit(n % 256);
+	}
 	exit(0);
 }

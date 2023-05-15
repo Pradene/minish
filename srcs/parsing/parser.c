@@ -217,7 +217,7 @@ char	**add_to_cmd(char **cmds, char *cmd)
 	size = get_size(cmds) + 1;
 	new = malloc(sizeof(char *) * (size + 1));
 	if (!new)
-		return (d_free(cmds), NULL);
+		return (cmds);
 	new[size] = NULL;
 	i = 0;
 	while (cmds && cmds[i])
@@ -343,7 +343,7 @@ void	parse(t_node **root, char **s)
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
 	{
-		prerror("Syntax error");
+		prerror("Syntax error\n");
 		g_exit = 2;
 	}
 	ft_lstclear(&lst);

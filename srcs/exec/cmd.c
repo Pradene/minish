@@ -45,7 +45,10 @@ void	get_cmd(t_data *data)
 	s = readline(prompt);
 	free(prompt);
 	if (!s)
+	{
+		d_free(data->env);
 		exit(g_exit);
+	}
 	add_history(s);
 	if (check_quotes(s))
 		return (free(s));

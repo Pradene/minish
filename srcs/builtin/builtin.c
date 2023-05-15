@@ -33,11 +33,6 @@ int	is_builtin(char *s)
 
 void	builtin(t_data *data, t_node *node)
 {
-	node->cmd = lex(node->cmd, data->env);
-	node->cmd = wild_card(node->cmd, 0, 0 , 0);
-	node->cmd = clean_cmd_tab(node->cmd);
-	if (!node->cmd)
-		error(NULL);
 	if (!strncmp(node->cmd[0], "cd", 2))
 		cd(data, node);
 	else if (!strncmp(node->cmd[0], "echo", 4))
