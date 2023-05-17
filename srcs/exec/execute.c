@@ -41,7 +41,8 @@ int	open_files(t_node *node)
 	tmp = node->right;
 	while (tmp)
 	{
-		if (node->fd_out != -1)
+		tmp->file = clean_cmd(tmp->file, -1, -1, 0);
+		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
 			close(node->fd_out);
 		if (tmp->type == R_OUT)
 			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
@@ -52,7 +53,7 @@ int	open_files(t_node *node)
 			perror(tmp->file);
 			return (1);
 		}
-		if (node->fd_in != -1)
+		if (node->fd_in != -1 && tmp->type == R_IN)
 			close(node->fd_in);
 		if (tmp->type == R_IN)
 			node->fd_in = open(tmp->file, O_RDONLY, 0777);
@@ -68,16 +69,22 @@ int	open_files(t_node *node)
 	return (0);
 }
 
-void	execute(t_node *node, char **cmd, char **env)
+void	execute(t_data *data, t_node *node, char **env)
 {
 	char	*path;
+	char	**cmd;
 
+	cmd = node->cmd;
 	path = get_path(env, cmd[0]);
 	if (!path)
 	{
 		write(2, cmd[0], strlen(cmd[0]));
 		prerror(" : command not found\n");
-		free_node(node);
+		if (node->fd_out)
+			close(node->fd_out);
+		if (node->fd_in)
+			close(node->fd_in);
+		free_node(data->root);
 		node = NULL;
 		d_free(env);
 		exit(127);
@@ -115,18 +122,13 @@ void	exec_cmd(t_data *data, t_node *node)
 		return ;
 	if (pid == 0)
 	{
-		node->cmd = lex(node->cmd, data->env);
-		node->cmd = wild_card(node->cmd, 0, 0, 0);
-		node->cmd = clean_cmd_tab(node->cmd);
-		if (!node->cmd)
-			error(NULL);
 		if (open_files(node))
 			exit(1);
 		if (node->fd_in != -1)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)
 			dup2(node->fd_out, STDOUT_FILENO);
-		execute(node, node->cmd, data->env);
+		execute(data, node, data->env);
 	}
 	waitpid(pid, &e, 0);
 	g_exit = WEXITSTATUS(e);
@@ -138,18 +140,13 @@ void	exec_builtin(t_data *data, t_node *node)
 	int	sstdin;
 	int	sstdout;
 
-	node->cmd = lex(node->cmd, data->env);
-	node->cmd = wild_card(node->cmd, 0, 0 , 0);
-	node->cmd = clean_cmd_tab(node->cmd);
-	if (!node->cmd)
-		error(NULL);
 	sstdin = dup(STDIN_FILENO);
 	sstdout = dup(STDOUT_FILENO);
 	dup2(STDOUT_FILENO, sstdout);
 	dup2(STDIN_FILENO, sstdin);
 	if (open_files(node))
 	{
-		// g_exit = 1;
+		g_exit = 1;
 		return ;
 	}
 	if (node->fd_in != -1)
@@ -161,11 +158,15 @@ void	exec_builtin(t_data *data, t_node *node)
 	dup2(sstdout, STDOUT_FILENO);
 	close(sstdin);
 	close(sstdout);
-	// g_exit = 0;
 }
 
 void	exec2(t_data *data, t_node *node)
 {
+	node->cmd = lex(node->cmd, data->env);
+	node->cmd = wild_card(node->cmd, 0, 0 , 0);
+	node->cmd = clean_cmd_tab(node->cmd);
+	if (!node->cmd || !node->cmd[0])
+		return ;
 	if (is_builtin(node->cmd[0]))
 		exec_builtin(data, node);
 	else

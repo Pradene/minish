@@ -86,5 +86,6 @@ char	**export(t_data *data, t_node *node)
 	if (!e[c])
 		return (d_free(e), data->env);
 	d_free(data->env);
+	g_exit = 0;
 	return (e);
 }

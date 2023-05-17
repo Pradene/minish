@@ -51,4 +51,5 @@ void	echo(t_node *node)
 	}
 	if (!newline)
 		printf("\n");
+	g_exit = 0;
 }

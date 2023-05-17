@@ -21,4 +21,5 @@ void	pwd(t_data *data, t_node *node)
 	if (getcwd(dir, BUFFER_SIZE) == NULL)
 		return ;
 	printf("%s\n", dir);
+	g_exit = 0;
 }

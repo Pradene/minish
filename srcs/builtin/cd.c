@@ -48,9 +48,11 @@ void	cd(t_data *data, t_node *node)
 	{
 		g_exit = 1;
 		perror(node->cmd[1]);
+		return ;
 	}
 	if (!getcwd(pwd, BUFFER_SIZE))
 		return ;
 	change_env(data->env, "OLDPWD", old_pwd);
 	change_env(data->env, "PWD", pwd);
+	g_exit = 0;
 }

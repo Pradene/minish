@@ -58,5 +58,6 @@ char	**unset(t_data *data, t_node *node)
 		e[++j] = ft_strdup(data->env[i]);
 	}
 	d_free(data->env);
+	g_exit = 0;
 	return (e);
 }
