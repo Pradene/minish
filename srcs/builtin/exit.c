@@ -87,7 +87,7 @@ void	ex(t_node *node)
 	char		*s;
 
 	printf("exit\n");
-	if (get_size(node->cmd) > 2)
+	if (dsize(node->cmd) > 2)
 	{
 		prerror("exit: too many arguments\n");
 		g_exit = 1;

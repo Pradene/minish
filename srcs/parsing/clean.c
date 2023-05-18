@@ -25,26 +25,19 @@ static void	quote_status(char c, int *quote)
 		return ;
 }
 
-char **clean_cmd_tab(char **tab)
-{
-	int i;
-
-	i = 0;
-	while (tab[i])
-	{
-		tab[i] = clean_cmd(tab[i], -1, -1, 0);
-		i++;
-	}
-	return (tab);
-}
-
-char	*clean_cmd(char *cmd, int i, int j , int quote)
+char	*clean_cmd(char *cmd)
 {
 	char	*new_cmd;
+	int		i;
+	int		j;
+	int		quote;
 
 	new_cmd = ft_calloc(ft_strlen(cmd) + 1, sizeof(char));
 	if (!new_cmd)
 		return (NULL);
+	i = -1;
+	j = -1;
+	quote = 0;
 	while (cmd[++i])
 	{
 		if (quote == 0 && ft_strchr("\'\"", cmd[i]))
@@ -56,5 +49,18 @@ char	*clean_cmd(char *cmd, int i, int j , int quote)
 		else
 			new_cmd[++j] = cmd[i];
 	}
+	free(cmd);
 	return (new_cmd);
+}
+
+char	**clean_cmds(char **cmds)
+{
+	int	i;
+
+	if (!cmds)
+		return (NULL);
+	i = -1;
+	while (cmds[++i])
+		cmds[i] = clean_cmd(cmds[i]);
+	return (cmds);
 }

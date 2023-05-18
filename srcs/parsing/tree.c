@@ -33,6 +33,10 @@ void	free_node(t_node *node)
 	else if (node->type == R_IN || node->type == HEREDOC \
 	|| node->type == R_OUT || node->type == R_OUT2)
 		free(node->file);
+	if (node->fd_in != -1)
+		close(node->fd_in);
+	if (node->fd_out != -1)
+		close(node->fd_out);
 	if (node->right)
 		free_node(node->right);
 	if (node->left)

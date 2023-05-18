@@ -111,9 +111,10 @@ char	**envcp(char **envp);
 int		last_index(char *s, int c);
 char	*get_prompt(void);
 void	sig_handler(int sig);
+void	sig_child(int sig);
 void	set_attribute(void);
-void	d_free(char **ss);
-int		get_size(char **ss);
+void	dfree(char **ss);
+int		dsize(char **ss);
 
 // PARSER
 void	parse(t_node **root, char **s);
@@ -132,8 +133,8 @@ char	*lexer(char *command, char **env, int i, int j);
 char	**lex(char **cmds, char **env);
 
 // CLEAN CMD
-char **clean_cmd_tab(char **tab);
-char	*clean_cmd(char *cmd, int i, int j , int quote);
+char	*clean_cmd(char *cmd);
+char	**clean_cmds(char **tab);
 
 // EXEC
 void	exec(t_data *data, t_node *node);
@@ -154,5 +155,9 @@ char	**unset(t_data *data, t_node *node);
 // WILD CARD
 char	**wild_carder(char *cmd);
 char	**wild_card(char **cmds, int i, int j, int k);
+
+
+t_data	*singleton(t_data *data);
+
 
 #endif

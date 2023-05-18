@@ -48,7 +48,7 @@ static char	*abs_path(char *path)
 		else
 			s = ft_stradd(ft_stradd(s, "/"), ss[i]);
 	}
-	d_free(ss);
+	dfree(ss);
 	return (s);
 }
 
@@ -71,12 +71,12 @@ static char	*cmd_path(char **env, char *command)
 		path = ft_stradd(ft_stradd(ft_strdup(s_paths[i]), "/"), command);
 		if (access(path, F_OK | X_OK) == 0)
 		{
-			d_free(s_paths);
+			dfree(s_paths);
 			return (path);
 		}
 		free(path);
 	}
-	d_free(s_paths);
+	dfree(s_paths);
 	return (NULL);
 }
 

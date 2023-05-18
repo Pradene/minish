@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	d_free(char **ss)
+void	dfree(char **ss)
 {
 	int	i;
 
@@ -24,17 +24,7 @@ void	d_free(char **ss)
 	free(ss);
 }
 
-int	last_index(char *s, int c)
-{
-	char	*p;
-	int		index;
-
-	p = ft_strrchr(s, c);
-	index = p - s;
-	return (index);
-}
-
-int	get_size(char **ss)
+int	dsize(char **ss)
 {
 	int	c;
 
@@ -44,4 +34,14 @@ int	get_size(char **ss)
 	while (ss[c])
 		c += 1;
 	return (c);
+}
+
+int	last_index(char *s, int c)
+{
+	char	*p;
+	int		index;
+
+	p = ft_strrchr(s, c);
+	index = p - s;
+	return (index);
 }

@@ -214,7 +214,7 @@ char	**add_to_cmd(char **cmds, char *cmd)
 
 	if (!cmd)
 		return (cmds);
-	size = get_size(cmds) + 1;
+	size = dsize(cmds) + 1;
 	new = malloc(sizeof(char *) * (size + 1));
 	if (!new)
 		return (cmds);
@@ -224,13 +224,13 @@ char	**add_to_cmd(char **cmds, char *cmd)
 	{
 		new[i] = strdup(cmds[i]);
 		if (!new[i])
-			return (d_free(new), cmds);
+			return (dfree(new), cmds);
 		i += 1;
 	}
 	new[i] = strdup(cmd);
 	if (!new[i])
-		return (d_free(new), cmds);
-	d_free(cmds);
+		return (dfree(new), cmds);
+	dfree(cmds);
 	return (new);
 }
 
@@ -340,6 +340,7 @@ void	parse(t_node **root, char **s)
 	lst = tokens(s);
 	if (!lst)
 		return ;
+	// ft_lstprint(lst);
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
 	{

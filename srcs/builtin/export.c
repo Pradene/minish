@@ -60,7 +60,7 @@ char	**export(t_data *data, t_node *node)
 	c = -1;
 	while (data->env[++c])
 		continue ;
-	e = malloc(sizeof(char *) * (c + get_size(node->cmd)));
+	e = malloc(sizeof(char *) * (c + dsize(node->cmd)));
 	if (!e)
 		return (data->env);
 	e[c + 1] = NULL;
@@ -69,7 +69,7 @@ char	**export(t_data *data, t_node *node)
 	{
 		e[c] = ft_strdup(data->env[c]);
 		if (!e[c])
-			return (d_free(e), data->env);
+			return (dfree(e), data->env);  
 	}
 	i = 0;
 	while (node->cmd[++i])
@@ -84,8 +84,8 @@ char	**export(t_data *data, t_node *node)
 		}
 	}
 	if (!e[c])
-		return (d_free(e), data->env);
-	d_free(data->env);
+		return (dfree(e), data->env);
+	dfree(data->env);
 	g_exit = 0;
 	return (e);
 }

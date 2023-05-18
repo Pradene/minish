@@ -12,36 +12,67 @@
 
 #include "../../includes/minishell.h"
 
-void	heredoc(t_node *node, char *limiter)
+void	sig_child(int sig)
 {
-	char	*line;
-	int		fd;
+	t_data	*data;
 
-	fd = open(".heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0777);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-			continue ;
-		if (!strcmp(limiter, line))
-			break ;
-		write(fd, line, strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
-	free(line);
-	close(fd);
-	node->fd_in = open(".heredoc", O_RDONLY, 0777);
+	(void)sig;
+	data = singleton(NULL);
+	free_node(data->root);
+	dfree(data->env);
+	exit(130);
 }
 
-int	open_files(t_node *node)
+void	heredoc(t_data *data, t_node *node, char *limiter)
+{
+	char	*line;
+	int		fd[2];
+	int		e;
+	pid_t	pid;
+
+	if (pipe(fd) == -1)
+		return ;
+	pid = fork();
+	if (pid == -1)
+		return ;
+	else if (pid == 0)
+	{
+		close(fd[0]);
+		while (1)
+		{
+			line = readline("> ");
+			if (!line)
+			{
+				close(fd[1]);
+				free_node(data->root);
+				dfree(data->env);
+				exit(0);
+			}
+			if (!strcmp(limiter, line))
+				break ;
+			write(fd[1], line, strlen(line));
+			write(fd[1], "\n", 1);
+			free(line);
+		}
+		free(line);
+		close(fd[1]);
+		free_node(data->root);
+		dfree(data->env);
+		exit(0);
+	}
+	waitpid(pid, &e, 0);
+	close(fd[1]);
+	node->fd_in = fd[0];
+}
+
+int	open_files(t_data *data, t_node *node)
 {
 	t_node	*tmp;
 
 	tmp = node->right;
 	while (tmp)
 	{
-		tmp->file = clean_cmd(tmp->file, -1, -1, 0);
+		tmp->file = clean_cmd(tmp->file);
 		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
 			close(node->fd_out);
 		if (tmp->type == R_OUT)
@@ -63,7 +94,7 @@ int	open_files(t_node *node)
 			return (1);
 		}
 		if (tmp->type == HEREDOC)
-			heredoc(node, tmp->file);
+			heredoc(data, node, tmp->file);
 		tmp = tmp->right;
 	}
 	return (0);
@@ -86,7 +117,7 @@ void	execute(t_data *data, t_node *node, char **env)
 			close(node->fd_in);
 		free_node(data->root);
 		node = NULL;
-		d_free(env);
+		dfree(env);
 		exit(127);
 	}
 	if (access(path, F_OK) == -1)
@@ -113,6 +144,7 @@ void	exec_cmd(t_data *data, t_node *node)
 {
 	pid_t	pid;
 	int		e;
+	int		error;
 
 	if (is_builtin(node->cmd[0]))
 		return (builtin(data, node));
@@ -122,7 +154,8 @@ void	exec_cmd(t_data *data, t_node *node)
 		return ;
 	if (pid == 0)
 	{
-		if (open_files(node))
+		signal(SIGINT, sig_child);
+		if (open_files(data, node))
 			exit(1);
 		if (node->fd_in != -1)
 			dup2(node->fd_in, STDIN_FILENO);
@@ -130,9 +163,11 @@ void	exec_cmd(t_data *data, t_node *node)
 			dup2(node->fd_out, STDOUT_FILENO);
 		execute(data, node, data->env);
 	}
-	waitpid(pid, &e, 0);
-	g_exit = WEXITSTATUS(e);
-	unlink(".heredoc");
+	error = waitpid(pid, &e, WUNTRACED);
+	if (error)
+		g_exit = 130;
+	else
+		g_exit = WEXITSTATUS(e);
 }
 
 void	exec_builtin(t_data *data, t_node *node)
@@ -144,7 +179,7 @@ void	exec_builtin(t_data *data, t_node *node)
 	sstdout = dup(STDOUT_FILENO);
 	dup2(STDOUT_FILENO, sstdout);
 	dup2(STDIN_FILENO, sstdin);
-	if (open_files(node))
+	if (open_files(data, node))
 	{
 		g_exit = 1;
 		return ;
@@ -164,7 +199,7 @@ void	exec2(t_data *data, t_node *node)
 {
 	node->cmd = lex(node->cmd, data->env);
 	node->cmd = wild_card(node->cmd, 0, 0 , 0);
-	node->cmd = clean_cmd_tab(node->cmd);
+	node->cmd = clean_cmds(node->cmd);
 	if (!node->cmd || !node->cmd[0])
 		return ;
 	if (is_builtin(node->cmd[0]))

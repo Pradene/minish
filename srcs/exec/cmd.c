@@ -34,6 +34,16 @@ int	check_quotes(char *s)
 	return (status);
 }
 
+t_data	*singleton(t_data *data)
+{
+	static t_data	*d;
+
+	if (!data)
+		return (d);
+	d = data;
+	return (d);
+}
+
 void	get_cmd(t_data *data)
 {
 	char	*prompt;
@@ -46,13 +56,14 @@ void	get_cmd(t_data *data)
 	free(prompt);
 	if (!s)
 	{
-		d_free(data->env);
+		dfree(data->env);
 		exit(g_exit);
 	}
 	add_history(s);
 	if (check_quotes(s))
 		return (free(s));
 	parse(&data->root, &s);
+	singleton(data);
 	exec(data, data->root);
 	free_node(data->root);
 	data->root = NULL;

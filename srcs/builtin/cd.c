@@ -36,7 +36,7 @@ void	cd(t_data *data, t_node *node)
 	char	old_pwd[BUFFER_SIZE];
 	char	pwd[BUFFER_SIZE];
 
-	if (get_size(node->cmd) > 2)
+	if (dsize(node->cmd) > 2)
 	{
 		prerror("cd: too many arguments\n");
 		g_exit = 1;

@@ -12,27 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strnstr(const char *big, const char *little, size_t len);
-int	ft_strlen(const char *str);
-void	*ft_calloc(size_t nmemb, size_t size);
-int	ft_strncmp(const char *s1, const char *s2, int n);
-
-int	looking_for_a_star(char *s)
-{
-	int	i;
-	int	size;
-	int	count;
-
-	size = ft_strlen(s);
-	i = -1;
-	count = 0;
-	while (++i < size)
-		if (s[i] == '*')
-			count++;
-	return (count);
-}
-
 char	**add_dir(char *s, char **tab)
 {
 	int	i;
@@ -146,19 +125,6 @@ int	corresponding_dir(char *dir, char **motif, int stars)
 	return (1);
 }
 
-void	free_tab(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
 int	handle_star(char *cmd)
 {
 	if (cmd[0] != '*' && cmd[ft_strlen(cmd) - 1] != '*')
@@ -199,7 +165,7 @@ char	**wild_carder(char *cmd)
 		lecture = readdir(rep);
 	}
 	//closedir(rep);
-	free_tab(motif);
+	dfree(motif);
 	return (ans);
 }
 
