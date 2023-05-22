@@ -49,33 +49,42 @@ int	check_arg(char *arg)
 	return (0);
 }
 
+int	sscpy(char **dest, char **src)
+{
+	int	i;
+	
+	i = -1;
+	while (src[++i])
+	{
+		dest[i] = ft_strdup(src[i]);
+		if (!dest[i])
+			return (1);
+	}
+	return (0);
+}
+
 char	**export(t_data *data, t_node *node)
 {
-	int		c;
+	int		c1;
+	int		c2;
 	int		i;
 	char	**e;
 
 	if (!node->cmd[1])
 		return (handle_export(data->env), data->env);
-	c = -1;
-	while (data->env[++c])
-		continue ;
-	e = malloc(sizeof(char *) * (c + dsize(node->cmd)));
+	c1 = dsize(data->env);
+	c2 = dsize(node->cmd) - 1;
+	e = malloc(sizeof(char *) * (c1 + c2 + 1));
 	if (!e)
 		return (data->env);
-	e[c + 1] = NULL;
-	c = -1;
-	while (data->env[++c])
-	{
-		e[c] = ft_strdup(data->env[c]);
-		if (!e[c])
-			return (dfree(e), data->env);  
-	}
+	e[c1 + c2] = NULL;
+	if (sscpy(e, data->env))
+		return (free(e), data->env);
 	i = 0;
 	while (node->cmd[++i])
 	{
 		if (!check_arg(node->cmd[i]))
-			e[c] = ft_strdup(node->cmd[i]);
+			e[c1 + i] = ft_strdup(node->cmd[i]);
 		else
 		{
 			write(2, node->cmd[i], strlen(node->cmd[i]));
@@ -83,7 +92,7 @@ char	**export(t_data *data, t_node *node)
 			g_exit = 1;
 		}
 	}
-	if (!e[c])
+	if (!e[c1 + i])
 		return (dfree(e), data->env);
 	dfree(data->env);
 	g_exit = 0;

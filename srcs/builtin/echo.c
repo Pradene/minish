@@ -47,7 +47,7 @@ void	echo(t_node *node)
 	while (cmd[++i])
 	{
 		if (!options && check_options(cmd[i]))
-			continue;
+			continue ;
 		options = 1;
 		write(fd, cmd[i], strlen(cmd[i]));
 		if (cmd[i + 1])

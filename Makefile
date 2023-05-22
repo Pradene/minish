@@ -18,12 +18,13 @@ MINISHELL_FILES	= error.c \
 				terminal.c \
 				utils.c
 
-PARSING_FILES =	lexer.c \
+PARSING_FILES =	clean.c \
+				free_tree.c \
+				lexer.c \
 				parser.c \
+				print_tree.c \
 				token.c \
-				tree.c \
 				wild_cards.c \
-				clean.c
 
 UTILS_FILES	= ft_bzero.c \
 			ft_calloc.c \

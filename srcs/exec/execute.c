@@ -90,7 +90,7 @@ int	open_files(t_data *data, t_node *node)
 		if (node->fd_in != -1 && tmp->type == R_IN)
 		{
 			close(node->fd_in);
-			node->fd_in =-1;
+			node->fd_in = -1;
 		}
 		if (tmp->type == R_IN)
 			node->fd_in = open(tmp->file, O_RDONLY, 0777);

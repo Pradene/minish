@@ -340,7 +340,6 @@ void	parse(t_node **root, char **s)
 	lst = tokens(s);
 	if (!lst)
 		return ;
-	// ft_lstprint(lst);
 	*root = create_tree(lst, 0, ft_lstsize(lst));
 	if (!(*root))
 	{

@@ -12,38 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void	free_cmd(t_node *node)
-{
-	int	i;
-
-	if (!node->cmd)
-		return ;
-	i = -1;
-	while (node->cmd[++i])
-		free(node->cmd[i]);
-	free(node->cmd);
-}
-
-void	free_node(t_node *node)
-{
-	if (!node || node->type == ERR)
-		return ;
-	else if (node->type == CMD)
-		free_cmd(node);
-	else if (node->type == R_IN || node->type == HEREDOC \
-	|| node->type == R_OUT || node->type == R_OUT2)
-		free(node->file);
-	if (node->fd_in != -1)
-		close(node->fd_in);
-	if (node->fd_out != -1)
-		close(node->fd_out);
-	if (node->right)
-		free_node(node->right);
-	if (node->left)
-		free_node(node->left);
-	free(node);
-}
-
 void	print_cmd(char **cmds)
 {
 	int	i;
