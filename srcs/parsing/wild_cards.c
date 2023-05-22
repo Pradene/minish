@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 17:03:44 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 15:23:32 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,15 @@ int	looking_for_a_star(char *s)
 	return (count);
 }
 
-char	**add_dir(char *s, char **tab)
+char	**add_dir(char *s, char **tab, int d_number)
 {
 	int	i;
 
 	i = 0;
+	d_number++;
 	while (tab[i])
 		i++;
-	tab[i] = s;
+	tab[i] = ft_strdup(s);
 	return (tab);
 }
 
@@ -214,13 +215,10 @@ char	**wild_carder(char *cmd)
 		if (d_number > 4095)
 			break ;
 		if (corresponding_dir(lecture->d_name, motif, handle_star(cmd)))
-		{
-			add_dir(lecture->d_name, ans);
-			d_number++;
-		}
+			add_dir(lecture->d_name, ans, d_number++);
 		lecture = readdir(rep);
 	}
-	//closedir(rep);
+	closedir(rep);
 	free_tab(motif);
 	return (ans);
 }
@@ -260,7 +258,8 @@ char	**wild_card(char **cmds, int i, int j, int k)
 			dirs = wild_carder(old_cmd[i]);
 			if (dirs[0])
 			{
-				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
+				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1,
+						sizeof(char *));
 				while (j < i)
 				{
 					new_cmd[j] = old_cmd[j];
@@ -288,16 +287,9 @@ char	**wild_card(char **cmds, int i, int j, int k)
 			else
 				free(dirs);
 		}
-		//printf("asaksklas %d: %s\n",i , old_cmd[i]);
 		i++;
 		k = 0;
 		j = 0;
-	}
-	int t = 0;
-	while (old_cmd[t])
-	{
-		//printf("zebi cmd : %s\n", old_cmd[t]);
-		t++;
 	}
 	return (old_cmd);
 }
