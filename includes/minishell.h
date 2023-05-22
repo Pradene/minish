@@ -77,6 +77,7 @@ typedef struct s_data
 {
 	char	**env;
 	t_node	*root;
+	int		exec;
 }	t_data;
 
 // UTILS

@@ -59,28 +59,6 @@ t_list	*search_token(t_list *lst, char *token, int *pos, int size)
 	return (c);
 }
 
-t_list	*search_sep(t_list *lst, int *pos, int size)
-{
-	t_list	*token;
-
-	token = search_token(lst, ";", pos, size);
-	if (token)
-		return (token);
-	token = search_token(lst, "||", pos, size);
-	if (token)
-		return (token);
-	token = search_token(lst, "&&", pos, size);
-	if (token)
-		return (token);
-	token = search_token(lst, "|", pos, size);
-	if (token)
-		return (token);
-	token = search_token(lst, "&", pos, size);
-	if (token)
-		return (token);
-	return (NULL);
-}
-
 t_list	*go(t_list *lst, int index)
 {
 	t_list	*e;
@@ -89,6 +67,53 @@ t_list	*go(t_list *lst, int index)
 	while (e && index--)
 		e = e->next;
 	return (e);
+}
+
+int	max(int n1, int n2)
+{
+	if (n1 > n2)
+		return (n1);
+	return (n2);
+}
+
+t_list	*search_orand(t_list *lst, int *pos, int size)
+{
+	t_list	*token;
+	int		p1;
+	int		p2;
+
+	p1 = -1;
+	p2 = -1;
+	token = search_token(lst, "||", &p1, size);
+	token = search_token(lst, "&&", &p2, size);
+	if (p1 != -1 && p2 != -1)
+	{
+		*pos = max(p1, p2);
+		return (go(lst, *pos));
+	}
+	return (NULL);
+}
+
+t_list	*search_sep(t_list *lst, int *pos, int size)
+{
+	t_list	*token;
+
+	token = search_token(lst, ";", pos, size);
+	if (token)
+		return (token);
+	token = search_token(lst, "&", pos, size);
+	if (token)
+		return (token);
+	token = search_orand(lst, pos, size);
+	if (token)
+		return (token);
+	token = search_token(lst, "&&", pos, size);
+	if (token)
+		return (token);
+	token = search_token(lst, "|", pos, size);
+	if (token)
+		return (token);
+	return (NULL);
 }
 
 int	search_openbrackets(t_list *lst, int first, int last)

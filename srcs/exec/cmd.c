@@ -43,6 +43,7 @@ t_data	*singleton(t_data *data)
 	d = data;
 	return (d);
 }
+// Mes remerciements a Maxou!!
 
 void	get_cmd(t_data *data)
 {
@@ -63,9 +64,10 @@ void	get_cmd(t_data *data)
 	if (check_quotes(s))
 		return (free(s));
 	parse(&data->root, &s);
-	singleton(data);
+	data->exec = 1;
 	exec(data, data->root);
 	free_node(data->root);
 	data->root = NULL;
 	free(s);
+	data->exec = 0;
 }

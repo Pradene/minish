@@ -23,9 +23,11 @@ int	main(int ac, char **av, char **envp)
 		exit(EXIT_FAILURE);
 	data.env = envcp(envp);
 	data.root = NULL;
+	data.exec = 0;
 	set_attribute();
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, sig_handler);
+	singleton(&data);
 	while (1)
 		get_cmd(&data);
 	return (0);

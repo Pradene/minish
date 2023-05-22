@@ -52,7 +52,7 @@ int	check_arg(char *arg)
 int	sscpy(char **dest, char **src)
 {
 	int	i;
-	
+
 	i = -1;
 	while (src[++i])
 	{
@@ -84,16 +84,19 @@ char	**export(t_data *data, t_node *node)
 	while (node->cmd[++i])
 	{
 		if (!check_arg(node->cmd[i]))
-			e[c1 + i] = ft_strdup(node->cmd[i]);
+		{
+			e[c1 + i - 1] = strdup(node->cmd[i]);
+			if (!e[c1 + i - 1])
+				return (dfree(e), data->env);
+		}
 		else
 		{
 			write(2, node->cmd[i], strlen(node->cmd[i]));
 			prerror(": not a valid identifier\n");
 			g_exit = 1;
+			return (free(e), data->env);
 		}
 	}
-	if (!e[c1 + i])
-		return (dfree(e), data->env);
 	dfree(data->env);
 	g_exit = 0;
 	return (e);

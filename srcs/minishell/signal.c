@@ -14,11 +14,19 @@
 
 void	sig_handler(int sig)
 {
+	t_data	*data;
+
 	if (sig != SIGINT)
 		return ;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
 	g_exit = 130;
+	data = singleton(NULL);
+	if (!data)
+		return ;
+	printf("\n");
+	if (!data->exec)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
