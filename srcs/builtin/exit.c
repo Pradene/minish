@@ -101,7 +101,7 @@ void	ex(t_node *node)
 		s = itoll(n);
 		if (intcmp(s, node->cmd[1]))
 		{
-			write(2, node->cmd[1], strlen(node->cmd[1]));
+			write(2, node->cmd[1], ft_strlen(node->cmd[1]));
 			prerror(": numeric argument required\n");
 			free(s);
 			exit(2);

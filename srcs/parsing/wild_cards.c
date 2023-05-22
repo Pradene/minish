@@ -6,20 +6,62 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 16:40:58 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 16:26:06 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	**add_dir(char *s, char **tab)
+// #include <dirent.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <sys/types.h>
+
+// char	*ft_substr(char const *s, unsigned int start, size_t len);
+// char	*ft_strnstr(const char *big, const char *little, size_t len);
+// int	ft_strlen(const char *str);
+// void	*ft_calloc(size_t nmemb, size_t size);
+// int	ft_strncmp(const char *s1, const char *s2, int n);
+
+// /* static void	quote_status(char c, int *quote)
+// {
+// 	if ((*quote == 1 && c == '\'')
+// 		|| (*quote == 2 && c == '\"'))
+// 		*quote = 0;
+// 	else if (*quote == 0 && c == '\'')
+// 		*quote = 1;
+// 	else if (*quote == 0 && c == '\"')
+// 		*quote = 2;
+// 	else
+// 		return ;
+// }
+//  */
+// int	looking_for_a_star(char *s)
+// {
+// 	int	i;
+// 	int	count;
+
+// 	i = 0;
+// 	count = 0;
+// 	while (i < ft_strlen(s))
+// 	{
+// 		if (s[i] == '*')
+// 			count++;
+// 		i++;
+// 	}
+// 	printf("d\n");
+// 	return (count);
+// }
+
+char	**add_dir(char *s, char **tab, int d_number)
 {
 	int	i;
 
 	i = 0;
+	d_number++;
 	while (tab[i])
 		i++;
-	tab[i] = s;
+	tab[i] = ft_strdup(s);
 	return (tab);
 }
 
@@ -36,7 +78,7 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 	while (k < m_count)
 	{
 		j = i;
-		while (cmd[i] != '*')
+		while (cmd[i] && cmd[i] != '*')
 			i++;
 		motif[k] = ft_substr(cmd, j, i - j);
 		k++;
@@ -104,7 +146,9 @@ int	corresponding_dir(char *dir, char **motif, int stars)
 	{
 		if (j == motif_size(motif) - 1 && (stars == 0 || stars == 1))
 		{
-			if (ft_strncmp(motif[motif_size(motif) - 1], &dir[ft_strlen(dir) - ft_strlen(motif[motif_size(motif) - 1])], ft_strlen(motif[motif_size(motif) - 1])) != 0)
+			if (ft_strncmp(motif[motif_size(motif) - 1], &dir[ft_strlen(dir)
+						- ft_strlen(motif[motif_size(motif) - 1])],
+					ft_strlen(motif[motif_size(motif) - 1])) != 0)
 				return (0);
 			else
 				return (1);
@@ -158,13 +202,10 @@ char	**wild_carder(char *cmd)
 		if (d_number > 4095)
 			break ;
 		if (corresponding_dir(lecture->d_name, motif, handle_star(cmd)))
-		{
-			add_dir(lecture->d_name, ans);
-			d_number++;
-		}
+			add_dir(lecture->d_name, ans, d_number++);
 		lecture = readdir(rep);
 	}
-	//closedir(rep);
+	closedir(rep);
 	dfree(motif);
 	return (ans);
 }
@@ -189,9 +230,37 @@ int	cmd_nbrs(char **cmds)
 	return (i);
 }
 
-char	**wild_card(char **cmds, int i, int j, int k)
+char **wild_card2(char **old_cmd, char **dirs, int i, int j, int k)
 {
+	char	**new_cmd;
 	int		n;
+
+	new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
+	while (j < i)
+	{
+		new_cmd[j] = old_cmd[j];
+		j++;
+	}
+	while (dirs[k])
+	{
+		new_cmd[j] = dirs[k];
+		k++;
+		j++;
+	}
+	free(dirs);
+	n = i + 1;
+	i = j - 1;
+	while (old_cmd[n])
+	{
+		new_cmd[j] = old_cmd[n];
+		j++;
+		n++;
+	}
+	return (new_cmd);
+}
+
+char	**wild_card(char **cmds, int i)
+{
 	char	**new_cmd;
 	char	**old_cmd;
 	char	**dirs;
@@ -201,34 +270,13 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	old_cmd = cmds;
 	while (old_cmd[i])
 	{
-		k = 0;
-		j = 0;
-		if (old_cmd[i] && ft_strchr(old_cmd[i], '*') && (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
+		if (old_cmd[i] && ft_strchr(old_cmd[i], '*')
+			&& (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
 		{
 			dirs = wild_carder(old_cmd[i]);
 			if (dirs[0])
 			{
-				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
-				while (j < i)
-				{
-					new_cmd[j] = old_cmd[j];
-					j++;
-				}
-				while (dirs[k])
-				{
-					new_cmd[j] = dirs[k];
-					k++;
-					j++;
-				}
-				free(dirs);
-				n = i + 1;
-				i = j - 1;
-				while (old_cmd[n])
-				{
-					new_cmd[j] = old_cmd[n];
-					j++;
-					n++;
-				}
+				new_cmd = wild_card2(old_cmd, dirs, i, 0, 0);
 				free(old_cmd);
 				old_cmd = new_cmd;
 			}

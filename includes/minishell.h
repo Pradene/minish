@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/09 17:41:18 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 15:45:29 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ int		dsize(char **ss);
 // PARSER
 void	parse(t_node **root, char **s);
 
+char	**expand(t_data *data, char **cmds);
+
 // TREE
 t_node	*create_node(t_list *lst, int first, int last);
 t_node	*create_tree(t_list *lst, int first, int last);
@@ -155,9 +157,10 @@ char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
 char	**wild_carder(char *cmd);
-char	**wild_card(char **cmds, int i, int j, int k);
+char	**wild_card(char **cmds, int i);
+int		tab_size(char **tab);
 
-
+// SINGLETON
 t_data	*singleton(t_data *data);
 
 

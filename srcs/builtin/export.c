@@ -85,13 +85,13 @@ char	**export(t_data *data, t_node *node)
 	{
 		if (!check_arg(node->cmd[i]))
 		{
-			e[c1 + i - 1] = strdup(node->cmd[i]);
+			e[c1 + i - 1] = ft_strdup(node->cmd[i]);
 			if (!e[c1 + i - 1])
 				return (dfree(e), data->env);
 		}
 		else
 		{
-			write(2, node->cmd[i], strlen(node->cmd[i]));
+			write(2, node->cmd[i], ft_strlen(node->cmd[i]));
 			prerror(": not a valid identifier\n");
 			g_exit = 1;
 			return (free(e), data->env);

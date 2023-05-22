@@ -20,5 +20,5 @@ void	error(char *msg)
 
 void	prerror(char *msg)
 {
-	write(2, msg, strlen(msg));
+	write(2, msg, ft_strlen(msg));
 }

@@ -52,27 +52,27 @@ char	*next_token(char **s)
 	while (**s && strchr("\t\n\v\f\r ", **s))
 		*s += 1;
 	if (!strncmp(*s, "||", 2))
-		return (*s += 2, strdup("||"));
+		return (*s += 2, ft_strdup("||"));
 	else if (!strncmp(*s, "&&", 2))
-		return (*s += 2, strdup("&&"));
+		return (*s += 2, ft_strdup("&&"));
 	else if (!strncmp(*s, ">>", 2))
-		return (*s += 2, strdup(">>"));
+		return (*s += 2, ft_strdup(">>"));
 	else if (!strncmp(*s, "<<", 2))
-		return (*s += 2, strdup("<<"));
+		return (*s += 2, ft_strdup("<<"));
 	else if (**s == '|')
-		return (*s += 1, strdup("|"));
+		return (*s += 1, ft_strdup("|"));
 	else if (**s == '&')
-		return (*s += 1, strdup("&"));
+		return (*s += 1, ft_strdup("&"));
 	else if (**s == '>')
-		return (*s += 1, strdup(">"));
+		return (*s += 1, ft_strdup(">"));
 	else if (**s == '<')
-		return (*s += 1, strdup("<"));
+		return (*s += 1, ft_strdup("<"));
 	else if (**s == '(')
-		return (*s += 1, strdup("("));
+		return (*s += 1, ft_strdup("("));
 	else if (**s == ')')
-		return (*s += 1, strdup(")"));
+		return (*s += 1, ft_strdup(")"));
 	else if (**s == ';')
-		return (*s += 1, strdup(";"));
+		return (*s += 1, ft_strdup(";"));
 	return (handle_other(s));
 }
 

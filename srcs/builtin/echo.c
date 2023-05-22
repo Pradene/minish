@@ -49,7 +49,7 @@ void	echo(t_node *node)
 		if (!options && check_options(cmd[i]))
 			continue ;
 		options = 1;
-		write(fd, cmd[i], strlen(cmd[i]));
+		write(fd, cmd[i], ft_strlen(cmd[i]));
 		if (cmd[i + 1])
 			write(fd, " ", 1);
 	}

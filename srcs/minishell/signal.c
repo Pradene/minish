@@ -16,8 +16,7 @@ void	sig_handler(int sig)
 {
 	t_data	*data;
 
-	if (sig != SIGINT)
-		return ;
+	(void)sig;
 	g_exit = 130;
 	data = singleton(NULL);
 	if (!data)

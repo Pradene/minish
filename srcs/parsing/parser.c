@@ -215,7 +215,7 @@ int	create_redir(t_node *node, t_type type, char *file)
 		return (1);
 	tmp = tmp->right;
 	tmp->type = type;
-	tmp->file = strdup(file);
+	tmp->file = ft_strdup(file);
 	return (0);
 }
 
@@ -247,12 +247,12 @@ char	**add_to_cmd(char **cmds, char *cmd)
 	i = 0;
 	while (cmds && cmds[i])
 	{
-		new[i] = strdup(cmds[i]);
+		new[i] = ft_strdup(cmds[i]);
 		if (!new[i])
 			return (dfree(new), cmds);
 		i += 1;
 	}
-	new[i] = strdup(cmd);
+	new[i] = ft_strdup(cmd);
 	if (!new[i])
 		return (dfree(new), cmds);
 	dfree(cmds);
