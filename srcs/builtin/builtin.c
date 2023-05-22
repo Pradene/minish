@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 19:41:58 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/10 16:40:07 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 15:46:29 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	builtin(t_data *data, t_node *node)
 	char **cmd_line;
 
 	cmd_line = lex(node->cmd, data->env);
-	cmd_line = wild_card(cmd_line, 0, 0, 0);
+	cmd_line = wild_card(cmd_line, 0);
 	cmd_line = clean_cmd_tab(cmd_line);
 	if (!strncmp(cmd_line[0], "cd", 2))
 		cd(data, node);

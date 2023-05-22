@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/22 15:23:32 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 16:00:20 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,20 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 	k = 0;
 	while (cmd[i] == '*')
 		i++;
+	printf("count : %d\n", m_count);
+	/* if (cmd[0] == '*')
+	{
+		while (cmd[i] == '*')
+			i++;
+	} */
 	while (k < m_count)
 	{
 		j = i;
-		while (cmd[i] != '*')
+		while (cmd[i] && cmd[i] != '*')
 			i++;
+		if (i != 0)
 		motif[k] = ft_substr(cmd, j, i - j);
-		//printf("mot: %s\n", motif[k]);
+		printf("mot: %s\n", motif[k]);
 		k++;
 		while (cmd[i] == '*')
 			i++;
@@ -243,9 +250,37 @@ int	cmd_nbrs(char **cmds)
 	return (i);
 }
 
-char	**wild_card(char **cmds, int i, int j, int k)
+char **wild_card2(char **old_cmd, char **dirs, int i, int j, int k)
 {
+	char	**new_cmd;
 	int		n;
+
+	new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1, sizeof(char *));
+	while (j < i)
+	{
+		new_cmd[j] = old_cmd[j];
+		j++;
+	}
+	while (dirs[k])
+	{
+		new_cmd[j] = dirs[k];
+		k++;
+		j++;
+	}
+	free(dirs);
+	n = i + 1;
+	i = j - 1;
+	while (old_cmd[n])
+	{
+		new_cmd[j] = old_cmd[n];
+		j++;
+		n++;
+	}
+	return (new_cmd);
+}
+
+char	**wild_card(char **cmds, int i)
+{
 	char	**new_cmd;
 	char	**old_cmd;
 	char	**dirs;
@@ -253,34 +288,13 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	old_cmd = cmds;
 	while (old_cmd[i])
 	{
-		if (old_cmd[i] && ft_strchr(old_cmd[i], '*') && (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
+		if (old_cmd[i] && ft_strchr(old_cmd[i], '*')
+			&& (!ft_strchr(old_cmd[i], '\'') && !ft_strchr(old_cmd[i], '\"')))
 		{
 			dirs = wild_carder(old_cmd[i]);
 			if (dirs[0])
 			{
-				new_cmd = ft_calloc(tab_size(dirs) + tab_size(old_cmd) + 1,
-						sizeof(char *));
-				while (j < i)
-				{
-					new_cmd[j] = old_cmd[j];
-					j++;
-				}
-				k = 0;
-				while (dirs[k])
-				{
-					new_cmd[j] = dirs[k];
-					k++;
-					j++;
-				}
-				free(dirs);
-				n = i + 1;
-				i = j - 1;
-				while (old_cmd[n])
-				{
-					new_cmd[j] = old_cmd[n];
-					j++;
-					n++;
-				}
+				new_cmd = wild_card2(old_cmd, dirs, i, 0, 0);
 				free(old_cmd);
 				old_cmd = new_cmd;
 			}
@@ -288,8 +302,6 @@ char	**wild_card(char **cmds, int i, int j, int k)
 				free(dirs);
 		}
 		i++;
-		k = 0;
-		j = 0;
 	}
 	return (old_cmd);
 }
