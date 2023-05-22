@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 14:55:58 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/22 16:00:20 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/22 16:26:06 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,12 @@ char	**fill_motif(char *cmd, char **motif, int m_count)
 	k = 0;
 	while (cmd[i] == '*')
 		i++;
-	printf("count : %d\n", m_count);
-	/* if (cmd[0] == '*')
-	{
-		while (cmd[i] == '*')
-			i++;
-	} */
 	while (k < m_count)
 	{
 		j = i;
 		while (cmd[i] && cmd[i] != '*')
 			i++;
-		if (i != 0)
 		motif[k] = ft_substr(cmd, j, i - j);
-		printf("mot: %s\n", motif[k]);
 		k++;
 		while (cmd[i] == '*')
 			i++;
@@ -155,7 +147,9 @@ int	corresponding_dir(char *dir, char **motif, int stars)
 	{
 		if (j == motif_size(motif) - 1 && (stars == 0 || stars == 1))
 		{
-			if (ft_strncmp(motif[motif_size(motif) - 1], &dir[ft_strlen(dir) - ft_strlen(motif[motif_size(motif) - 1])], ft_strlen(motif[motif_size(motif) - 1])) != 0)
+			if (ft_strncmp(motif[motif_size(motif) - 1], &dir[ft_strlen(dir)
+						- ft_strlen(motif[motif_size(motif) - 1])],
+					ft_strlen(motif[motif_size(motif) - 1])) != 0)
 				return (0);
 			else
 				return (1);
