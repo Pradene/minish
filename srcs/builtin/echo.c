@@ -30,11 +30,15 @@ int	check_options(char *arg)
 void	echo(t_node *node)
 {
 	int		i;
+	int		fd;
 	int		newline;
 	int		options;
 	char	**cmd;
 
 	i = 0;
+	fd = STDOUT_FILENO;
+	if (node->fd_out != -1)
+		fd = node->fd_out;
 	newline = 0;
 	options = 0;
 	cmd = node->cmd;
@@ -45,11 +49,11 @@ void	echo(t_node *node)
 		if (!options && check_options(cmd[i]))
 			continue;
 		options = 1;
-		printf("%s", cmd[i]);
+		write(fd, cmd[i], strlen(cmd[i]));
 		if (cmd[i + 1])
-			printf(" ");
+			write(fd, " ", 1);
 	}
 	if (!newline)
-		printf("\n");
+		write(fd, "\n", 1);
 	g_exit = 0;
 }

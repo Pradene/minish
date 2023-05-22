@@ -74,7 +74,10 @@ int	open_files(t_data *data, t_node *node)
 	{
 		tmp->file = clean_cmd(tmp->file);
 		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
+		{
 			close(node->fd_out);
+			node->fd_out = -1;
+		}
 		if (tmp->type == R_OUT)
 			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		if (tmp->type == R_OUT2)
@@ -85,7 +88,10 @@ int	open_files(t_data *data, t_node *node)
 			return (1);
 		}
 		if (node->fd_in != -1 && tmp->type == R_IN)
+		{
 			close(node->fd_in);
+			node->fd_in =-1;
+		}
 		if (tmp->type == R_IN)
 			node->fd_in = open(tmp->file, O_RDONLY, 0777);
 		if (tmp->type == R_IN && node->fd_in == -1)
@@ -103,31 +109,27 @@ int	open_files(t_data *data, t_node *node)
 void	execute(t_data *data, t_node *node, char **env)
 {
 	char	*path;
-	char	**cmd;
 
-	cmd = node->cmd;
-	path = get_path(env, cmd[0]);
+	if (!node->cmd)
+		return ;
+	path = get_path(env, node->cmd[0]);
 	if (!path)
 	{
-		write(2, cmd[0], strlen(cmd[0]));
+		write(2, node->cmd[0], strlen(node->cmd[0]));
 		prerror(" : command not found\n");
-		if (node->fd_out)
-			close(node->fd_out);
-		if (node->fd_in)
-			close(node->fd_in);
 		free_node(data->root);
-		node = NULL;
+		data->root = NULL;
 		dfree(env);
 		exit(127);
 	}
 	if (access(path, F_OK) == -1)
 	{
-		perror(cmd[0]);
+		perror(node->cmd[0]);
 		exit(127);
 	}
 	if (access(path, X_OK) == -1)
 	{
-		perror(cmd[0]);
+		perror(node->cmd[0]);
 		exit(126);
 	}
 	if (opendir(path))
@@ -136,8 +138,8 @@ void	execute(t_data *data, t_node *node, char **env)
 		prerror(" : Is a directory\n");
 		exit(126);
 	}
-	if (execve(path, cmd, env) == -1)
-		error(cmd[0]);
+	if (execve(path, node->cmd, env) == -1)
+		error(node->cmd[0]);
 }
 
 void	exec_cmd(t_data *data, t_node *node)
@@ -163,11 +165,8 @@ void	exec_cmd(t_data *data, t_node *node)
 			dup2(node->fd_out, STDOUT_FILENO);
 		execute(data, node, data->env);
 	}
-	error = waitpid(pid, &e, WUNTRACED);
-	if (error)
-		g_exit = 130;
-	else
-		g_exit = WEXITSTATUS(e);
+	error = waitpid(pid, &e, 0);
+	g_exit = WEXITSTATUS(e);
 }
 
 void	exec_builtin(t_data *data, t_node *node)
@@ -198,7 +197,7 @@ void	exec_builtin(t_data *data, t_node *node)
 void	exec2(t_data *data, t_node *node)
 {
 	node->cmd = lex(node->cmd, data->env);
-	node->cmd = wild_card(node->cmd, 0, 0 , 0);
+	node->cmd = wild_card(node->cmd, 0, 0, 0);
 	node->cmd = clean_cmds(node->cmd);
 	if (!node->cmd || !node->cmd[0])
 		return ;

@@ -86,6 +86,8 @@ void	ex(t_node *node)
 	long long	n;
 	char		*s;
 
+	if (node->fd_in != -1 || node->fd_out != -1)
+		return ;
 	printf("exit\n");
 	if (dsize(node->cmd) > 2)
 	{

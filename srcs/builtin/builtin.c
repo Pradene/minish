@@ -14,38 +14,40 @@
 
 int	is_builtin(char *s)
 {
-	if (!strncmp(s, "cd", 2))
+	if (!s)
+		return (0);
+	if (!strcmp(s, "cd"))
 		return (1);
-	else if (!strncmp(s, "echo", 4))
+	else if (!strcmp(s, "echo"))
 		return (1);
-	else if (!strncmp(s, "env", 3))
+	else if (!strcmp(s, "env"))
 		return (1);
-	else if (!strncmp(s, "exit", 4))
+	else if (!strcmp(s, "exit"))
 		return (1);
-	else if (!strncmp(s, "export", 6))
+	else if (!strcmp(s, "export"))
 		return (1);
-	else if (!strncmp(s, "pwd", 4))
+	else if (!strcmp(s, "pwd"))
 		return (1);
-	else if (!strncmp(s, "unset", 5))
+	else if (!strcmp(s, "unset"))
 		return (1);
 	return (0);
 }
 
 void	builtin(t_data *data, t_node *node)
 {
-	if (!strncmp(node->cmd[0], "cd", 2))
+	if (!strcmp(node->cmd[0], "cd"))
 		cd(data, node);
-	else if (!strncmp(node->cmd[0], "echo", 4))
+	else if (!strcmp(node->cmd[0], "echo"))
 		echo(node);
-	else if (!strncmp(node->cmd[0], "env", 3))
+	else if (!strcmp(node->cmd[0], "env"))
 		env(data, node);
-	else if (!strncmp(node->cmd[0], "exit", 4))
+	else if (!strcmp(node->cmd[0], "exit"))
 		ex(node);
-	else if (!strncmp(node->cmd[0], "export", 6))
+	else if (!strcmp(node->cmd[0], "export"))
 		data->env = export(data, node);
-	else if (!strncmp(node->cmd[0], "pwd", 3))
+	else if (!strcmp(node->cmd[0], "pwd"))
 		pwd(data, node);
-	else if (!strncmp(node->cmd[0], "unset", 5))
+	else if (!strcmp(node->cmd[0], "unset"))
 		data->env = unset(data, node);
 	return ;
 }

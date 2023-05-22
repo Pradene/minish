@@ -167,6 +167,8 @@ char	**lex(char **cmds, char **env)
 {
 	int	i;
 
+	if (!cmds || !env)
+		return (cmds);
 	i = -1;
 	while (cmds[++i])
 		cmds[i] = lexer(cmds[i], env, 0, 0);

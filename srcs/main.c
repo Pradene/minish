@@ -14,15 +14,6 @@
 
 int	g_exit = 0;
 
-/*
--faire les heredocs dans un fork sinon signaux compliquer
--parsing du echo
--expand segfault quand ya rien
--^C status != 130
-- ">a" gerer ca etpas segfault
--exit|exit (ne pas exit)
-*/
-
 int	main(int ac, char **av, char **envp)
 {
 	t_data	data;

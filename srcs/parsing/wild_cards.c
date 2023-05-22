@@ -196,6 +196,8 @@ char	**wild_card(char **cmds, int i, int j, int k)
 	char	**old_cmd;
 	char	**dirs;
 
+	if (!cmds)
+		return (cmds);
 	old_cmd = cmds;
 	while (old_cmd[i])
 	{
