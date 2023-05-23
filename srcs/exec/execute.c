@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/23 15:14:37 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/23 16:01:38 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void	exec_builtin(t_data *data, t_node *node)
 void	exec2(t_data *data, t_node *node)
 {
 	node->cmd = expand(data, node->cmd);
-	node->cmd = wild_card(data, node->cmd);
+	node->cmd = wild_card(node->cmd, 0);
 	node->cmd = clean_cmds(node->cmd);
 	if (!node->cmd || !node->cmd[0])
 		return ;
