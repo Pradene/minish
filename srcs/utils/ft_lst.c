@@ -51,7 +51,7 @@ void	lstclear(t_list **lst)
 {
 	t_list	*p;
 
-	if (!lst)
+	if (!lst || !(*lst))
 		return ;
 	while ((*lst))
 	{
@@ -60,6 +60,7 @@ void	lstclear(t_list **lst)
 		free((*lst));
 		(*lst) = p;
 	}
+	(*lst) = NULL;
 }
 
 void	lstprint(t_list *lst)
@@ -73,3 +74,16 @@ void	lstprint(t_list *lst)
 		e = e->next;
 	}
 }
+
+t_list	*lstnew(char *s)
+{
+	t_list	*new;
+
+	new = malloc(sizeof(t_list));
+	if (!new)
+		return (0);
+	new->s = s;
+	new->next = 0;
+	return (new);
+}
+

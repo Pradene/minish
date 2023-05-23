@@ -94,12 +94,14 @@ char	**ft_split(const char *s, char c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char *s2);
+char	*ft_stradd(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*lstlast(t_list *lst);
 int		lstsize(t_list *lst);
 void	lstadd(t_list **lst, t_list *new);
 void	lstclear(t_list **lst);
 void	lstprint(t_list *lst);
+t_list	*lstnew(char *s);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_itoa(int n);
 

@@ -304,7 +304,7 @@ char	*expansion(t_data *data, char *cmd)
 			tmp = ft_itoa(g_exit);
 			if (!tmp)
 				continue ;
-			new = ft_strjoin(new, tmp);
+			new = ft_stradd(new, tmp);
 			free(tmp);
 			i += 1;
 		}
@@ -314,7 +314,7 @@ char	*expansion(t_data *data, char *cmd)
 			tmp = handle_dollar(data, &cmd[i], &i);
 			if (!tmp)
 				continue ;
-			new = ft_strjoin(new, tmp);
+			new = ft_stradd(new, tmp);
 		}
 		else
 			new = addchar(new, cmd[i]);

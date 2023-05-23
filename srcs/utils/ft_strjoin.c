@@ -53,7 +53,5 @@ char	*ft_strjoin(char *s1, char *s2)
 	ft_memcpy(str, s1, size1);
 	ft_memcpy(str + size1, s2, size2);
 	str[size1 + size2] = 0;
-	if (s1)
-		free(s1);
 	return (str);
 }

@@ -50,7 +50,7 @@
 // 			count++;
 // 		i++;
 // 	}
-// 	printf("d\n");
+	// printf("d\n");
 // 	return (count);
 // }
 
@@ -357,7 +357,7 @@ char	*get_subdir(char *path)
 	return (new);
 }
 
-void	match(t_list *lst, char *pattern, char *s)
+int	match(char *pattern, char *s)
 {
 	int		i;
 	char	**ss;
@@ -365,10 +365,9 @@ void	match(t_list *lst, char *pattern, char *s)
 	char	*tmp;
 	int		size;
 
-	(void)lst;
 	ss = ft_split(pattern, '*');
 	if (!ss)
-		return ;
+		return (0);
 	i = -1;
 	size = strlen(s);
 	if (pattern[0] != '*')
@@ -378,7 +377,7 @@ void	match(t_list *lst, char *pattern, char *s)
 	{
 		tmp = ft_strnstr(s + index, ss[i], size);
 		if (!tmp)
-			return (dfree(ss));
+			return (dfree(ss), 0);
 		index = tmp - s + 1;
 		size = strlen(s) - index;
 		if (i + 1 == dsize(ss) - 1 && pattern[strlen(pattern) - 1] != '*')
@@ -388,7 +387,7 @@ void	match(t_list *lst, char *pattern, char *s)
 		}
 	}
 	dfree(ss);
-	printf("Match: %s\n", s);
+	return (1);
 }
 
 void	get_dir(t_list *lst)
@@ -398,34 +397,66 @@ void	get_dir(t_list *lst)
 	DIR				*dir;
 	char			*path;
 	char			*s;
+	char			*new;
+	t_list			*tmp;
+	int				count;
+	char			*last;
+	int				index;
+	DIR				*dirlo;
 
 	e = lst;
 	while (e)
 	{
-		if (strchr(e->s, '*') && !strchr(e->s, '\'') \
-		&& !strchr(e->s, '\"'))
+		count = 1;
+		while (count && strchr(e->s, '*') && \
+		!strchr(e->s, '\'') && !strchr(e->s, '\"'))
 		{
+			index = strchr(e->s, '*') - e->s;
+			last = strchr(e->s + index, '/');
+			tmp = e->next;
+			e->next = NULL;
 			path = find_path(e->s);
 			if (!path)
 				break ;
 			dir = opendir(path);
 			if (dir)
 			{
+				count = 0;
 				s = get_subdir(e->s);
 				current = readdir(dir);
 				while (current)
 				{
-					if (!strcmp(current->d_name, ".") \
-					|| !strcmp(current->d_name, ".."))
-						;
-					else
-						match(e, s, current->d_name);
+					if (strcmp(current->d_name, ".") \
+					&& strcmp(current->d_name, ".."))
+					{
+						if (match(s, current->d_name))
+						{
+							if (strcmp(path, "."))
+								new = ft_strjoin(path, current->d_name);
+							else
+								new = strdup(current->d_name);
+							dirlo = opendir(new);
+							if (last && dirlo)
+								new = ft_stradd(new, last);
+							if (dirlo)
+								closedir(dirlo);
+							if (!count)
+							{
+								free(e->s);
+								e->s = new;
+							}
+							else
+								lstadd(&e, lstnew(new));
+							count += 1;
+						}
+					}
 					current = readdir(dir);
 				}
 				free(s);
+				closedir(dir);
 			}
-			closedir(dir);
 			free(path);
+			lstlast(e)->next = tmp;
 		}
 		e = e->next;
 	}
@@ -444,25 +475,35 @@ t_list	*arrtolst(char **ss)
 		new = malloc(sizeof(t_list));
 		if (!new)
 			return (lstclear(&lst), NULL);
-		new->s = ss[i];
+		new->s = strdup(ss[i]);
 		new->next = NULL;
 		lstadd(&lst, new);
 	}
+	dfree(ss);
 	return (lst);
 }
 
-void	clear(t_list *lst)
+char	**lsttoarr(t_list **lst)
 {
 	t_list	*e;
-	t_list	*tmp;
+	char	**cmds;
+	int		i;
+	int		size;
 
-	e = lst;
+	e = *lst;
+	size = lstsize(e);
+	cmds = malloc(sizeof(char *) * (size + 1));
+	if (!cmds)
+		return (lstclear(lst), NULL);
+	cmds[size] = NULL;
+	i = -1;
 	while (e)
 	{
-		tmp = e->next;
-		free(e);
-		e = tmp;
+		cmds[++i] = strdup(e->s);
+		e = e->next;
 	}
+	lstclear(lst);
+	return (cmds);
 }
 
 char	**wild_card(t_data *data, char **cmds)
@@ -476,12 +517,9 @@ char	**wild_card(t_data *data, char **cmds)
 	new = NULL;
 	lst = arrtolst(cmds);
 	if (!lst)
-		return (cmds);
-	// lstprint(lst);
+		return (NULL);
 	get_dir(lst);
-	// new = lsttoarr(lst);
-	// if (!new)
-		// return (lstclear(&lst), cmds);
-	clear(lst);
-	return (cmds);
+	new = lsttoarr(&lst);
+	free(lst);
+	return (new);
 }
