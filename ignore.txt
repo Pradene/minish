@@ -11,8 +11,8 @@
     fun:add_history
 }
 {
-	leak /usr/bin/grep
-	Memcheck:Leak
-	...
-	fun:grep
+    leak /usr/bin/grep
+    Memcheck:Leak
+    ...
+    fun:grep
 }

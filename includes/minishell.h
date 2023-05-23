@@ -121,6 +121,7 @@ int		dsize(char **ss);
 void	parse(t_node **root, char **s);
 
 char	**expand(t_data *data, char **cmds);
+char	*expansion(t_data *data, char *cmd);
 
 // TREE
 t_node	*create_node(t_list *lst, int first, int last);
@@ -157,6 +158,7 @@ char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
 char	**wild_card(t_data *data, char **cmds);
+// char	**wild_card(char **cmds, int i);
 
 // SINGLETON
 t_data	*singleton(t_data *data);

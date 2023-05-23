@@ -21,6 +21,9 @@ void	env(t_data *data, t_node *node)
 		return ;
 	i = -1;
 	while (data->env[++i])
-		printf("%s \n", data->env[i]);
+	{
+		if (strchr(data->env[i], '='))
+			printf("%s\n", data->env[i]);
+	}
 	g_exit = 0;
 }

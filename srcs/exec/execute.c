@@ -73,6 +73,9 @@ int	open_files(t_data *data, t_node *node)
 	tmp = node->right;
 	while (tmp)
 	{
+		tmp->file = expansion(data, tmp->file);
+		if (!tmp->file)
+			return (1);
 		tmp->file = clean_cmd(tmp->file);
 		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
 		{
@@ -174,7 +177,13 @@ void	exec_cmd(t_data *data, t_node *node)
 	{
 		signal(SIGINT, sig_child);
 		if (open_files(data, node))
+		{
+			// write(2, "No such file or directory\n", 27);
+			free_node(data->root);
+			data->root = NULL;
+			dfree(data->env);
 			exit(1);
+		}
 		if (node->fd_in != -1)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)
@@ -196,6 +205,9 @@ void	exec_builtin(t_data *data, t_node *node)
 	dup2(STDIN_FILENO, sstdin);
 	if (open_files(data, node))
 	{
+		// write(2, "No such file or directory\n", 27);
+		close(sstdout);
+		close(sstdin);
 		g_exit = 1;
 		return ;
 	}

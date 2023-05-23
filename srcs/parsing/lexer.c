@@ -246,12 +246,7 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 	value = NULL;
 	while (cmd[++i])
 	{
-		if (cmd[i] == '?')
-		{
-			(*c) += 1;
-			return (ft_itoa(g_exit));
-		}
-		else if (cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ')
+		if (cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ')
 		{
 			j = i;
 			while (cmd[j])
@@ -304,7 +299,16 @@ char	*expansion(t_data *data, char *cmd)
 	while (cmd[++i])
 	{
 		quote_status(cmd[i], &quotes);
-		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] != '\'' \
+		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
+		{
+			tmp = ft_itoa(g_exit);
+			if (!tmp)
+				continue ;
+			new = ft_strjoin(new, tmp);
+			free(tmp);
+			i += 1;
+		}
+		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] != '\'' \
 		&& cmd[i + 1] != '\"' && cmd[i + 1] != ' ')
 		{
 			tmp = handle_dollar(data, &cmd[i], &i);

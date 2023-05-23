@@ -23,7 +23,7 @@
 // void	*ft_calloc(size_t nmemb, size_t size);
 // int	ft_strncmp(const char *s1, const char *s2, int n);
 
-// /* static void	quote_status(char c, int *quote)
+// static void	quote_status(char c, int *quote)
 // {
 // 	if ((*quote == 1 && c == '\'')
 // 		|| (*quote == 2 && c == '\"'))
@@ -35,7 +35,7 @@
 // 	else
 // 		return ;
 // }
-//  */
+
 // int	looking_for_a_star(char *s)
 // {
 // 	int	i;
@@ -247,7 +247,7 @@
 // 		k++;
 // 		j++;
 // 	}
-// 	free(dirs);
+// 	dfree(dirs);
 // 	n = i + 1;
 // 	i = j - 1;
 // 	while (old_cmd[n])
@@ -277,11 +277,12 @@
 // 			if (dirs[0])
 // 			{
 // 				new_cmd = wild_card2(old_cmd, dirs, i, 0, 0);
-// 				free(old_cmd);
+// 				//dfree(old_cmd);
 // 				old_cmd = new_cmd;
+// 				// free(dirs);
 // 			}
 // 			else
-// 				free(dirs);
+// 				dfree(dirs);
 // 		}
 // 		i++;
 // 	}
@@ -334,7 +335,7 @@ char	*find_path(char *path)
 			return (NULL);
 		return (new);
 	}
-	new = substr(path, index);
+	new = substr(path, index + 1);
 	if (!new)
 		return (path);
 	return (new);
@@ -371,7 +372,7 @@ void	match(t_list *lst, char *pattern, char *s)
 	index = 0;
 	while (ss[++i])
 	{
-		tmp = ft_strnstr(s + index, ss[i], strlen(ss[i]));
+		tmp = ft_strnstr(s + index, ss[i], strlen(s + index));
 		if (!tmp)
 		{
 			dfree(ss);
@@ -410,6 +411,7 @@ void	get_dir(t_list *lst)
 				current = readdir(dir);
 				while (current)
 				{
+					printf("%s\n", current->d_name);
 					if (!strcmp(current->d_name, ".") \
 					|| !strcmp(current->d_name, ".."))
 						;
@@ -476,7 +478,7 @@ char	**wild_card(t_data *data, char **cmds)
 	get_dir(lst);
 	// new = lsttoarr(lst);
 	// if (!new)
-	// 	return (lstclear(&lst), cmds);
+		// return (lstclear(&lst), cmds);
 	clear(lst);
 	return (cmds);
 }

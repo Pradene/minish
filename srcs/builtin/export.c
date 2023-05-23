@@ -25,7 +25,10 @@ void	handle_export(char **env)
 		while (env[i][++j] && env[i][j] != '=')
 			printf("%c", env[i][j]);
 		if (!env[i][j])
+		{
+			printf("\n");
 			continue ;
+		}
 		printf("=\"");
 		while (env[i][++j])
 			printf("%c", env[i][j]);
