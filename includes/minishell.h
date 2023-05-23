@@ -157,8 +157,8 @@ void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
-//char	**wild_card(t_data *data, char **cmds);
-char	**wild_card(char **cmds, int i);
+char	**wild_card(t_data *data, char **cmds);
+// char	**wild_card(char **cmds, int i);
 
 // SINGLETON
 t_data	*singleton(t_data *data);
