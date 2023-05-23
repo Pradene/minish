@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/22 15:45:05 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/05/23 16:01:38 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,18 @@ void	sig_child(int sig)
 	data->root = NULL;
 	dfree(data->env);
 	exit(130);
+}
+
+void	sig_child2(int sig)
+{
+	t_data	*data;
+
+	(void)sig;
+	data = singleton(NULL);
+	free_node(data->root);
+	data->root = NULL;
+	dfree(data->env);
+	exit(131);
 }
 
 void	heredoc(t_data *data, t_node *node, char *limiter)
@@ -176,6 +188,7 @@ void	exec_cmd(t_data *data, t_node *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, sig_child);
+		signal(SIGQUIT, sig_child2);
 		if (open_files(data, node))
 		{
 			// write(2, "No such file or directory\n", 27);
@@ -225,7 +238,7 @@ void	exec_builtin(t_data *data, t_node *node)
 void	exec2(t_data *data, t_node *node)
 {
 	node->cmd = expand(data, node->cmd);
-	node->cmd = wild_card(data, node->cmd);
+	node->cmd = wild_card(node->cmd, 0);
 	node->cmd = clean_cmds(node->cmd);
 	if (!node->cmd || !node->cmd[0])
 		return ;
