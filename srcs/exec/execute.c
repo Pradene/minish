@@ -124,20 +124,22 @@ void	execute(t_data *data, t_node *node, char **env)
 		dfree(env);
 		exit(127);
 	}
-	if (access(path, F_OK) == -1)
+	else if (access(path, F_OK) == -1)
 	{
 		perror(node->cmd[0]);
 		free_node(data->root);
 		data->root = NULL;
 		dfree(env);
+		free(path);
 		exit(127);
 	}
-	if (access(path, X_OK) == -1)
+	else if (access(path, X_OK) == -1)
 	{
 		perror(node->cmd[0]);
 		free_node(data->root);
 		data->root = NULL;
 		dfree(env);
+		free(path);
 		exit(126);
 	}
 	dir = opendir(path);
@@ -149,6 +151,7 @@ void	execute(t_data *data, t_node *node, char **env)
 		closedir(dir);
 		data->root = NULL;
 		dfree(env);
+		free(path);
 		exit(126);
 	}
 	if (execve(path, node->cmd, env) == -1)
@@ -210,7 +213,7 @@ void	exec_builtin(t_data *data, t_node *node)
 void	exec2(t_data *data, t_node *node)
 {
 	node->cmd = expand(data, node->cmd);
-	// node->cmd = wild_card(node->cmd, 0);
+	node->cmd = wild_card(data, node->cmd);
 	node->cmd = clean_cmds(node->cmd);
 	if (!node->cmd || !node->cmd[0])
 		return ;

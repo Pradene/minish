@@ -365,11 +365,11 @@ void	parse(t_node **root, char **s)
 	lst = tokens(s);
 	if (!lst)
 		return ;
-	*root = create_tree(lst, 0, ft_lstsize(lst));
+	*root = create_tree(lst, 0, lstsize(lst));
 	if (!(*root))
 	{
 		prerror("Syntax error\n");
 		g_exit = 2;
 	}
-	ft_lstclear(&lst);
+	lstclear(&lst);
 }

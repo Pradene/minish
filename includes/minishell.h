@@ -95,11 +95,11 @@ char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
-t_list	*ft_lstlast(t_list *lst);
-int		ft_lstsize(t_list *lst);
-void	ft_lstadd(t_list **lst, t_list *new);
-void	ft_lstclear(t_list **lst);
-void	ft_lstprint(t_list *lst);
+t_list	*lstlast(t_list *lst);
+int		lstsize(t_list *lst);
+void	lstadd(t_list **lst, t_list *new);
+void	lstclear(t_list **lst);
+void	lstprint(t_list *lst);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_itoa(int n);
 
@@ -156,9 +156,7 @@ void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
-char	**wild_carder(char *cmd);
-char	**wild_card(char **cmds, int i);
-int		tab_size(char **tab);
+char	**wild_card(t_data *data, char **cmds);
 
 // SINGLETON
 t_data	*singleton(t_data *data);

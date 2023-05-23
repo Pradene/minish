@@ -105,7 +105,7 @@ t_list	*tokens(char **s)
 		return (NULL);
 	while (new)
 	{
-		ft_lstadd(&lst, new);
+		lstadd(&lst, new);
 		new = get_token(&tmp);
 	}
 	return (lst);

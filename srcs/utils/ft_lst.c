@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-t_list	*ft_lstlast(t_list *lst)
+t_list	*lstlast(t_list *lst)
 {
 	t_list	*current;
 
@@ -24,7 +24,7 @@ t_list	*ft_lstlast(t_list *lst)
 	return (current);
 }
 
-int	ft_lstsize(t_list *lst)
+int	lstsize(t_list *lst)
 {
 	int	i;
 
@@ -37,17 +37,17 @@ int	ft_lstsize(t_list *lst)
 	return (i);
 }
 
-void	ft_lstadd(t_list **lst, t_list *new)
+void	lstadd(t_list **lst, t_list *new)
 {
 	if (!lst)
 		return ;
 	if (*lst)
-		ft_lstlast(*lst)->next = new;
+		lstlast(*lst)->next = new;
 	else
 		*lst = new;
 }
 
-void	ft_lstclear(t_list **lst)
+void	lstclear(t_list **lst)
 {
 	t_list	*p;
 
@@ -62,7 +62,7 @@ void	ft_lstclear(t_list **lst)
 	}
 }
 
-void	ft_lstprint(t_list *lst)
+void	lstprint(t_list *lst)
 {
 	t_list	*e;
 
