@@ -45,3 +45,14 @@ int	last_index(char *s, int c)
 	index = p - s;
 	return (index);
 }
+
+void	free_data(t_data *data)
+{
+	if (data->sstdout != -1)
+		close(data->sstdout);
+	if (data->sstdin != -1)
+		close(data->sstdin);
+	dfree(data->env);
+	free_node(data->root);
+	data->root = NULL;
+}

@@ -42,7 +42,7 @@ void	builtin(t_data *data, t_node *node)
 	else if (!strcmp(node->cmd[0], "env"))
 		env(data, node);
 	else if (!strcmp(node->cmd[0], "exit"))
-		ex(node);
+		ex(data, node);
 	else if (!strcmp(node->cmd[0], "export"))
 		data->env = export(data, node);
 	else if (!strcmp(node->cmd[0], "pwd"))

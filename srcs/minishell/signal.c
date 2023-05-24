@@ -17,7 +17,6 @@ void	sig_handler(int sig)
 	t_data	*data;
 
 	(void)sig;
-	printf("sig : %d\n", sig);
 	g_exit = 130;
 	data = singleton(NULL);
 	if (!data)

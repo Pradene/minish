@@ -24,18 +24,6 @@ void	sig_child(int sig)
 	exit(130);
 }
 
-void	sig_child2(int sig)
-{
-	t_data	*data;
-
-	(void)sig;
-	data = singleton(NULL);
-	free_node(data->root);
-	data->root = NULL;
-	dfree(data->env);
-	exit(131);
-}
-
 void	heredoc(t_data *data, t_node *node, char *limiter)
 {
 	char	*line;
@@ -188,10 +176,8 @@ void	exec_cmd(t_data *data, t_node *node)
 	if (pid == 0)
 	{
 		signal(SIGINT, sig_child);
-		signal(SIGQUIT, sig_child2);
 		if (open_files(data, node))
 		{
-			// write(2, "No such file or directory\n", 27);
 			free_node(data->root);
 			data->root = NULL;
 			dfree(data->env);
@@ -209,18 +195,14 @@ void	exec_cmd(t_data *data, t_node *node)
 
 void	exec_builtin(t_data *data, t_node *node)
 {
-	int	sstdin;
-	int	sstdout;
-
-	sstdin = dup(STDIN_FILENO);
-	sstdout = dup(STDOUT_FILENO);
-	dup2(STDOUT_FILENO, sstdout);
-	dup2(STDIN_FILENO, sstdin);
+	data->sstdin = dup(STDIN_FILENO);
+	data->sstdout = dup(STDOUT_FILENO);
+	dup2(STDOUT_FILENO, data->sstdout);
+	dup2(STDIN_FILENO, data->sstdin);
 	if (open_files(data, node))
 	{
-		// write(2, "No such file or directory\n", 27);
-		close(sstdout);
-		close(sstdin);
+		close(data->sstdout);
+		close(data->sstdin);
 		g_exit = 1;
 		return ;
 	}
@@ -229,10 +211,10 @@ void	exec_builtin(t_data *data, t_node *node)
 	if (node->fd_out != -1)
 		dup2(node->fd_out, STDOUT_FILENO);
 	builtin(data, node);
-	dup2(sstdin, STDIN_FILENO);
-	dup2(sstdout, STDOUT_FILENO);
-	close(sstdin);
-	close(sstdout);
+	dup2(data->sstdin, STDIN_FILENO);
+	dup2(data->sstdout, STDOUT_FILENO);
+	close(data->sstdin);
+	close(data->sstdout);
 }
 
 void	exec2(t_data *data, t_node *node)

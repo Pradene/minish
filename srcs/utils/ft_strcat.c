@@ -34,11 +34,13 @@ char	*ft_stradd(char *s1, char *s2)
 	int		size_s1;
 	int		size_s2;
 
+	if (!s2)
+		return (s1);
 	size_s1 = ft_strlen(s1);
 	size_s2 = ft_strlen(s2);
 	s = malloc(sizeof(char) * (size_s1 + size_s2 + 1));
 	if (!s)
-		return (NULL);
+		return (s1);
 	ft_memcpy(s, s1, size_s1);
 	ft_memcpy(s + size_s1, s2, size_s2 + 1);
 	if (s1)

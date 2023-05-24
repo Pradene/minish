@@ -86,7 +86,7 @@ t_list	*search_orand(t_list *lst, int *pos, int size)
 	p2 = -1;
 	token = search_token(lst, "||", &p1, size);
 	token = search_token(lst, "&&", &p2, size);
-	if (p1 != -1 && p2 != -1)
+	if (p1 != -1 || p2 != -1)
 	{
 		*pos = max(p1, p2);
 		return (go(lst, *pos));
@@ -105,9 +105,6 @@ t_list	*search_sep(t_list *lst, int *pos, int size)
 	if (token)
 		return (token);
 	token = search_orand(lst, pos, size);
-	if (token)
-		return (token);
-	token = search_token(lst, "&&", pos, size);
 	if (token)
 		return (token);
 	token = search_token(lst, "|", pos, size);

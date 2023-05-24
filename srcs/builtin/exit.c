@@ -45,9 +45,10 @@ char	*itoll(long long n)
 
 	d = 1;
 	c = count(n);
-	str = ft_calloc(c + 1, sizeof(char));
+	str = malloc(sizeof(char) * (c + 1));
 	if (!str)
 		return (0);
+	str[c] = '\0';
 	if (n < 0)
 		*str = '-';
 	while (n || d == 1)
@@ -81,20 +82,16 @@ int	intcmp(char *s1, char *s2)
 	return (0);
 }
 
-void	ex(t_node *node)
+void	ex(t_data *data, t_node *node)
 {
 	long long	n;
 	char		*s;
 
 	if (node->fd_in != -1 || node->fd_out != -1)
 		return ;
-	printf("exit\n");
 	if (dsize(node->cmd) > 2)
-	{
-		prerror("exit: too many arguments\n");
-		g_exit = 1;
-		return ;
-	}
+		return (g_exit = 1, prerror("exit: too many arguments\n"));
+	printf("exit\n");
 	if (node->cmd[1])
 	{
 		n = atoll(node->cmd[1]);
@@ -103,11 +100,12 @@ void	ex(t_node *node)
 		{
 			write(2, node->cmd[1], ft_strlen(node->cmd[1]));
 			prerror(": numeric argument required\n");
-			free(s);
+			(free_data(data), free(s));
 			exit(2);
 		}
-		free(s);
+		(free_data(data), free(s));
 		exit(n % 256);
 	}
+	free_data(data);
 	exit(0);
 }

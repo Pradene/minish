@@ -86,4 +86,3 @@ t_list	*lstnew(char *s)
 	new->next = 0;
 	return (new);
 }
-

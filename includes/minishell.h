@@ -78,6 +78,8 @@ typedef struct s_data
 	char	**env;
 	t_node	*root;
 	int		exec;
+	int		sstdin;
+	int		sstdout;
 }	t_data;
 
 // UTILS
@@ -94,7 +96,7 @@ char	**ft_split(const char *s, char c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char *s2);
-char	*ft_stradd(char *s1, char *s2);
+// char	*ft_stradd(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*lstlast(t_list *lst);
 int		lstsize(t_list *lst);
@@ -113,11 +115,12 @@ char	*get_env(char **env, char *s);
 char	**envcp(char **envp);
 int		last_index(char *s, int c);
 char	*get_prompt(void);
-void	sig_handler(int sig);
 void	sig_child(int sig);
 void	set_attribute(void);
 void	dfree(char **ss);
 int		dsize(char **ss);
+void	free_data(t_data *data);
+void	sig_handler(int sig);
 
 // PARSER
 void	parse(t_node **root, char **s);
@@ -153,7 +156,7 @@ void	builtin(t_data *data, t_node *node);
 void	cd(t_data *data, t_node *node);
 void	echo(t_node *node);
 void	env(t_data *data, t_node *node);
-void	ex(t_node *node);
+void	ex(t_data *data, t_node *node);
 char	**export(t_data *data, t_node *node);
 void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);

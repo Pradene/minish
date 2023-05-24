@@ -52,16 +52,43 @@ int	check_arg(char *arg)
 	return (0);
 }
 
-int	sscpy(char **dest, char **src)
+int	sscpy(char **dst, char **src)
 {
 	int	i;
 
 	i = -1;
 	while (src[++i])
 	{
-		dest[i] = ft_strdup(src[i]);
-		if (!dest[i])
+		dst[i] = ft_strdup(src[i]);
+		if (!dst[i])
 			return (1);
+	}
+	dst[i] = NULL;
+	return (0);
+}
+
+int	addtoenv(char **dst, char **src)
+{
+	int	i;
+	int	size;
+
+	size = dsize(dst);
+	i = 0;
+	while (src[++i])
+	{
+		if (!check_arg(src[i]))
+		{
+			dst[size + i - 1] = ft_strdup(src[i]);
+			if (!dst[size + i - 1])
+				return (1);
+		}
+		else
+		{
+			write(2, src[i], ft_strlen(src[i]));
+			prerror(": not a valid identifier\n");
+			g_exit = 1;
+			return (1);
+		}
 	}
 	return (0);
 }
@@ -70,9 +97,9 @@ char	**export(t_data *data, t_node *node)
 {
 	int		c1;
 	int		c2;
-	int		i;
 	char	**e;
 
+	e = NULL;
 	if (!node->cmd[1])
 		return (handle_export(data->env), data->env);
 	c1 = dsize(data->env);
@@ -82,24 +109,9 @@ char	**export(t_data *data, t_node *node)
 		return (data->env);
 	e[c1 + c2] = NULL;
 	if (sscpy(e, data->env))
-		return (free(e), data->env);
-	i = 0;
-	while (node->cmd[++i])
-	{
-		if (!check_arg(node->cmd[i]))
-		{
-			e[c1 + i - 1] = ft_strdup(node->cmd[i]);
-			if (!e[c1 + i - 1])
-				return (dfree(e), data->env);
-		}
-		else
-		{
-			write(2, node->cmd[i], ft_strlen(node->cmd[i]));
-			prerror(": not a valid identifier\n");
-			g_exit = 1;
-			return (free(e), data->env);
-		}
-	}
+		return (dfree(e), data->env);
+	if (addtoenv(e, node->cmd))
+		return (dfree(e), data->env);
 	dfree(data->env);
 	g_exit = 0;
 	return (e);

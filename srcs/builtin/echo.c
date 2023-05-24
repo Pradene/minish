@@ -33,7 +33,6 @@ void	echo(t_node *node)
 	int		fd;
 	int		newline;
 	int		options;
-	char	**cmd;
 
 	i = 0;
 	fd = STDOUT_FILENO;
@@ -41,16 +40,15 @@ void	echo(t_node *node)
 		fd = node->fd_out;
 	newline = 0;
 	options = 0;
-	cmd = node->cmd;
-	if (cmd[1])
-		newline = check_options(cmd[1]);
-	while (cmd[++i])
+	if (node->cmd[1])
+		newline = check_options(node->cmd[1]);
+	while (node->cmd[++i])
 	{
-		if (!options && check_options(cmd[i]))
+		if (!options && check_options(node->cmd[i]))
 			continue ;
 		options = 1;
-		write(fd, cmd[i], ft_strlen(cmd[i]));
-		if (cmd[i + 1])
+		write(fd, node->cmd[i], ft_strlen(node->cmd[i]));
+		if (node->cmd[i + 1])
 			write(fd, " ", 1);
 	}
 	if (!newline)
