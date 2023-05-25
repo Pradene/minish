@@ -24,6 +24,13 @@ void	sig_child(int sig)
 	exit(130);
 }
 
+void	open_file(int *fd, char *file, int option)
+{
+	if (*fd != -1)
+		close(*fd);
+	*fd = open(file, option, 0777);
+}
+
 int	open_files(t_data *data, t_node *node)
 {
 	t_node	*tmp;
@@ -33,37 +40,25 @@ int	open_files(t_data *data, t_node *node)
 	{
 		tmp->file = expansion(data, tmp->file);
 		if (!tmp->file)
+			return (prerror("Ambiguous redirect\n"), 1);
+		if (strchr(tmp->file, '*'))
 		{
-			prerror("bash : ambiguous redirect\n");
-			return (1);
+			fprintf(stderr, "ok\n");
+			return (prerror("Ambiguous redirect\n"), 1);
 		}
 		tmp->file = clean_cmd(tmp->file);
-		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
-		{
-			close(node->fd_out);
-			node->fd_out = -1;
-		}
+		if (!tmp->file)
+			return (1);
 		if (tmp->type == R_OUT)
-			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+			open_file(&node->fd_out, tmp->file, O_WRONLY | O_CREAT | O_TRUNC);
 		if (tmp->type == R_OUT2)
-			node->fd_out = open(tmp->file, O_WRONLY | O_CREAT | O_APPEND, 0777);
+			open_file(&node->fd_out, tmp->file, O_WRONLY | O_CREAT | O_APPEND);
 		if ((tmp->type == R_OUT || tmp->type == R_OUT2) && node->fd_out == -1)
-		{
-			perror(tmp->file);
-			return (1);
-		}
-		if (node->fd_in != -1 && tmp->type == R_IN)
-		{
-			close(node->fd_in);
-			node->fd_in = -1;
-		}
+			return (perror(tmp->file), 1);
 		if (tmp->type == R_IN)
-			node->fd_in = open(tmp->file, O_RDONLY, 0777);
+			open_file(&node->fd_in, tmp->file, O_RDONLY);
 		if (tmp->type == R_IN && node->fd_in == -1)
-		{
-			perror(tmp->file);
-			return (1);
-		}
+			return (perror(tmp->file), 1);
 		tmp = tmp->right;
 	}
 	return (0);
@@ -135,9 +130,7 @@ void	exec_cmd(t_data *data, t_node *node)
 		signal(SIGINT, sig_child);
 		if (open_files(data, node))
 		{
-			free_node(data->root);
-			data->root = NULL;
-			dfree(data->env);
+			free_data(data);
 			exit(1);
 		}
 		if (node->fd_in != -1)
@@ -181,9 +174,9 @@ void	exec2(t_data *data, t_node *node)
 	node->cmd = expand(data, node->cmd);
 	node->cmd = wild_card(data, node->cmd);
 	node->cmd = clean_cmds(node->cmd);
-	if (!node->cmd)
+	if (!node)
 		return ;
-	if (node->fd_in == -1 && node->fd_out == -1 \
+	if (node->cmd && node->fd_in == -1 && node->fd_out == -1 \
 	&& is_builtin(node->cmd[0]))
 		exec_builtin(data, node);
 	else

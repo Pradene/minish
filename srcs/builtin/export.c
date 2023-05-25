@@ -93,7 +93,7 @@ int	addtoenv(char **dst, char **src)
 		}
 	}
 	dst[size + i - exit - 1] = NULL;
-	return (exit);
+	return (0);
 }
 
 char	**export(t_data *data, t_node *node)
