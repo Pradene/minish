@@ -22,6 +22,7 @@ PARSING_FILES =	clean.c \
 				free_tree.c \
 				lexer.c \
 				parser.c \
+				heredoc.c \
 				print_tree.c \
 				token.c \
 				wild_cards.c \

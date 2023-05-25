@@ -23,6 +23,8 @@ int	main(int ac, char **av, char **envp)
 		exit(EXIT_FAILURE);
 	data.env = envcp(envp);
 	data.root = NULL;
+	data.tmp = NULL;
+	data.tokens = NULL;
 	data.exec = 0;
 	data.sstdin = -1;
 	data.sstdout = -1;

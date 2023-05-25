@@ -18,52 +18,10 @@ void	sig_child(int sig)
 
 	(void)sig;
 	data = singleton(NULL);
-	free_node(data->root);
-	data->root = NULL;
-	dfree(data->env);
+	if (!data)
+		exit(130);
+	free_data(data);
 	exit(130);
-}
-
-void	heredoc(t_data *data, t_node *node, char *limiter)
-{
-	char	*line;
-	int		fd[2];
-	int		e;
-	pid_t	pid;
-
-	if (pipe(fd) == -1)
-		return ;
-	pid = fork();
-	if (pid == -1)
-		return ;
-	else if (pid == 0)
-	{
-		close(fd[0]);
-		while (1)
-		{
-			line = readline("> ");
-			if (!line)
-			{
-				close(fd[1]);
-				free_node(data->root);
-				dfree(data->env);
-				exit(0);
-			}
-			if (!strcmp(limiter, line))
-				break ;
-			write(fd[1], line, ft_strlen(line));
-			write(fd[1], "\n", 1);
-			free(line);
-		}
-		free(line);
-		close(fd[1]);
-		free_node(data->root);
-		dfree(data->env);
-		exit(0);
-	}
-	waitpid(pid, &e, 0);
-	close(fd[1]);
-	node->fd_in = fd[0];
 }
 
 int	open_files(t_data *data, t_node *node)
@@ -75,7 +33,10 @@ int	open_files(t_data *data, t_node *node)
 	{
 		tmp->file = expansion(data, tmp->file);
 		if (!tmp->file)
+		{
+			prerror("bash : ambiguous redirect\n");
 			return (1);
+		}
 		tmp->file = clean_cmd(tmp->file);
 		if (node->fd_out != -1 && (tmp->type == R_OUT || tmp->type == R_OUT2))
 		{
@@ -103,8 +64,6 @@ int	open_files(t_data *data, t_node *node)
 			perror(tmp->file);
 			return (1);
 		}
-		if (tmp->type == HEREDOC)
-			heredoc(data, node, tmp->file);
 		tmp = tmp->right;
 	}
 	return (0);
@@ -115,7 +74,7 @@ void	execute(t_data *data, t_node *node, char **env)
 	char	*path;
 	DIR		*dir;
 
-	if (!node->cmd)
+	if (!node->cmd || !node->cmd[0])
 		return ;
 	path = get_path(env, node->cmd[0]);
 	if (!path)
@@ -167,8 +126,6 @@ void	exec_cmd(t_data *data, t_node *node)
 	int		e;
 	int		error;
 
-	if (is_builtin(node->cmd[0]))
-		return (builtin(data, node));
 	e = 0;
 	pid = fork();
 	if (pid == -1)
@@ -187,6 +144,12 @@ void	exec_cmd(t_data *data, t_node *node)
 			dup2(node->fd_in, STDIN_FILENO);
 		if (node->fd_out != -1)
 			dup2(node->fd_out, STDOUT_FILENO);
+		if (is_builtin(node->cmd[0]))
+		{
+			builtin(data, node);
+			free_data(data);
+			exit(g_exit);
+		}
 		execute(data, node, data->env);
 	}
 	error = waitpid(pid, &e, 0);
@@ -195,17 +158,13 @@ void	exec_cmd(t_data *data, t_node *node)
 
 void	exec_builtin(t_data *data, t_node *node)
 {
-	data->sstdin = dup(STDIN_FILENO);
-	data->sstdout = dup(STDOUT_FILENO);
-	dup2(STDOUT_FILENO, data->sstdout);
-	dup2(STDIN_FILENO, data->sstdin);
 	if (open_files(data, node))
 	{
-		close(data->sstdout);
-		close(data->sstdin);
 		g_exit = 1;
 		return ;
 	}
+	data->sstdin = dup(STDIN_FILENO);
+	data->sstdout = dup(STDOUT_FILENO);
 	if (node->fd_in != -1)
 		dup2(node->fd_in, STDIN_FILENO);
 	if (node->fd_out != -1)
@@ -222,9 +181,10 @@ void	exec2(t_data *data, t_node *node)
 	node->cmd = expand(data, node->cmd);
 	node->cmd = wild_card(data, node->cmd);
 	node->cmd = clean_cmds(node->cmd);
-	if (!node->cmd || !node->cmd[0])
+	if (!node->cmd)
 		return ;
-	if (is_builtin(node->cmd[0]))
+	if (node->fd_in == -1 && node->fd_out == -1 \
+	&& is_builtin(node->cmd[0]))
 		exec_builtin(data, node);
 	else
 		exec_cmd(data, node);

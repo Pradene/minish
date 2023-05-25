@@ -63,7 +63,7 @@ void	get_cmd(t_data *data)
 	add_history(s);
 	if (check_quotes(s))
 		return (free(s));
-	parse(&data->root, &s);
+	parse(data, &data->root, &s);
 	data->exec = 1;
 	exec(data, data->root);
 	free_node(data->root);

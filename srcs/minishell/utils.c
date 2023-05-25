@@ -48,10 +48,14 @@ int	last_index(char *s, int c)
 
 void	free_data(t_data *data)
 {
+	if (data->tokens)
+		lstclear(&data->tokens);
 	if (data->sstdout != -1)
 		close(data->sstdout);
 	if (data->sstdin != -1)
 		close(data->sstdin);
+	if (data->tmp)
+		free_node(data->tmp);
 	dfree(data->env);
 	free_node(data->root);
 	data->root = NULL;

@@ -77,9 +77,11 @@ typedef struct s_data
 {
 	char	**env;
 	t_node	*root;
+	t_node	*tmp;
 	int		exec;
 	int		sstdin;
 	int		sstdout;
+	t_list	*tokens;
 }	t_data;
 
 // UTILS
@@ -96,7 +98,6 @@ char	**ft_split(const char *s, char c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char *s2);
-// char	*ft_stradd(char *s1, char *s2);
 void	*ft_calloc(size_t nmemb, size_t size);
 t_list	*lstlast(t_list *lst);
 int		lstsize(t_list *lst);
@@ -106,6 +107,7 @@ void	lstprint(t_list *lst);
 t_list	*lstnew(char *s);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_itoa(int n);
+int		size_tree(t_node *node);
 
 // MINISHELL
 void	error(char *msg);
@@ -123,14 +125,16 @@ void	free_data(t_data *data);
 void	sig_handler(int sig);
 
 // PARSER
-void	parse(t_node **root, char **s);
+void	parse(t_data *data, t_node **root, char **s);
 
 char	**expand(t_data *data, char **cmds);
 char	*expansion(t_data *data, char *cmd);
 
+void	heredoc(t_data *data, t_node *node, char *limiter);
+
 // TREE
-t_node	*create_node(t_list *lst, int first, int last);
-t_node	*create_tree(t_list *lst, int first, int last);
+t_node	*create_node(t_data *data, t_list *lst, int first, int last);
+t_node	*create_tree(t_data *data, t_list *lst, int first, int last);
 void	print_tree(t_node *node);
 void	free_node(t_node *node);
 

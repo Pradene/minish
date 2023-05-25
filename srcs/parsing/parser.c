@@ -216,7 +216,7 @@ int	create_redir(t_node *node, t_type type, char *file)
 	return (0);
 }
 
-void	handle_redir(t_node *node, char *type, char *file)
+void	handle_redir(t_data *data, t_node *node, char *type, char *file)
 {
 	if (!strcmp(type, ">"))
 		create_redir(node, R_OUT, file);
@@ -225,7 +225,7 @@ void	handle_redir(t_node *node, char *type, char *file)
 	else if (!strcmp(type, "<"))
 		create_redir(node, R_IN, file);
 	else if (!strcmp(type, "<<"))
-		create_redir(node, HEREDOC, file);
+		heredoc(data, node, file);
 }
 
 char	**add_to_cmd(char **cmds, char *cmd)
@@ -256,7 +256,7 @@ char	**add_to_cmd(char **cmds, char *cmd)
 	return (new);
 }
 
-t_node	*create_leaf(t_list *lst, int first, int last)
+t_node	*create_leaf(t_data *data, t_list *lst, int first, int last)
 {
 	t_node	*new;
 	t_list	*current;
@@ -276,7 +276,7 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 			if (first > last \
 			|| issep(current->next->s) || isredir(current->next->s))
 				return (free(new), NULL);
-			handle_redir(new, current->s, current->next->s);
+			handle_redir(data, new, current->s, current->next->s);
 			current = current->next;
 		}
 		else
@@ -290,7 +290,7 @@ t_node	*create_leaf(t_list *lst, int first, int last)
 	return (new);
 }
 
-t_node	*create_child(t_list *lst, int first, int last)
+t_node	*create_child(t_data *data, t_list *lst, int first, int last)
 {
 	t_node	*new;
 
@@ -305,13 +305,13 @@ t_node	*create_child(t_list *lst, int first, int last)
 	if (!new->right)
 		return (free_node(new), NULL);
 	new->right->type = CLOSE_BRACKET;
-	new->left = create_tree(lst, first + 1, last - 1);
+	new->left = create_tree(data, lst, first + 1, last - 1);
 	if (!new->left)
 		return (free_node(new), NULL);
 	return (new);
 }
 
-t_node	*create_node(t_list *lst, int first, int last)
+t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 {
 	t_list	*token;
 	t_list	*current;
@@ -327,16 +327,16 @@ t_node	*create_node(t_list *lst, int first, int last)
 	if (!new)
 		return (NULL);
 	new->type = get_type(token->s);
-	new->left = create_tree(lst, first, first + pos);
+	new->left = create_tree(data, lst, first, first + pos);
 	if (!new->left)
 		return (free_node(new), NULL);
-	new->right = create_tree(lst, first + pos + 1, last);
+	new->right = create_tree(data, lst, first + pos + 1, last);
 	if (!new->right)
 		return (free_node(new), NULL);
 	return (new);
 }
 
-t_node	*create_tree(t_list *lst, int first, int last)
+t_node	*create_tree(t_data *data, t_list *lst, int first, int last)
 {
 	t_list	*current;
 	t_node	*new;
@@ -346,27 +346,25 @@ t_node	*create_tree(t_list *lst, int first, int last)
 	new = NULL;
 	current = go(lst, first);
 	if (search_sep(current, &pos, last - first))
-		new = create_node(lst, first, last);
+		new = create_node(data, lst, first, last);
 	else if (search_openbrackets(lst, first, last) != -1
 		|| search_closebrackets(lst, first, last) != -1)
-		new = create_child(lst, first, last);
+		new = create_child(data, lst, first, last);
 	else
-		new = create_leaf(lst, first, last);
+		new = create_leaf(data, lst, first, last);
 	return (new);
 }
 
-void	parse(t_node **root, char **s)
+void	parse(t_data *data, t_node **root, char **s)
 {
-	t_list	*lst;
-
-	lst = tokens(s);
-	if (!lst)
+	data->tokens = tokens(s);
+	if (!data->tokens)
 		return ;
-	*root = create_tree(lst, 0, lstsize(lst));
+	*root = create_tree(data, data->tokens, 0, lstsize(data->tokens));
 	if (!(*root))
 	{
 		prerror("Syntax error\n");
 		g_exit = 2;
 	}
-	lstclear(&lst);
+	lstclear(&data->tokens);
 }

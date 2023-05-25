@@ -31,3 +31,11 @@ void	free_node(t_node *node)
 		free_node(node->left);
 	free(node);
 }
+
+int	size_tree(t_node *node)
+{
+	if (!node || node->type == R_IN || node->type == HEREDOC \
+	|| node->type == R_OUT || node->type == R_OUT2)
+		return (0);
+	return (size_tree(node->left) + 1 + size_tree(node->right));
+}

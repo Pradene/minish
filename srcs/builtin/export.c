@@ -71,15 +71,17 @@ int	addtoenv(char **dst, char **src)
 {
 	int	i;
 	int	size;
+	int	exit;
 
 	size = dsize(dst);
 	i = 0;
+	exit = 0;
 	while (src[++i])
 	{
 		if (!check_arg(src[i]))
 		{
-			dst[size + i - 1] = ft_strdup(src[i]);
-			if (!dst[size + i - 1])
+			dst[size + i - exit - 1] = ft_strdup(src[i]);
+			if (!dst[size + i - exit - 1])
 				return (1);
 		}
 		else
@@ -87,10 +89,11 @@ int	addtoenv(char **dst, char **src)
 			write(2, src[i], ft_strlen(src[i]));
 			prerror(": not a valid identifier\n");
 			g_exit = 1;
-			return (1);
+			exit += 1;
 		}
 	}
-	return (0);
+	dst[size + i - exit - 1] = NULL;
+	return (exit);
 }
 
 char	**export(t_data *data, t_node *node)
@@ -107,12 +110,11 @@ char	**export(t_data *data, t_node *node)
 	e = malloc(sizeof(char *) * (c1 + c2 + 1));
 	if (!e)
 		return (data->env);
-	e[c1 + c2] = NULL;
 	if (sscpy(e, data->env))
 		return (dfree(e), data->env);
+	g_exit = 0;
 	if (addtoenv(e, node->cmd))
 		return (dfree(e), data->env);
 	dfree(data->env);
-	g_exit = 0;
 	return (e);
 }
