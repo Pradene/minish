@@ -43,7 +43,6 @@ t_data	*singleton(t_data *data)
 	d = data;
 	return (d);
 }
-// Mes remerciements a Maxou!!
 
 void	get_cmd(t_data *data)
 {
@@ -57,6 +56,7 @@ void	get_cmd(t_data *data)
 	free(prompt);
 	if (!s)
 	{
+		printf("exit\n");
 		dfree(data->env);
 		exit(g_exit);
 	}
@@ -68,6 +68,7 @@ void	get_cmd(t_data *data)
 	exec(data, data->root);
 	free_node(data->root);
 	data->root = NULL;
+	lclear(&data->tmp);
 	free(s);
 	data->exec = 0;
 }

@@ -85,9 +85,11 @@ char	*get_path(char **env, char *cmd)
 	char	*path;
 
 	path = NULL;
+	if (!strcmp(cmd, ".") || !strcmp(cmd, ".."))
+		return (NULL);
 	if (cmd[0] == '/')
 		return (strdup(cmd));
-	else if (cmd[0] == '.')
+	else if (!strncmp(cmd, "./", 2))
 		path = abs_path(cmd);
 	else
 		path = cmd_path(env, cmd);

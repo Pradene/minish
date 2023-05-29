@@ -69,20 +69,32 @@ typedef struct s_node
 	char			*file;
 	int				fd_in;
 	int				fd_out;
+	int				heredoc;
 	struct s_node	*left;
 	struct s_node	*right;
 }	t_node;
+
+typedef struct s_l
+{
+	t_node		*c;
+	struct s_l	*next;
+}	t_l;
 
 typedef struct s_data
 {
 	char	**env;
 	t_node	*root;
-	t_node	*tmp;
+	t_l		*tmp;
 	int		exec;
-	int		sstdin;
-	int		sstdout;
+	int		fd0;
+	int		fd1;
 	t_list	*tokens;
 }	t_data;
+
+t_l		*llast(t_l *lst);
+void	ladd(t_l **lst, t_node *node);
+
+void	lclear(t_l **lst);
 
 // UTILS
 void	ft_bzero(char *s, int n);
@@ -124,13 +136,14 @@ int		dsize(char **ss);
 void	free_data(t_data *data);
 void	sig_handler(int sig);
 
-// PARSER
-void	parse(t_data *data, t_node **root, char **s);
-
+// EXPANSION
 char	**expand(t_data *data, char **cmds);
 char	*expansion(t_data *data, char *cmd);
 
-void	heredoc(t_data *data, t_node *node, char *limiter);
+// PARSER
+t_node	*new_node(void);
+int		heredoc(t_data *data, t_node *node, char *limiter);
+void	parse(t_data *data, t_node **root, char **s);
 
 // TREE
 t_node	*create_node(t_data *data, t_list *lst, int first, int last);
@@ -149,9 +162,15 @@ char	**lex(char **cmds, char **env);
 char	*clean_cmd(char *cmd);
 char	**clean_cmds(char **tab);
 
+// EXEC UTILS
+void	connect_cmd(t_node *left, t_node *right, int fd[2]);
+void	sig_child(int sig);
+int		open_files(t_data *data, t_node *node);
+
 // EXEC
-void	exec(t_data *data, t_node *node);
 char	*get_path(char **env, char *cmd);
+void	exec_node(t_data *data, t_node *node);
+void	exec(t_data *data, t_node *node);
 void	get_cmd(t_data *data);
 
 // BUILT-IN
@@ -167,7 +186,6 @@ char	**unset(t_data *data, t_node *node);
 
 // WILD CARD
 char	**wild_card(t_data *data, char **cmds);
-// char	**wild_card(char **cmds, int i);
 
 // SINGLETON
 t_data	*singleton(t_data *data);

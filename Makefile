@@ -8,7 +8,9 @@ BUILTIN_FILES	= builtin.c \
 				unset.c
 
 EXEC_FILES =	cmd.c \
-				execute.c \
+				exec_cmd.c \
+				exec_utils.c \
+				exec_sep.c \
 				path.c
 
 MINISHELL_FILES	= error.c \

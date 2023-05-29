@@ -63,17 +63,17 @@ void	lstclear(t_list **lst)
 	(*lst) = NULL;
 }
 
-void	lstprint(t_list *lst)
-{
-	t_list	*e;
+// void	lstprint(t_list *lst)
+// {
+// 	t_list	*e;
 
-	e = lst;
-	while (e)
-	{
-		printf("%s\n", e->s);
-		e = e->next;
-	}
-}
+// 	e = lst;
+// 	while (e)
+// 	{
+// 		printf("%s\n", e->s);
+// 		e = e->next;
+// 	}
+// }
 
 t_list	*lstnew(char *s)
 {

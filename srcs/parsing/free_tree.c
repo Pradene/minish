@@ -14,27 +14,28 @@
 
 void	free_node(t_node *node)
 {
-	if (!node || node->type == ERR)
-		return ;
-	else if (node->type == CMD)
+	if (node && node->type == CMD)
 		dfree(node->cmd);
-	else if (node->type == R_IN || node->type == HEREDOC \
-	|| node->type == R_OUT || node->type == R_OUT2)
+	if (node && (node->type == R_IN \
+	|| node->type == R_OUT || node->type == R_OUT2))
 		free(node->file);
-	if (node->fd_in != -1)
+	if (node && node->fd_in != -1)
 		close(node->fd_in);
-	if (node->fd_out != -1)
+	if (node && node->fd_out != -1)
 		close(node->fd_out);
-	if (node->right)
+	if (node && node->right)
 		free_node(node->right);
-	if (node->left)
+	if (node && node->left)
 		free_node(node->left);
+	if (!node)
+		return ;
 	free(node);
+	node = NULL;
 }
 
 int	size_tree(t_node *node)
 {
-	if (!node || node->type == R_IN || node->type == HEREDOC \
+	if (!node || node->type == R_IN \
 	|| node->type == R_OUT || node->type == R_OUT2)
 		return (0);
 	return (size_tree(node->left) + 1 + size_tree(node->right));

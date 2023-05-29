@@ -33,8 +33,6 @@ void	print_redir(t_node *node)
 		printf(">> ");
 	else if (node->type == R_IN)
 		printf("< ");
-	else if (node->type == R_OUT2)
-		printf("HEREDOC: ");
 	printf("%s\n", node->file);
 }
 
@@ -45,7 +43,7 @@ void	print_node(t_node *node)
 	else if (node->type == CMD)
 		print_cmd(node->cmd);
 	else if (node->type == R_OUT || node->type == R_OUT2 \
-	|| node->type == R_IN || node->type == HEREDOC)
+	|| node->type == R_IN)
 		print_redir(node);
 	else if (node->type == PIPE)
 		printf("PIPE\n");

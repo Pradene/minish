@@ -46,17 +46,31 @@ int	last_index(char *s, int c)
 	return (index);
 }
 
+void	lclear(t_l **lst)
+{
+	t_l	*p;
+
+	if (!lst)
+		return ;
+	while ((*lst))
+	{
+		p = ((*lst))->next;
+		free((*lst));
+		(*lst) = p;
+	}
+	(*lst) = NULL;
+}
+
 void	free_data(t_data *data)
 {
 	if (data->tokens)
 		lstclear(&data->tokens);
-	if (data->sstdout != -1)
-		close(data->sstdout);
-	if (data->sstdin != -1)
-		close(data->sstdin);
-	if (data->tmp)
-		free_node(data->tmp);
+	if (data->fd1 != -1)
+		close(data->fd1);
+	if (data->fd0 != -1)
+		close(data->fd0);
 	dfree(data->env);
 	free_node(data->root);
 	data->root = NULL;
+	lclear(&data->tmp);
 }

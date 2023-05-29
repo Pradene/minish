@@ -26,8 +26,8 @@ int	main(int ac, char **av, char **envp)
 	data.tmp = NULL;
 	data.tokens = NULL;
 	data.exec = 0;
-	data.sstdin = -1;
-	data.sstdout = -1;
+	data.fd0 = -1;
+	data.fd1 = -1;
 	set_attribute();
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);
