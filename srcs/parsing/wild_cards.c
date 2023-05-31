@@ -80,32 +80,6 @@ char	*get_subdir(char *path)
 	return (new);
 }
 
-// int	match(char *pattern, char *s)
-// {
-// 	int		i;
-// 	int		index;
-// 	char	*tmp;
-// 	char	**ss;
-
-// 	ss = ft_split(pattern, '*');
-// 	if (!ss)
-// 		return (0);
-// 	i = 0;
-// 	index = 0;
-// 	if (pattern[0] == '*')
-// 	{
-// 		tmp = strnstr(s, ss[i], strlen(s));
-// 		if (!tmp)
-// 			return (dfree(ss), 0);
-// 		index = tmp - s + 1;
-// 		i += 1;
-// 	}
-// 	while (ss[i])
-// 	{
-
-// 	}
-// }
-
 int	match(char *pattern, char *s)
 {
 	int		i;
@@ -117,10 +91,12 @@ int	match(char *pattern, char *s)
 	ss = ft_split(pattern, '*');
 	if (!ss)
 		return (0);
-	size = strlen(s);
-	if (pattern[0] != '*')
-		size = strlen(ss[0]);
 	index = 0;
+	size = strlen(s);
+	if (pattern[0] == '*' && dsize(ss) == 1)
+		index = strlen(s) - strlen(ss[0]);
+	else if (pattern[0] != '*')
+		size = strlen(ss[0]);
 	i = -1;
 	while (ss[++i])
 	{

@@ -40,15 +40,14 @@ int	check_arg(char *arg)
 {
 	int	i;
 
+	if (arg[0] == '=')
+		return (1);
 	i = -1;
 	while (arg[++i] && arg[i] != '=')
 		if (!isalpha(arg[i]))
 			return (1);
 	if (!arg[i])
 		return (0);
-	i += 1;
-	if (!arg[i])
-		return (1);
 	return (0);
 }
 

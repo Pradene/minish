@@ -85,7 +85,7 @@ void	exec_cmd(t_data *data, t_node *node)
 			close(node->fd_out);
 			node->fd_out = -1;
 		}
-		if (is_builtin(node->cmd[0]))
+		if (node->cmd && is_builtin(node->cmd[0]))
 		{
 			builtin(data, node);
 			free_data(data);
