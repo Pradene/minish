@@ -12,39 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void	free_n(t_node *node)
-{
-	if (node && node->type == CMD)
-		dfree(node->cmd);
-	if (node && (node->type == R_IN \
-	|| node->type == R_OUT || node->type == R_OUT2))
-		free(node->file);
-	if (node && node->fd_in != -1)
-		close(node->fd_in);
-	if (node && node->fd_out != -1)
-		close(node->fd_out);
-	if (!node)
-		return ;
-	free(node);
-	node = NULL;
-}
-
-void	lc(t_l **lst)
-{
-	t_l	*p;
-
-	if (!lst)
-		return ;
-	while ((*lst))
-	{
-		p = ((*lst))->next;
-		free_n((*lst)->c);
-		free((*lst));
-		(*lst) = p;
-	}
-	(*lst) = NULL;
-}
-
 void	free_d(t_data *data)
 {
 	if (data->tokens)
@@ -54,7 +21,7 @@ void	free_d(t_data *data)
 	if (data->fd0 != -1)
 		close(data->fd0);
 	dfree(data->env);
-	lc(&data->tmp);
+	tmp_clear(&data->tmp);
 	data->tmp = NULL;
 }
 
@@ -106,7 +73,7 @@ int	heredoc(t_data *data, t_node *node, char *limiter)
 	if (!tmp->right)
 		return (1);
 	tmp->right->type = HEREDOC;
-	ladd(&data->tmp, tmp->right);
+	tmp_add(&data->tmp, tmp->right);
 	if (pipe(fd) == -1)
 		return (1);
 	pid = fork();

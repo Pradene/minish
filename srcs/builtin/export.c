@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	handle_export(char **env)
+void	print_export(char **env)
 {
 	int	i;
 	int	j;
@@ -103,7 +103,7 @@ char	**export(t_data *data, t_node *node)
 
 	e = NULL;
 	if (!node->cmd[1])
-		return (handle_export(data->env), data->env);
+		return (print_export(data->env), data->env);
 	c1 = dsize(data->env);
 	c2 = dsize(node->cmd) - 1;
 	e = malloc(sizeof(char *) * (c1 + c2 + 1));
@@ -117,3 +117,51 @@ char	**export(t_data *data, t_node *node)
 	dfree(data->env);
 	return (e);
 }
+
+// int	env_count(t_data *data, char **cmd)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		count;
+// 	int		index;
+// 	char	*key;
+
+// 	i = -1;
+// 	count = 0;
+// 	while (cmd[++i])
+// 	{
+// 		index = strchr(cmd[i], '=') - cmd[i];
+// 		key = strndup(cmd[i], index);
+// 		j = -1;
+// 		while (data->env[++j])
+// 			if (cmp_env(data->env[j], key))
+// 				count += 1;
+// 		free(key);
+// 	}
+// 	return (count);
+// }
+
+// char	**export(t_data *data, t_node *node)
+// {
+// 	int		c1;
+// 	int		c2;
+// 	int		count;
+// 	char	**e;
+
+// 	e = NULL;
+// 	if (!node->cmd[1])
+// 		return (print_export(data->env), data->env);
+// 	c1 = dsize(data->env);
+// 	c2 = dsize(node->cmd) - 1;
+// 	count = env_count(data, &node->cmd[1]);
+// 	e = malloc(sizeof(char *) * (c1 + c2 - count + 1));
+// 	if (!e)
+// 		return (data->env);
+// 	if (sscpy(e, data->env))
+// 		return (dfree(e), data->env);
+// 	g_exit = 0;
+// 	if (addtoenv(e, node->cmd))
+// 		return (dfree(e), data->env);
+// 	dfree(data->env);
+// 	return (e);
+// }

@@ -14,6 +14,16 @@
 
 int	g_exit = 0;
 
+t_data	*singleton(t_data *data)
+{
+	static t_data	*d;
+
+	if (!data)
+		return (d);
+	d = data;
+	return (d);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_data	data;

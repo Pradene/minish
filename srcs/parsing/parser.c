@@ -200,7 +200,7 @@ int	issep(char *s)
 	return (0);
 }
 
-int	create_redir(t_node *node, t_type type, char *file)
+int	create_redir(t_data *data, t_node *node, t_type type, char *file)
 {
 	t_node	*tmp;
 
@@ -211,6 +211,7 @@ int	create_redir(t_node *node, t_type type, char *file)
 	if (!tmp->right)
 		return (1);
 	tmp = tmp->right;
+	tmp_add(&data->tmp, tmp);
 	tmp->type = type;
 	tmp->file = ft_strdup(file);
 	return (0);
@@ -219,11 +220,11 @@ int	create_redir(t_node *node, t_type type, char *file)
 int	handle_redir(t_data *data, t_node *node, char *type, char *file)
 {
 	if (!strcmp(type, ">"))
-		create_redir(node, R_OUT, file);
+		create_redir(data, node, R_OUT, file);
 	else if (!strcmp(type, ">>"))
-		create_redir(node, R_OUT2, file);
+		create_redir(data, node, R_OUT2, file);
 	else if (!strcmp(type, "<"))
-		create_redir(node, R_IN, file);
+		create_redir(data, node, R_IN, file);
 	else if (!strcmp(type, "<<"))
 		if (heredoc(data, node, file))
 			return (1);
@@ -258,35 +259,6 @@ char	**add_to_cmd(char **cmds, char *cmd)
 	return (new);
 }
 
-t_l	*llast(t_l *lst)
-{
-	t_l	*current;
-
-	if (!lst)
-		return (NULL);
-	current = lst;
-	while (current && current->next)
-		current = current->next;
-	return (current);
-}
-
-void	ladd(t_l **lst, t_node *node)
-{
-	t_l	*new;
-
-	if (!lst)
-		return ;
-	new = malloc(sizeof(t_l));
-	if (!new)
-		return ;
-	new->c = node;
-	new->next = NULL;
-	if (*lst)
-		llast(*lst)->next = new;
-	else
-		*lst = new;
-}
-
 t_node	*create_leaf(t_data *data, t_list *lst, int first, int last)
 {
 	t_node	*new;
@@ -298,7 +270,7 @@ t_node	*create_leaf(t_data *data, t_list *lst, int first, int last)
 	new = new_node();
 	if (!new)
 		return (NULL);
-	ladd(&data->tmp, new);
+	tmp_add(&data->tmp, new);
 	new->type = CMD;
 	while (c && ++first <= last)
 	{
@@ -326,13 +298,13 @@ t_node	*create_child(t_data *data, t_list *lst, int first, int last)
 {
 	t_node	*new;
 
-	if (search_openbrackets(lst, first, last) != first
-		|| search_closebrackets(lst, first, last) != last - 1)
+	if (search_openbrackets(lst, first, last) != first \
+	|| search_closebrackets(lst, first, last) != last - 1)
 		return (NULL);
 	new = new_node();
 	if (!new)
 		return (NULL);
-	ladd(&data->tmp, new);
+	tmp_add(&data->tmp, new);
 	new->type = OPEN_BRACKET;
 	new->right = new_node();
 	if (!new->right)
@@ -359,13 +331,13 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 	new = new_node();
 	if (!new)
 		return (NULL);
-	ladd(&data->tmp, new);
+	tmp_add(&data->tmp, new);
 	new->type = get_type(token->s);
-	new->right = create_tree(data, lst, first + pos + 1, last);
-	if (!new->right)
-		return (free_node(new), NULL);
 	new->left = create_tree(data, lst, first, first + pos);
 	if (!new->left)
+		return (free_node(new), NULL);
+	new->right = create_tree(data, lst, first + pos + 1, last);
+	if (!new->right)
 		return (free_node(new), NULL);
 	return (new);
 }

@@ -12,19 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static void	quote_status(char c, int *quote)
-{
-	if ((*quote == 1 && c == '\'')
-		|| (*quote == 2 && c == '\"'))
-		*quote = 0;
-	else if (*quote == 0 && c == '\'')
-		*quote = 1;
-	else if (*quote == 0 && c == '\"')
-		*quote = 2;
-	else
-		return ;
-}
-
 static char	*handle_other(char **s)
 {
 	int		quote;

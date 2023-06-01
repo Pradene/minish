@@ -18,7 +18,7 @@ void	execute(t_data *data, t_node *node, char **env)
 	DIR		*dir;
 
 	if (!node->cmd || !node->cmd[0])
-		return ;
+		return (free_data(data));
 	path = get_path(env, node->cmd[0]);
 	if (!path)
 	{
@@ -58,10 +58,10 @@ void	execute(t_data *data, t_node *node, char **env)
 void	exec_cmd(t_data *data, t_node *node)
 {
 	pid_t	pid;
-	int		e;
+	int		status;
 	int		error;
 
-	e = 0;
+	status = 0;
 	pid = fork();
 	if (pid == -1)
 		return ;
@@ -92,9 +92,11 @@ void	exec_cmd(t_data *data, t_node *node)
 			exit(g_exit);
 		}
 		execute(data, node, data->env);
+		exit(EXIT_SUCCESS);
 	}
-	error = waitpid(pid, &e, 0);
-	g_exit = WEXITSTATUS(e);
+	error = waitpid(pid, &status, WUNTRACED);
+	if (WIFEXITED(status))
+		g_exit = WEXITSTATUS(status);
 }
 
 void	exec_builtin(t_data *data, t_node *node)
@@ -127,8 +129,11 @@ void	exec_builtin(t_data *data, t_node *node)
 
 void	exec_node(t_data *data, t_node *node)
 {
+
 	node->cmd = expand(data, node->cmd);
+
 	node->cmd = wild_card(data, node->cmd);
+
 	node->cmd = clean_cmds(node->cmd);
 	if (!node)
 		return ;

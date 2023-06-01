@@ -14,15 +14,32 @@
 
 static void	exec_pipe(t_data *data, t_node *left, t_node *right)
 {
-	int	fd[2];
+	int		fd[2];
+	pid_t	pid;
+	int		status;
 
+	status = 0;
 	if (pipe(fd) == -1)
 		return ;
 	connect_cmd(left, right, fd);
-	exec(data, left);
-	close(fd[1]);
-	exec(data, right);
-	close(fd[0]);
+	pid = fork();
+	if (pid == -1)
+		return ;
+	else if (pid == 0)
+	{
+		close(fd[0]);
+		exec(data, left);
+		close(fd[1]);
+		free_data(data);
+		exit(g_exit);
+	}
+	else
+	{
+		close(fd[1]);
+		exec(data, right);
+		close(fd[0]);
+		wait(&status);
+	}
 }
 
 static void	exec_semicol(t_data *data, t_node *left, t_node *right)

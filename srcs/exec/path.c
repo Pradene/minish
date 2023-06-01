@@ -84,6 +84,8 @@ char	*get_path(char **env, char *cmd)
 {
 	char	*path;
 
+	if (!cmd[0])
+		return (NULL);
 	path = NULL;
 	if (!strcmp(cmd, ".") || !strcmp(cmd, ".."))
 		return (NULL);

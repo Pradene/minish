@@ -12,6 +12,19 @@
 
 #include "../../includes/minishell.h"
 
+void	quote_status(char c, int *quote)
+{
+	if ((*quote == 1 && c == '\'')
+		|| (*quote == 2 && c == '\"'))
+		*quote = 0;
+	else if (*quote == 0 && c == '\'')
+		*quote = 1;
+	else if (*quote == 0 && c == '\"')
+		*quote = 2;
+	else
+		return ;
+}
+
 void	dfree(char **ss)
 {
 	int	i;
@@ -46,9 +59,9 @@ int	last_index(char *s, int c)
 	return (index);
 }
 
-void	lclear(t_l **lst)
+void	lclear(t_tmp **lst)
 {
-	t_l	*p;
+	t_tmp	*p;
 
 	if (!lst)
 		return ;

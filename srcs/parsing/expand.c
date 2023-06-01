@@ -12,19 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static void	quote_status(char c, int *quote)
-{
-	if ((*quote == 1 && c == '\'')
-		|| (*quote == 2 && c == '\"'))
-		*quote = 0;
-	else if (*quote == 0 && c == '\'')
-		*quote = 1;
-	else if (*quote == 0 && c == '\"')
-		*quote = 2;
-	else
-		return ;
-}
-
 int	get_index(char *s)
 {
 	int	i;
@@ -34,7 +21,8 @@ int	get_index(char *s)
 	i = -1;
 	while (s[++i])
 	{
-		if (s[i] == '\'' || s[i] == '\"' || s[i] == ' ')
+		if (s[i] == '\'' || s[i] == '\"' || s[i] == ' ' \
+		|| s[i] == '$')
 			break ;
 	}
 	return (i);
@@ -52,7 +40,8 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 	value = NULL;
 	while (cmd[++i])
 	{
-		if (cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ')
+		if (cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ' \
+		&& cmd[i] != '$')
 		{
 			size = get_index(&cmd[i]);
 			key = strndup(&cmd[i], size);
@@ -63,23 +52,6 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 		}
 	}
 	return (NULL);
-}
-
-char	*addchar(char *s, char c)
-{
-	int		size;
-	char	*new;
-
-	size = ft_strlen(s);
-	new = malloc(sizeof(char) * (size + 1 + 1));
-	if (!new)
-		return (s);
-	memcpy(new, s, size);
-	new[size] = c;
-	new[size + 1] = '\0';
-	if (s)
-		free(s);
-	return (new);
 }
 
 char	*expansion(t_data *data, char *cmd)

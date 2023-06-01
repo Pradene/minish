@@ -74,29 +74,25 @@ typedef struct s_node
 	struct s_node	*right;
 }	t_node;
 
-typedef struct s_l
+typedef struct s_tmp
 {
-	t_node		*c;
-	struct s_l	*next;
-}	t_l;
+	t_node			*node;
+	struct s_tmp	*next;
+}	t_tmp;
 
 typedef struct s_data
 {
 	char	**env;
 	t_node	*root;
-	t_l		*tmp;
+	t_tmp	*tmp;
 	int		exec;
 	int		fd0;
 	int		fd1;
 	t_list	*tokens;
 }	t_data;
 
-t_l		*llast(t_l *lst);
-void	ladd(t_l **lst, t_node *node);
-
-void	lclear(t_l **lst);
-
 // UTILS
+char	*addchar(char *s, char c);
 void	ft_bzero(char *s, int n);
 int		ft_strncmp(const char *s1, const char *s2, int n);
 char	*ft_strchr(const char *s, int c);
@@ -120,6 +116,7 @@ t_list	*lstnew(char *s);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_itoa(int n);
 int		size_tree(t_node *node);
+void	quote_status(char c, int *quote);
 
 // MINISHELL
 void	error(char *msg);
@@ -141,6 +138,7 @@ char	**expand(t_data *data, char **cmds);
 char	*expansion(t_data *data, char *cmd);
 
 // PARSER
+void	lclear(t_tmp **lst);
 t_node	*new_node(void);
 int		heredoc(t_data *data, t_node *node, char *limiter);
 void	parse(t_data *data, t_node **root, char **s);
@@ -150,6 +148,12 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last);
 t_node	*create_tree(t_data *data, t_list *lst, int first, int last);
 void	print_tree(t_node *node);
 void	free_node(t_node *node);
+
+// TMP
+void	free_tmp(t_node *node);
+void	tmp_clear(t_tmp **lst);
+t_tmp	*tmp_last(t_tmp *lst);
+void	tmp_add(t_tmp **lst, t_node *node);
 
 // TOKENS
 t_list	*tokens(char **s);

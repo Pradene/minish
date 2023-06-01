@@ -21,15 +21,17 @@ MINISHELL_FILES	= error.c \
 				utils.c
 
 PARSING_FILES =	clean.c \
+				expand.c \
 				free_tree.c \
-				lexer.c \
 				parser.c \
 				heredoc.c \
 				print_tree.c \
 				token.c \
 				wild_cards.c \
+				tmp.c
 
-UTILS_FILES	= ft_bzero.c \
+UTILS_FILES	= addchar.c \
+			ft_bzero.c \
 			ft_calloc.c \
 			ft_lst.c \
 			ft_memcpy.c \

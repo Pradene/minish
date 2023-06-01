@@ -34,16 +34,6 @@ int	check_quotes(char *s)
 	return (status);
 }
 
-t_data	*singleton(t_data *data)
-{
-	static t_data	*d;
-
-	if (!data)
-		return (d);
-	d = data;
-	return (d);
-}
-
 void	get_cmd(t_data *data)
 {
 	char	*prompt;
@@ -66,9 +56,9 @@ void	get_cmd(t_data *data)
 	parse(data, &data->root, &s);
 	data->exec = 1;
 	exec(data, data->root);
+	data->exec = 0;
 	free_node(data->root);
 	data->root = NULL;
 	lclear(&data->tmp);
 	free(s);
-	data->exec = 0;
 }

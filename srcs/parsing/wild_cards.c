@@ -93,7 +93,8 @@ int	match(char *pattern, char *s)
 		return (0);
 	index = 0;
 	size = strlen(s);
-	if (pattern[0] == '*' && dsize(ss) == 1)
+	if (pattern[strlen(pattern) - 1] != '*' \
+	&& pattern[0] == '*' && dsize(ss) == 1)
 		index = strlen(s) - strlen(ss[0]);
 	else if (pattern[0] != '*')
 		size = strlen(ss[0]);
@@ -203,78 +204,6 @@ void	get_dir(t_list *lst)
 		e = e->next;
 	}
 }
-
-// void	get_dir(t_list *lst)
-// {
-// 	struct dirent	*current;
-// 	t_list			*e;
-// 	DIR				*dir;
-// 	char			*path;
-// 	char			*s;
-// 	char			*new;
-// 	t_list			*tmp;
-// 	int				count;
-// 	char			*last;
-// 	int				index;
-// 	DIR				*dirlo;
-
-// 	e = lst;
-// 	while (e)
-// 	{
-// 		count = 1;
-// 		while (count && strchr(e->s, '*') &&
-// 		!strchr(e->s, '\'') && !strchr(e->s, '\"'))
-// 		{
-// 			index = strchr(e->s, '*') - e->s;
-// 			last = strchr(e->s + index, '/');
-// 			tmp = e->next;
-// 			e->next = NULL;
-// 			path = find_path(e->s);
-// 			if (!path)
-// 				break ;
-// 			dir = opendir(path);
-// 			if (dir)
-// 			{
-// 				count = 0;
-// 				s = get_subdir(e->s);
-// 				current = readdir(dir);
-// 				while (current)
-// 				{
-// 					if (strcmp(current->d_name, ".")
-// 					&& strcmp(current->d_name, ".."))
-// 					{
-// 						if (match(s, current->d_name))
-// 						{
-// 							if (strcmp(path, "."))
-// 								new = ft_strjoin(path, current->d_name);
-// 							else
-// 								new = strdup(current->d_name);
-// 							dirlo = opendir(new);
-// 							if (last && dirlo)
-// 								new = ft_stradd(new, last);
-// 							if (dirlo)
-// 								closedir(dirlo);
-// 							if (!count)
-// 							{
-// 								free(e->s);
-// 								e->s = new;
-// 							}
-// 							else
-// 								lstadd(&e, lstnew(new));
-// 							count += 1;
-// 						}
-// 					}
-// 					current = readdir(dir);
-// 				}
-// 				free(s);
-// 				closedir(dir);
-// 			}
-// 			free(path);
-// 			lstlast(e)->next = tmp;
-// 		}
-// 		e = e->next;
-// 	}
-// }
 
 t_list	*arrtolst(char **ss)
 {
