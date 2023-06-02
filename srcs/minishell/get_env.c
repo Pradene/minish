@@ -17,9 +17,13 @@ int	cmp_env(char *env, char *key)
 	int	i;
 
 	i = -1;
-	while (env[++i] != '=' || key[i])
-		if (env[i] != key[i])
+	while (env[++i] || key[i])
+	{
+		if (env[i] == '=' && !key[i])
+			break ;
+		else if (env[i] != key[i])
 			return (env[i] - key[i]);
+	}
 	return (0);
 }
 
@@ -32,7 +36,7 @@ char	*get_env(char **env, char *s)
 	i = -1;
 	while (env[++i])
 	{
-		if (cmp_env(env[i], s) == 0)
+		if (cmp_env(env[i], s) == 0 && strchr(env[i], '='))
 			return (ft_strchr(env[i], '=') + 1);
 	}
 	return (NULL);

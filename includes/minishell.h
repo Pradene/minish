@@ -194,5 +194,4 @@ char	**wild_card(t_data *data, char **cmds);
 // SINGLETON
 t_data	*singleton(t_data *data);
 
-
 #endif

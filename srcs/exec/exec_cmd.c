@@ -129,11 +129,8 @@ void	exec_builtin(t_data *data, t_node *node)
 
 void	exec_node(t_data *data, t_node *node)
 {
-
 	node->cmd = expand(data, node->cmd);
-
 	node->cmd = wild_card(data, node->cmd);
-
 	node->cmd = clean_cmds(node->cmd);
 	if (!node)
 		return ;
