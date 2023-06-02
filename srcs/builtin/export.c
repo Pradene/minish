@@ -12,30 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void	print_export(char **env)
-{
-	int	i;
-	int	j;
-
-	i = -1;
-	while (env[++i])
-	{
-		j = -1;
-		printf("declare -x ");
-		while (env[i][++j] && env[i][j] != '=')
-			printf("%c", env[i][j]);
-		if (!env[i][j])
-		{
-			printf("\n");
-			continue ;
-		}
-		printf("=\"");
-		while (env[i][++j])
-			printf("%c", env[i][j]);
-		printf("\"\n");
-	}
-}
-
 int	check_arg(char *arg)
 {
 	int	i;
@@ -48,19 +24,6 @@ int	check_arg(char *arg)
 			return (1);
 	if (!arg[i])
 		return (0);
-	return (0);
-}
-
-int	cmp(char **src, char *key)
-{
-	int	i;
-
-	i = -1;
-	while (src[++i])
-	{
-		if (!cmp_env(src[i], key))
-			return (1);
-	}
 	return (0);
 }
 
@@ -82,7 +45,7 @@ int	sscpy(char **dst, char **src, char **cmd)
 		else
 			index = tmp - src[i];
 		key = strndup(src[i], index);
-		if (cmp(cmd, key))
+		if (cmp_envs(cmd, key))
 		{
 			free(key);
 			continue ;
@@ -143,7 +106,7 @@ int	env_count(t_data *data, char **cmd)
 		else
 			index = tmp - cmd[i];
 		key = strndup(cmd[i], index);
-		count += cmp(data->env, key);
+		count += cmp_envs(data->env, key);
 		free(key);
 	}
 	return (count);

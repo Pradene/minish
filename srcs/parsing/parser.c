@@ -12,6 +12,13 @@
 
 #include "../../includes/minishell.h"
 
+void	print_token(char *token)
+{
+	write(2, "syntax error near unexpected token \'", 36);
+	write(2, token, strlen(token));
+	write(2, "\'\n", 2);
+}
+
 t_node	*new_node(void)
 {
 	t_node	*node;
@@ -298,9 +305,10 @@ t_node	*create_child(t_data *data, t_list *lst, int first, int last)
 {
 	t_node	*new;
 
-	if (search_openbrackets(lst, first, last) != first \
-	|| search_closebrackets(lst, first, last) != last - 1)
-		return (NULL);
+	if (search_openbrackets(lst, first, last) != first)
+		return (print_token(")"), NULL);
+	if (search_closebrackets(lst, first, last) != last - 1)
+		return (print_token("("), NULL);
 	new = new_node();
 	if (!new)
 		return (NULL);
@@ -326,7 +334,7 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 	pos = -1;
 	c = go(lst, first);
 	token = search_sep(c, &pos, last - first);
-	if (!token || pos <= 0 || pos >= last - first - 1)
+	if (!token || pos < 0 || pos > last - first - 1)
 		return (NULL);
 	new = new_node();
 	if (!new)
@@ -335,10 +343,10 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 	new->type = get_type(token->s);
 	new->left = create_tree(data, lst, first, first + pos);
 	if (!new->left)
-		return (free_node(new), NULL);
+		return (print_token(token->s), free_node(new), NULL);
 	new->right = create_tree(data, lst, first + pos + 1, last);
 	if (!new->right)
-		return (free_node(new), NULL);
+		return (print_token(token->s), free_node(new), NULL);
 	return (new);
 }
 

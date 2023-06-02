@@ -4,6 +4,7 @@ BUILTIN_FILES	= builtin.c \
 				env.c \
 				exit.c \
 				export.c \
+				print_export.c \
 				pwd.c \
 				unset.c
 

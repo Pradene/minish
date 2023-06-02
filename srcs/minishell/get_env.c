@@ -27,6 +27,19 @@ int	cmp_env(char *env, char *key)
 	return (0);
 }
 
+int	cmp_envs(char **src, char *key)
+{
+	int	i;
+
+	i = -1;
+	while (src[++i])
+	{
+		if (!cmp_env(src[i], key))
+			return (1);
+	}
+	return (0);
+}
+
 char	*get_env(char **env, char *s)
 {
 	int	i;
