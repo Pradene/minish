@@ -59,6 +59,16 @@ void	read_heredoc(t_data *data, char *limiter, int fd)
 	close(fd);
 }
 
+void	heredoc_child(t_data *data, char *limiter, int fd[2])
+{
+	close(fd[0]);
+	data->fd1 = fd[1];
+	signal(SIGINT, sig);
+	read_heredoc(data, limiter, fd[1]);
+	free_d(data);
+	exit(0);
+}
+
 int	heredoc(t_data *data, t_node *node, char *limiter)
 {
 	int		fd[2];
@@ -80,14 +90,7 @@ int	heredoc(t_data *data, t_node *node, char *limiter)
 	if (pid == -1)
 		return (1);
 	else if (pid == 0)
-	{
-		close(fd[0]);
-		data->fd1 = fd[1];
-		signal(SIGINT, sig);
-		read_heredoc(data, limiter, fd[1]);
-		free_d(data);
-		exit(0);
-	}
+		heredoc_child(data, limiter, fd);
 	close(fd[1]);
 	waitpid(pid, &e, 0);
 	tmp->right->fd_in = fd[0];

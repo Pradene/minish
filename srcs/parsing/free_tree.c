@@ -33,6 +33,20 @@ void	free_node(t_node *node)
 	node = NULL;
 }
 
+void	free_data(t_data *data)
+{
+	if (data->tokens)
+		lstclear(&data->tokens);
+	if (data->fd1 != -1)
+		close(data->fd1);
+	if (data->fd0 != -1)
+		close(data->fd0);
+	dfree(data->env);
+	free_node(data->root);
+	data->root = NULL;
+	lclear(&data->tmp);
+}
+
 int	size_tree(t_node *node)
 {
 	if (!node || node->type == R_IN \

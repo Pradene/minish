@@ -1,46 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 17:36:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/29 17:36:22 by lpradene         ###   ########.fr       */
+/*   Created: 2023/06/14 15:27:04 by lpradene          #+#    #+#             */
+/*   Updated: 2023/06/14 15:27:07 by lpradene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	change_fd(int old, int new)
+void	exec_builtin(t_data *data, t_node *node)
 {
-	dup2(old, new);
-	close(old);
-	old = -1;
-}
-
-void	connect_cmd(t_node *left, t_node *right, int fd[2])
-{
-	t_node	*c;
-
-	c = left;
-	while (c->type != CMD)
-		c = c->right;
-	c->fd_out = fd[1];
-	c = right;
-	while (c->type != CMD)
-		c = c->left;
-	c->fd_in = fd[0];
-}
-
-void	sig_child(int sig)
-{
-	t_data	*data;
-
-	(void)sig;
-	data = singleton(NULL);
-	if (!data)
-		exit(130);
-	free_data(data);
-	exit(130);
+	if (open_files(data, node))
+	{
+		g_exit = 1;
+		return ;
+	}
+	data->fd0 = dup(STDIN_FILENO);
+	data->fd1 = dup(STDOUT_FILENO);
+	if (node->fd_in != -1)
+		change_fd(node->fd_in, STDIN_FILENO);
+	if (node->fd_out != -1)
+		change_fd(node->fd_out, STDOUT_FILENO);
+	builtin(data, node);
+	dup2(data->fd0, STDIN_FILENO);
+	dup2(data->fd1, STDOUT_FILENO);
+	close(data->fd0);
+	close(data->fd1);
 }

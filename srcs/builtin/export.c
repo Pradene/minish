@@ -12,19 +12,17 @@
 
 #include "../../includes/minishell.h"
 
-static int	check_arg(char *arg)
+static int	get_index(char *src)
 {
-	int	i;
+	int		index;
+	char	*tmp;
 
-	if (arg[0] == '=')
-		return (1);
-	i = -1;
-	while (arg[++i] && arg[i] != '=')
-		if (!isalpha(arg[i]))
-			return (1);
-	if (!arg[i])
-		return (0);
-	return (0);
+	tmp = strchr(src, '=');
+	if (!tmp)
+		index = strlen(src);
+	else
+		index = tmp - src;
+	return (index);
 }
 
 static int	sscpy(char **dst, char **src, char **cmd)
@@ -32,18 +30,13 @@ static int	sscpy(char **dst, char **src, char **cmd)
 	int		i;
 	int		j;
 	int		index;
-	char	*tmp;
 	char	*key;
 
 	i = -1;
 	j = -1;
 	while (src[++i])
 	{
-		tmp = strchr(src[i], '=');
-		if (!tmp)
-			index = strlen(src[i]);
-		else
-			index = tmp - src[i];
+		index = get_index(src[i]);
 		key = strndup(src[i], index);
 		if (cmp_envs(cmd, key))
 		{
@@ -70,7 +63,7 @@ static int	addtoenv(char **dst, char **src)
 	exit = 0;
 	while (src[++i])
 	{
-		if (!check_arg(src[i]))
+		if (!export_arg(src[i]))
 		{
 			dst[size + i - exit - 1] = ft_strdup(src[i]);
 			if (!dst[size + i - exit - 1])

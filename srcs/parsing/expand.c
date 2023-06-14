@@ -54,6 +54,17 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 	return (NULL);
 }
 
+void	handle_exit_status(char **new)
+{
+	char	*tmp;
+
+	tmp = ft_itoa(g_exit);
+	if (!tmp)
+		return ;
+	*new = ft_stradd(*new, tmp);
+	free(tmp);
+}
+
 char	*expansion(t_data *data, char *cmd)
 {
 	char	*new;
@@ -62,7 +73,7 @@ char	*expansion(t_data *data, char *cmd)
 	int		i;
 
 	if (!cmd)
-		return (cmd);
+		return (NULL);
 	i = -1;
 	quotes = 0;
 	new = NULL;
@@ -71,14 +82,7 @@ char	*expansion(t_data *data, char *cmd)
 	{
 		quote_status(cmd[i], &quotes);
 		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
-		{
-			tmp = ft_itoa(g_exit);
-			if (!tmp)
-				continue ;
-			new = ft_stradd(new, tmp);
-			free(tmp);
-			i += 1;
-		}
+			(handle_exit_status(&new), i += 1);
 		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] \
 		&& cmd[i + 1] != '\'' && cmd[i + 1] != '\"' && cmd[i + 1] != ' ')
 		{

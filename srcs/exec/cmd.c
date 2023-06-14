@@ -59,7 +59,6 @@ void	get_cmd(t_data *data)
 	exec(data, data->root);
 	data->exec = 0;
 	free_node(data->root);
-	data->root = NULL;
 	lclear(&data->tmp);
 	free(s);
 }

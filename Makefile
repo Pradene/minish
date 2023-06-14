@@ -4,14 +4,18 @@ BUILTIN_FILES	= builtin.c \
 				env.c \
 				exit.c \
 				export.c \
-				print_export.c \
+				export_arg.c \
+				export_print.c \
 				pwd.c \
 				unset.c
 
 EXEC_FILES =	cmd.c \
+				exec_builtin.c \
+				exec_cmd_error.c \
 				exec_cmd.c \
 				exec_utils.c \
 				exec_sep.c \
+				open_files.c \
 				path.c
 
 MINISHELL_FILES	= error.c \

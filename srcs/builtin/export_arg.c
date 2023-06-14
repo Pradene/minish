@@ -1,46 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   export_arg.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 17:36:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/29 17:36:22 by lpradene         ###   ########.fr       */
+/*   Created: 2023/06/14 15:41:55 by lpradene          #+#    #+#             */
+/*   Updated: 2023/06/14 15:41:56 by lpradene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	change_fd(int old, int new)
+int	export_arg(char *arg)
 {
-	dup2(old, new);
-	close(old);
-	old = -1;
-}
+	int	i;
 
-void	connect_cmd(t_node *left, t_node *right, int fd[2])
-{
-	t_node	*c;
-
-	c = left;
-	while (c->type != CMD)
-		c = c->right;
-	c->fd_out = fd[1];
-	c = right;
-	while (c->type != CMD)
-		c = c->left;
-	c->fd_in = fd[0];
-}
-
-void	sig_child(int sig)
-{
-	t_data	*data;
-
-	(void)sig;
-	data = singleton(NULL);
-	if (!data)
-		exit(130);
-	free_data(data);
-	exit(130);
+	if (arg[0] == '=')
+		return (1);
+	i = -1;
+	while (arg[++i] && arg[i] != '=')
+		if (!isalpha(arg[i]))
+			return (1);
+	if (!arg[i])
+		return (0);
+	return (0);
 }

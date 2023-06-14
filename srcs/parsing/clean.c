@@ -16,21 +16,18 @@ char	*clean_cmd(char *cmd)
 {
 	char	*new;
 	int		i;
-	int		j;
 	int		quote;
 
+	if (!cmd)
+		return (NULL);
 	i = -1;
-	j = -1;
 	quote = 0;
-	new = malloc(1);
-	new[0] = '\0';
+	new = calloc(1, sizeof(char));
 	while (cmd[++i])
 	{
-		if (quote == 0 && ft_strchr("\'\"", cmd[i]))
-			quote_status(cmd[i], &quote);
-		else if (quote == 1 && cmd[i] == '\'')
-			quote_status(cmd[i], &quote);
-		else if (quote == 2 && cmd[i] == '\"')
+		if ((quote == 0 && ft_strchr("\'\"", cmd[i])) \
+		|| (quote == 1 && cmd[i] == '\'') \
+		|| (quote == 2 && cmd[i] == '\"'))
 			quote_status(cmd[i], &quote);
 		else
 		{

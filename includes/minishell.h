@@ -118,6 +118,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_itoa(int n);
 int		size_tree(t_node *node);
 void	quote_status(char c, int *quote);
+void	change_fd(int old, int new);
 
 // MINISHELL
 void	error(char *msg);
@@ -174,10 +175,16 @@ void	sig_child(int sig);
 int		open_files(t_data *data, t_node *node);
 
 // EXEC
+void	exec_builtin(t_data *data, t_node *node);
 char	*get_path(char **env, char *cmd);
 void	exec_node(t_data *data, t_node *node);
 void	exec(t_data *data, t_node *node);
 void	get_cmd(t_data *data);
+
+// EXEC ERROR
+void	command_nfound(t_data *data, char *cmd);
+void	access_error(t_data *data, char *path, char *cmd, int ex);
+void	path_isdir(t_data *data, char *path, DIR *dir);
 
 // BUILT-IN
 int		is_builtin(char *s);
@@ -187,6 +194,7 @@ void	echo(t_node *node);
 void	env(t_data *data, t_node *node);
 void	ex(t_data *data, t_node *node);
 void	print_export(char **env);
+int		export_arg(char *arg);
 char	**export(t_data *data, t_node *node);
 void	pwd(t_data *data, t_node *node);
 char	**unset(t_data *data, t_node *node);

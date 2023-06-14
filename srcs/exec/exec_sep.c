@@ -33,13 +33,10 @@ static void	exec_pipe(t_data *data, t_node *left, t_node *right)
 		free_data(data);
 		exit(g_exit);
 	}
-	else
-	{
-		close(fd[1]);
-		exec(data, right);
-		close(fd[0]);
-		wait(&status);
-	}
+	close(fd[1]);
+	exec(data, right);
+	close(fd[0]);
+	wait(&status);
 }
 
 static void	exec_semicol(t_data *data, t_node *left, t_node *right)
