@@ -28,6 +28,10 @@ MINISHELL_FILES	= error.c \
 PARSING_FILES =	clean.c \
 				expand.c \
 				free_tree.c \
+				parser_cmd_utils.c \
+				parser_search.c \
+				parser_tree.c \
+				parser_utils.c \
 				parser.c \
 				heredoc.c \
 				print_tree.c \
@@ -51,7 +55,8 @@ UTILS_FILES	= addchar.c \
 			ft_strrchr.c \
 			ft_substr.c \
 			ft_strnstr.c \
-			ft_itoa.c
+			ft_itoa.c \
+			max.c
 
 MAIN	= main.c
 
