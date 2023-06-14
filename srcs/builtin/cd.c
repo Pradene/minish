@@ -31,6 +31,23 @@ static void	change_env(char **env, char *key, char *nvalue)
 	}
 }
 
+static void	go_home(t_data *data)
+{
+	char	*tmp;
+
+	tmp = get_env(data->env, "HOME");
+	if (!tmp)
+	{
+		write(2, "HOME not set\n", 13);
+		return ;
+	}
+	if (chdir(tmp) == -1)
+	{
+		perror(tmp);
+		g_exit = 1;
+	}
+}
+
 void	cd(t_data *data, t_node *node)
 {
 	char	old_pwd[BUFFER_SIZE];
@@ -42,12 +59,14 @@ void	cd(t_data *data, t_node *node)
 		g_exit = 1;
 		return ;
 	}
+	if (!node->cmd[1])
+		return (go_home(data));
 	if (!getcwd(old_pwd, BUFFER_SIZE))
 		return ;
 	if (chdir(node->cmd[1]) == -1)
 	{
-		g_exit = 1;
 		perror(node->cmd[1]);
+		g_exit = 1;
 		return ;
 	}
 	if (!getcwd(pwd, BUFFER_SIZE))

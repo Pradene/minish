@@ -85,9 +85,10 @@ typedef struct s_data
 	char	**env;
 	t_node	*root;
 	t_tmp	*tmp;
-	int		exec;
 	int		fd0;
 	int		fd1;
+	int		exec;
+	int		c_heredoc;
 	t_list	*tokens;
 }	t_data;
 

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	check_options(char *arg)
+static int	check_options(char *arg)
 {
 	int	i;
 

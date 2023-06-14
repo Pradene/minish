@@ -36,6 +36,7 @@ int	main(int ac, char **av, char **envp)
 	data.tmp = NULL;
 	data.tokens = NULL;
 	data.exec = 0;
+	data.c_heredoc = 0;
 	data.fd0 = -1;
 	data.fd1 = -1;
 	set_attribute();

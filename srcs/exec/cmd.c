@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	check_quotes(char *s)
+static int	check_quotes(char *s)
 {
 	int	i;
 	int	status;
@@ -54,6 +54,7 @@ void	get_cmd(t_data *data)
 	if (check_quotes(s))
 		return (free(s));
 	parse(data, &data->root, &s);
+	data->c_heredoc = 0;
 	data->exec = 1;
 	exec(data, data->root);
 	data->exec = 0;

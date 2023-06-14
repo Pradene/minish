@@ -37,7 +37,7 @@ static int	count(long long n)
 	return (c);
 }
 
-char	*itoll(long long n)
+static char	*itoll(long long n)
 {
 	int		c;
 	char	*str;
@@ -61,7 +61,7 @@ char	*itoll(long long n)
 	return (str);
 }
 
-int	intcmp(char *s1, char *s2)
+static int	intcmp(char *s1, char *s2)
 {
 	int	i;
 	int	j;

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	check_arg(char *arg)
+static int	check_arg(char *arg)
 {
 	int	i;
 
@@ -27,7 +27,7 @@ int	check_arg(char *arg)
 	return (0);
 }
 
-int	sscpy(char **dst, char **src, char **cmd)
+static int	sscpy(char **dst, char **src, char **cmd)
 {
 	int		i;
 	int		j;
@@ -59,7 +59,7 @@ int	sscpy(char **dst, char **src, char **cmd)
 	return (0);
 }
 
-int	addtoenv(char **dst, char **src)
+static int	addtoenv(char **dst, char **src)
 {
 	int	i;
 	int	size;
@@ -88,7 +88,7 @@ int	addtoenv(char **dst, char **src)
 	return (0);
 }
 
-int	env_count(t_data *data, char **cmd)
+static int	env_count(t_data *data, char **cmd)
 {
 	int		i;
 	int		count;
