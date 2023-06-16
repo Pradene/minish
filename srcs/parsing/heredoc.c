@@ -79,11 +79,9 @@ int	heredoc(t_data *data, t_node *node, char *limiter)
 	tmp = node;
 	while (tmp->right)
 		tmp = tmp->right;
-	tmp->right = new_node();
+	tmp->right = new_node(data, HEREDOC);
 	if (!tmp->right)
 		return (1);
-	tmp->right->type = HEREDOC;
-	tmp_add(&data->tmp, tmp->right);
 	if (pipe(fd) == -1)
 		return (1);
 	pid = fork();

@@ -19,12 +19,10 @@ int	create_redir(t_data *data, t_node *node, t_type type, char *file)
 	tmp = node;
 	while (tmp->right)
 		tmp = tmp->right;
-	tmp->right = new_node();
+	tmp->right = new_node(data, type);
 	if (!tmp->right)
 		return (1);
 	tmp = tmp->right;
-	tmp_add(&data->tmp, tmp);
-	tmp->type = type;
 	tmp->file = ft_strdup(file);
 	return (0);
 }
@@ -37,31 +35,22 @@ t_node	*create_leaf(t_data *data, t_list *lst, int first, int last)
 	if (last - first <= 0)
 		return (NULL);
 	c = go(lst, first);
-	new = new_node();
+	new = new_node(data, CMD);
 	if (!new)
 		return (NULL);
-	tmp_add(&data->tmp, new);
-	new->type = CMD;
 	while (c && ++first <= last)
 	{
 		if (isredir(c->s))
 		{
 			first += 1;
-			if (first > last || issep(c->next->s) || isredir(c->next->s))
+			if (first > last || check_redir_error(data, new, c))
 				return (free_node(new), NULL);
-			if (handle_redir(data, new, c->s, c->next->s))
-			{
-				data->c_heredoc = 1;
-				return (free_node(new), NULL);
-			}
-			c = c->next;
+			c = c->next->next;
+			continue ;
 		}
-		else
-		{
-			new->cmd = add_to_cmd(new->cmd, c->s);
-			if (!new->cmd)
-				return (free_node(new), NULL);
-		}
+		new->cmd = add_to_cmd(new->cmd, c->s);
+		if (!new->cmd)
+			return (free_node(new), NULL);
 		c = c->next;
 	}
 	return (new);
@@ -75,15 +64,12 @@ t_node	*create_child(t_data *data, t_list *lst, int first, int last)
 		return (print_error(data, ")"), NULL);
 	if (search_closebrackets(lst, first, last) != last - 1)
 		return (print_error(data, "("), NULL);
-	new = new_node();
+	new = new_node(data, OPEN_BRACKET);
 	if (!new)
 		return (NULL);
-	tmp_add(&data->tmp, new);
-	new->type = OPEN_BRACKET;
-	new->right = new_node();
+	new->right = new_node(data, CLOSE_BRACKET);
 	if (!new->right)
 		return (free_node(new), NULL);
-	new->right->type = CLOSE_BRACKET;
 	new->left = create_tree(data, lst, first + 1, last - 1);
 	if (!new->left)
 		return (free_node(new), NULL);
@@ -102,11 +88,9 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 	token = search_sep(c, &pos, last - first);
 	if (!token || pos < 0 || pos > last - first - 1)
 		return (NULL);
-	new = new_node();
+	new = new_node(data, get_type(token->s));
 	if (!new)
 		return (NULL);
-	tmp_add(&data->tmp, new);
-	new->type = get_type(token->s);
 	new->left = create_tree(data, lst, first, first + pos);
 	if (!new->left)
 		return (print_error(data, token->s), free_node(new), NULL);

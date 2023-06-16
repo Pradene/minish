@@ -12,6 +12,14 @@
 
 #include "../../includes/minishell.h"
 
+int	check_redir_error(t_data *data, t_node *new, t_list *c)
+{
+	if (issep(c->next->s) || isredir(c->next->s) \
+	|| handle_redir(data, new, c->s, c->next->s))
+		return (1);
+	return (0);
+}
+
 int	handle_redir(t_data *data, t_node *node, char *type, char *file)
 {
 	if (!strcmp(type, ">"))
@@ -21,8 +29,13 @@ int	handle_redir(t_data *data, t_node *node, char *type, char *file)
 	else if (!strcmp(type, "<"))
 		create_redir(data, node, R_IN, file);
 	else if (!strcmp(type, "<<"))
+	{
 		if (heredoc(data, node, file))
+		{
+			data->c_heredoc = 1;
 			return (1);
+		}
+	}
 	return (0);
 }
 

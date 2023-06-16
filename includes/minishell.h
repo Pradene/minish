@@ -143,7 +143,7 @@ char	*expansion(t_data *data, char *cmd);
 
 // PARSER
 void	lclear(t_tmp **lst);
-t_node	*new_node(void);
+t_node	*new_node(t_data *data, t_type type);
 int		heredoc(t_data *data, t_node *node, char *limiter);
 int		create_redir(t_data *data, t_node *node, t_type type, char *file);
 t_node	*parser_tree(t_data *data, t_list *lst, int first, int last);
@@ -157,6 +157,7 @@ int		search_openbrackets(t_list *lst, int first, int last);
 int		search_closebrackets(t_list *lst, int first, int last);
 
 // PARSER CMD UTILS
+int		check_redir_error(t_data *data, t_node *new, t_list *c);
 int		handle_redir(t_data *data, t_node *node, char *type, char *file);
 char	**add_to_cmd(char **cmds, char *cmd);
 
@@ -170,6 +171,7 @@ t_type	get_type(char *s);
 // TREE
 t_node	*create_node(t_data *data, t_list *lst, int first, int last);
 t_node	*create_tree(t_data *data, t_list *lst, int first, int last);
+void	print_node(t_node *node);
 void	print_tree(t_node *node);
 void	free_node(t_node *node);
 
@@ -178,6 +180,7 @@ void	free_tmp(t_node *node);
 void	tmp_clear(t_tmp **lst);
 t_tmp	*tmp_last(t_tmp *lst);
 void	tmp_add(t_tmp **lst, t_node *node);
+void	tmp_print(t_tmp *lst);
 
 // TOKENS
 t_list	*tokens(char **s);

@@ -72,13 +72,11 @@ char	*expansion(t_data *data, char *cmd)
 	int		quotes;
 	int		i;
 
-	if (!cmd)
-		return (NULL);
 	i = -1;
 	quotes = 0;
 	new = NULL;
 	tmp = NULL;
-	while (cmd[++i])
+	while (cmd && cmd[++i])
 	{
 		quote_status(cmd[i], &quotes);
 		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
@@ -87,8 +85,6 @@ char	*expansion(t_data *data, char *cmd)
 		&& cmd[i + 1] != '\'' && cmd[i + 1] != '\"' && cmd[i + 1] != ' ')
 		{
 			tmp = handle_dollar(data, &cmd[i], &i);
-			if (!tmp)
-				continue ;
 			new = ft_stradd(new, tmp);
 		}
 		else

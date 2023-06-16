@@ -73,3 +73,17 @@ void	tmp_add(t_tmp **lst, t_node *node)
 	else
 		*lst = new;
 }
+
+void	tmp_print(t_tmp *lst)
+{
+	t_tmp	*c;
+
+	if (!lst)
+		return ;
+	c = lst;
+	while (c)
+	{
+		print_node(c->node);
+		c = c->next;
+	}
+}

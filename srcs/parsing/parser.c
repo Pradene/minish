@@ -12,20 +12,21 @@
 
 #include "../../includes/minishell.h"
 
-t_node	*new_node(void)
+t_node	*new_node(t_data *data, t_type type)
 {
 	t_node	*node;
 
 	node = malloc(sizeof(t_node));
 	if (!node)
 		return (NULL);
-	node->type = ERR;
+	node->type = type;
 	node->cmd = NULL;
 	node->file = NULL;
 	node->fd_in = -1;
 	node->fd_out = -1;
 	node->left = NULL;
 	node->right = NULL;
+	tmp_add(&data->tmp, node);
 	return (node);
 }
 
