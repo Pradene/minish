@@ -31,6 +31,10 @@ static int	check_quotes(char *s)
 			|| (status == 2 && s[i] == '\"'))
 			status = 0;
 	}
+	if (status == 2)
+		prerror("syntax error, expected \'\"\'\n");
+	if (status == 1)
+		prerror("syntax error, expected \'\'\'\n");
 	return (status);
 }
 

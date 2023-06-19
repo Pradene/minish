@@ -21,8 +21,7 @@ int	get_index(char *s)
 	i = -1;
 	while (s[++i])
 	{
-		if (s[i] == '\'' || s[i] == '\"' || s[i] == ' ' \
-		|| s[i] == '$')
+		if (!(isalpha(s[i]) || s[i] == '_'))
 			break ;
 	}
 	return (i);
@@ -40,8 +39,7 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 	value = NULL;
 	while (cmd[++i])
 	{
-		if (cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ' \
-		&& cmd[i] != '$')
+		if (isalpha(cmd[i]) || cmd[i] == '_')
 		{
 			size = get_index(&cmd[i]);
 			key = strndup(&cmd[i], size);
@@ -82,7 +80,7 @@ char	*expansion(t_data *data, char *cmd)
 		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
 			(handle_exit_status(&new), i += 1);
 		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] \
-		&& cmd[i + 1] != '\'' && cmd[i + 1] != '\"' && cmd[i + 1] != ' ')
+		&& (cmd[i + 1] || cmd[i + 1] == '_'))
 		{
 			tmp = handle_dollar(data, &cmd[i], &i);
 			new = ft_stradd(new, tmp);
