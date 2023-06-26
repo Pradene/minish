@@ -1,3 +1,5 @@
+#include "../../includes/minishell.h"
+
 char	*ft_strndup(const char *str, int n)
 {
 	char	*dest;
