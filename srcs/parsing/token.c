@@ -25,9 +25,9 @@ static char	*handle_other(char **s)
 		return (NULL);
 	while (**s)
 	{
-		if ((!quote && strchr("\t\n\v\f\r <>|&();", **s)))
+		if ((!quote && ft_strchr("\t\n\v\f\r <>|&();", **s)))
 			break ;
-		strncat(str, *s, 1);
+		ft_strncat(str, *s, 1);
 		quote_status(**s, &quote);
 		*s += 1;
 	}
@@ -36,15 +36,15 @@ static char	*handle_other(char **s)
 
 char	*next_token(char **s)
 {
-	while (**s && strchr("\t\n\v\f\r ", **s))
+	while (**s && ft_strchr("\t\n\v\f\r ", **s))
 		*s += 1;
-	if (!strncmp(*s, "||", 2))
+	if (!ft_strncmp(*s, "||", 2))
 		return (*s += 2, ft_strdup("||"));
-	else if (!strncmp(*s, "&&", 2))
+	else if (!ft_strncmp(*s, "&&", 2))
 		return (*s += 2, ft_strdup("&&"));
-	else if (!strncmp(*s, ">>", 2))
+	else if (!ft_strncmp(*s, ">>", 2))
 		return (*s += 2, ft_strdup(">>"));
-	else if (!strncmp(*s, "<<", 2))
+	else if (!ft_strncmp(*s, "<<", 2))
 		return (*s += 2, ft_strdup("<<"));
 	else if (**s == '|')
 		return (*s += 1, ft_strdup("|"));

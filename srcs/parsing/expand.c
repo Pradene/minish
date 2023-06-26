@@ -21,7 +21,7 @@ int	get_index(char *s)
 	i = -1;
 	while (s[++i])
 	{
-		if (!(isalpha(s[i]) || s[i] == '_'))
+		if (!(ft_isalpha(s[i]) || s[i] == '_'))
 			break ;
 	}
 	return (i);
@@ -42,7 +42,7 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 		if (isalpha(cmd[i]) || cmd[i] == '_')
 		{
 			size = get_index(&cmd[i]);
-			key = strndup(&cmd[i], size);
+			key = ft_strndup(&cmd[i], size);
 			value = get_env(data->env, key);
 			free(key);
 			(*c) += size;
@@ -86,7 +86,7 @@ char	*expansion(t_data *data, char *cmd)
 			new = ft_stradd(new, tmp);
 		}
 		else
-			new = addchar(new, cmd[i]);
+			new = ft_addchar(new, cmd[i]);
 	}
 	return (free(cmd), new);
 }

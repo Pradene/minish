@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   addchar.c                                          :+:      :+:    :+:   */
+/*   ft_addchar.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-char	*addchar(char *s, char c)
+char	*ft_addchar(char *s, char c)
 {
 	int		size;
 	char	*new;
@@ -21,7 +21,7 @@ char	*addchar(char *s, char c)
 	new = malloc(sizeof(char) * (size + 1 + 1));
 	if (!new)
 		return (s);
-	memcpy(new, s, size);
+	ft_memcpy(new, s, size);
 	new[size] = c;
 	new[size + 1] = '\0';
 	if (s)

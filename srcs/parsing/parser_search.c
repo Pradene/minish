@@ -25,11 +25,11 @@ t_list	*search_token(t_list *lst, char *token, int *pos, int size)
 	brackets = 0;
 	while (size--)
 	{
-		if (!strcmp(e->s, "("))
+		if (!ft_strcmp(e->s, "("))
 			brackets++;
-		else if (!strcmp(e->s, ")"))
+		else if (!ft_strcmp(e->s, ")"))
 			brackets--;
-		else if (!brackets && !strcmp(e->s, token))
+		else if (!brackets && !ft_strcmp(e->s, token))
 		{
 			*pos = c;
 			current = e;
@@ -84,7 +84,7 @@ int	search_openbrackets(t_list *lst, int first, int last)
 	c = go(lst, first);
 	while (first < last)
 	{
-		if (!strcmp(c->s, "("))
+		if (!ft_strcmp(c->s, "("))
 			return (first);
 		c = c->next;
 		first += 1;
@@ -101,11 +101,11 @@ int	search_closebrackets(t_list *lst, int first, int last)
 	c = go(lst, first);
 	while (first < last)
 	{
-		if (!strcmp(c->s, ")") && status > 0)
+		if (!ft_strcmp(c->s, ")") && status > 0)
 			status -= 1;
-		if (!strcmp(c->s, ")") && status == 0)
+		if (!ft_strcmp(c->s, ")") && status == 0)
 			return (first);
-		else if (!strcmp(c->s, "("))
+		else if (!ft_strcmp(c->s, "("))
 			status += 1;
 		c = c->next;
 		first += 1;

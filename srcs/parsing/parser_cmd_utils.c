@@ -22,13 +22,13 @@ int	check_redir_error(t_data *data, t_node *new, t_list *c)
 
 int	handle_redir(t_data *data, t_node *node, char *type, char *file)
 {
-	if (!strcmp(type, ">"))
+	if (!ft_strcmp(type, ">"))
 		create_redir(data, node, R_OUT, file);
-	else if (!strcmp(type, ">>"))
+	else if (!ft_strcmp(type, ">>"))
 		create_redir(data, node, R_OUT2, file);
-	else if (!strcmp(type, "<"))
+	else if (!ft_strcmp(type, "<"))
 		create_redir(data, node, R_IN, file);
-	else if (!strcmp(type, "<<"))
+	else if (!ft_strcmp(type, "<<"))
 	{
 		if (heredoc(data, node, file))
 		{

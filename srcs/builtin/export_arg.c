@@ -20,7 +20,7 @@ int	export_arg(char *arg)
 		return (1);
 	i = -1;
 	while (arg[++i] && arg[i] != '=')
-		if (!isalpha(arg[i]))
+		if (!ft_isalpha(arg[i]))
 			return (1);
 	if (!arg[i])
 		return (0);

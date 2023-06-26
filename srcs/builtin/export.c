@@ -17,9 +17,9 @@ static int	get_index(char *src)
 	int		index;
 	char	*tmp;
 
-	tmp = strchr(src, '=');
+	tmp = ft_strchr(src, '=');
 	if (!tmp)
-		index = strlen(src);
+		index = ft_strlen(src);
 	else
 		index = tmp - src;
 	return (index);
@@ -37,7 +37,7 @@ static int	sscpy(char **dst, char **src, char **cmd)
 	while (src[++i])
 	{
 		index = get_index(src[i]);
-		key = strndup(src[i], index);
+		key = ft_strndup(src[i], index);
 		if (cmp_envs(cmd, key))
 		{
 			free(key);
@@ -93,12 +93,12 @@ static int	env_count(t_data *data, char **cmd)
 	count = 0;
 	while (cmd[++i])
 	{
-		tmp = strchr(cmd[i], '=');
+		tmp = ft_strchr(cmd[i], '=');
 		if (!tmp)
-			index = strlen(cmd[i]);
+			index = ft_strlen(cmd[i]);
 		else
 			index = tmp - cmd[i];
-		key = strndup(cmd[i], index);
+		key = ft_strndup(cmd[i], index);
 		count += cmp_envs(data->env, key);
 		free(key);
 	}

@@ -12,46 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-// char	*clean_cmd(char *cmd)
-// {
-// 	char	*new;
-// 	int		i;
-// 	int		quote;
-
-// 	if (!cmd)
-// 		return (NULL);
-// 	i = -1;
-// 	quote = 0;
-// 	new = calloc(1, sizeof(char));
-// 	while (cmd[++i])
-// 	{
-// 		if ((quote == 0 && ft_strchr("\'\"", cmd[i])) \
-// 		|| (quote == 1 && cmd[i] == '\'') \
-// 		|| (quote == 2 && cmd[i] == '\"'))
-// 			quote_status(cmd[i], &quote);
-// 		else
-// 		{
-// 			new = addchar(new, cmd[i]);
-// 			if (!new)
-// 				return (cmd);
-// 		}
-// 	}
-// 	free(cmd);
-// 	return (new);
-// }
-
-// char	**clean_cmds(char **cmds)
-// {
-// 	int	i;
-
-// 	if (!cmds)
-// 		return (NULL);
-// 	i = -1;
-// 	while (cmds[++i])
-// 		cmds[i] = clean_cmd(cmds[i]);
-// 	return (cmds);
-// }
-
 int	space(char *cmd)
 {
 	int	i;
@@ -90,7 +50,8 @@ int	count(char **cmds)
 			quote_status(cmds[i][j], &quote);
 			if (!quote && cmds[i][j] == ' ')
 				count++;
-			while (cmds[i][j] == ' ' && cmds[i][j + 1] && cmds[i][j + 1] == ' ')
+			while (cmds[i][j] == ' ' && cmds[i][j + 1] \
+			&& cmds[i][j + 1] == ' ')
 				j++;
 		}
 	}
@@ -116,7 +77,7 @@ char	*clean_cmd(char *cmd)
 			quote_status(cmd[i], &quote);
 		else
 		{
-			new = addchar(new, cmd[i]);
+			new = ft_addchar(new, cmd[i]);
 			if (!new)
 				return (cmd);
 		}
@@ -125,13 +86,29 @@ char	*clean_cmd(char *cmd)
 	return (new);
 }
 
+void	addtocmd(char **new, char **cmds, int *i, int *j)
+{
+	char	**tmp;
+	int		k;
+
+	cmds[*i] = clean_cmd(cmds[*i]);
+	tmp = ft_split(cmds[*i], ' ');
+	if (!tmp)
+		return ;
+	k = -1;
+	while (tmp[++k])
+	{
+		new[*i + *j] = ft_strdup(tmp[k]);
+		*j += 1;
+	}
+	dfree(tmp);
+}
+
 char	**clean_cmds(char **cmds)
 {
 	int		i;
 	int		j;
-	int		k;
 	char	**new;
-	char	**tmp;
 
 	if (!cmds)
 		return (NULL);
@@ -144,21 +121,11 @@ char	**clean_cmds(char **cmds)
 	while (cmds[++i])
 	{
 		if (space(cmds[i]))
-		{
-			cmds[i] = clean_cmd(cmds[i]);
-			tmp = ft_split(cmds[i], ' ');
-			k = -1;
-			while (tmp[++k])
-			{
-				new[i + j] = strdup(tmp[k]);
-				j++;
-			}
-			dfree(tmp);
-		}
+			addtocmd(new, cmds, &i, &j);
 		else
 		{
 			cmds[i] = clean_cmd(cmds[i]);
-			new[i + j] = strdup(cmds[i]);
+			new[i + j] = ft_strdup(cmds[i]);
 		}
 	}
 	dfree(cmds);

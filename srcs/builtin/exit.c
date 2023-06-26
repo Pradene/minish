@@ -37,7 +37,7 @@ static int	count(long long n)
 	return (c);
 }
 
-static char	*itoll(long long n)
+static char	*ft_lltoa(long long n)
 {
 	int		c;
 	char	*str;
@@ -94,8 +94,8 @@ void	ex(t_data *data, t_node *node)
 	printf("exit\n");
 	if (node->cmd[1])
 	{
-		n = atoll(node->cmd[1]);
-		s = itoll(n);
+		n = ft_atoll(node->cmd[1]);
+		s = ft_lltoa(n);
 		if (intcmp(s, node->cmd[1]))
 		{
 			write(2, node->cmd[1], ft_strlen(node->cmd[1]));

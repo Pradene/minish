@@ -39,19 +39,24 @@ PARSING_FILES =	clean.c \
 				wild_cards.c \
 				tmp.c
 
-UTILS_FILES	= addchar.c \
+UTILS_FILES	= ft_addchar.c \
+			ft_atoll.c \
 			ft_bzero.c \
 			ft_calloc.c \
+			ft_isalpha.c \
 			ft_lst.c \
 			ft_memcpy.c \
 			ft_split.c \
 			ft_strcat.c \
 			ft_strchr.c \
+			ft_strcmp.c \
 			ft_strcpy.c \
 			ft_strdup.c \
 			ft_strjoin.c \
 			ft_strlen.c \
+			ft_strncat.c \
 			ft_strncmp.c \
+			ft_strndup.c \
 			ft_strrchr.c \
 			ft_substr.c \
 			ft_strnstr.c \
