@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_tree.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 17:58:33 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/14 17:58:34 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:05:57 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ t_node	*create_leaf(t_data *data, t_list *lst, int first, int last)
 		{
 			first += 1;
 			if (first > last || check_redir_error(data, new, c))
-				return (free_node(new), NULL);
+				return (print_error(data, c->s), free_node(&new), NULL);
 			c = c->next->next;
 			continue ;
 		}
 		new->cmd = add_to_cmd(new->cmd, c->s);
 		if (!new->cmd)
-			return (free_node(new), NULL);
+			return (free_node(&new), NULL);
 		c = c->next;
 	}
 	return (new);
@@ -69,10 +69,10 @@ t_node	*create_child(t_data *data, t_list *lst, int first, int last)
 		return (NULL);
 	new->right = new_node(data, CLOSE_BRACKET);
 	if (!new->right)
-		return (free_node(new), NULL);
+		return (free_node(&new), NULL);
 	new->left = create_tree(data, lst, first + 1, last - 1);
 	if (!new->left)
-		return (free_node(new), NULL);
+		return (free_node(&new), NULL);
 	return (new);
 }
 
@@ -93,10 +93,10 @@ t_node	*create_node(t_data *data, t_list *lst, int first, int last)
 		return (NULL);
 	new->left = create_tree(data, lst, first, first + pos);
 	if (!new->left)
-		return (print_error(data, token->s), free_node(new), NULL);
+		return (print_error(data, token->s), free_node(&new), NULL);
 	new->right = create_tree(data, lst, first + pos + 1, last);
 	if (!new->right)
-		return (print_error(data, token->s), free_node(new), NULL);
+		return (print_error(data, token->s), free_node(&new), NULL);
 	return (new);
 }
 

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/23 16:02:04 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:03:37 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ t_node		*create_node(t_data *data, t_list *lst, int first, int last);
 t_node		*create_tree(t_data *data, t_list *lst, int first, int last);
 void		print_node(t_node *node);
 void		print_tree(t_node *node);
-void		free_node(t_node *node);
+void		free_node(t_node **node);
 
 // TMP
 void		free_tmp(t_node *node);

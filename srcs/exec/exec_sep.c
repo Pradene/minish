@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_sep.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:36:13 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/29 17:36:14 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 14:55:20 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	exec_and(t_data *data, t_node *left, t_node *right)
 
 void	exec(t_data *data, t_node *node)
 {
-	if (!node)
+	if (!node || !node->type || (node->type == CMD && !node->cmd))
 		return ;
 	if (node->type == CMD)
 		exec_node(data, node);

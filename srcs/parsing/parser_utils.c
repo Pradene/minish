@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 17:59:23 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/14 17:59:24 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:32:38 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	print_error(t_data *data, char *token)
 {
 	if (data->c_heredoc)
 		return ;
-	write(2, "syntax error near unexpected token \'", 36);
+	write(2, "syntax error near unexpected token `", 36);
 	write(2, token, ft_strlen(token));
 	write(2, "\'\n", 2);
 }

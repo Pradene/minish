@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:29:45 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/01 06:30:00 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 12:54:55 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ t_list	*tokens(char **s)
 	t_list	*new;
 	char	*tmp;
 
+	if (!(*s))
+		return (NULL);
 	tmp = *s;
 	lst = NULL;
 	new = get_token(&tmp);

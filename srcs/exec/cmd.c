@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:11:08 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/26 14:59:48 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:24:14 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	get_cmd(t_data *data)
 	data->exec = 1;
 	exec(data, data->root);
 	data->exec = 0;
-	free_node(data->root);
+	free_node(&data->root);
 	lclear(&data->tmp);
 	free(s);
 }

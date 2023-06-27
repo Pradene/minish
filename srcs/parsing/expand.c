@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/11 10:07:49 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:25:14 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*expansion(t_data *data, char *cmd)
 		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
 			(handle_exit_status(&new), i += 1);
 		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] \
-		&& (cmd[i + 1] || cmd[i + 1] == '_'))
+		&& (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_'))
 		{
 			tmp = handle_dollar(data, &cmd[i], &i);
 			new = ft_stradd(new, tmp);
@@ -93,18 +93,21 @@ char	*expansion(t_data *data, char *cmd)
 
 char	**expand(t_data *data, char **cmds)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	*tmp;
 
 	if (!data->env || !cmds)
-		return (cmds);
+		return (NULL);
 	i = -1;
 	j = -1;
 	while (cmds[++i])
 	{
+		tmp = ft_strdup(cmds[i]);
 		cmds[++j] = expansion(data, cmds[i]);
-		if (!cmds[j])
+		if (!cmds[j] && tmp)
 			j -= 1;
+		free(tmp);
 	}
 	cmds[++j] = NULL;
 	return (cmds);

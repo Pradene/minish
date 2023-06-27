@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:10:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/23 16:01:38 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:23:59 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	exec_cmd_child(t_data *data, t_node *node)
 		exit(1);
 	}
 	if (node->fd_in != -1)
-		change_fd(node->fd_in, STDIN_FILENO);
+		dup2(node->fd_in, STDIN_FILENO);
 	if (node->fd_out != -1)
-		change_fd(node->fd_out, STDOUT_FILENO);
+		dup2(node->fd_out, STDOUT_FILENO);
 	if (node->cmd && is_builtin(node->cmd[0]))
 	{
 		builtin(data, node);
@@ -68,8 +68,7 @@ void	exec_cmd(t_data *data, t_node *node)
 	if (pid == 0)
 		exec_cmd_child(data, node);
 	error = waitpid(pid, &status, WUNTRACED);
-	if (WIFEXITED(status))
-		g_exit = WEXITSTATUS(status);
+	g_exit = WEXITSTATUS(status);
 }
 
 void	exec_node(t_data *data, t_node *node)

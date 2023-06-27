@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:29:28 by lpradene          #+#    #+#             */
-/*   Updated: 2023/04/01 06:29:29 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 13:06:57 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ t_node	*new_node(t_data *data, t_type type)
 	if (!node)
 		return (NULL);
 	node->type = type;
+	if (!type)
+		node->type = ERR;
 	node->cmd = NULL;
 	node->file = NULL;
 	node->fd_in = -1;
