@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:13:47 by tmalless          #+#    #+#             */
-/*   Updated: 2023/06/27 15:25:14 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/28 15:58:22 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ int	get_index(char *s)
 	i = -1;
 	while (s[++i])
 	{
-		if (!(ft_isalpha(s[i]) || s[i] == '_'))
+		if (!(ft_isalnum(s[i]) || s[i] == '_'))
 			break ;
 	}
 	return (i);
 }
 
-char	*handle_dollar(t_data *data, char *cmd, int *c)
+char	*handle_dollar(t_data *data, char *cmd, int status, int *c)
 {
 	int		i;
 	int		size;
@@ -39,7 +39,7 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 	value = NULL;
 	while (cmd[++i])
 	{
-		if (isalpha(cmd[i]) || cmd[i] == '_')
+		if (ft_isalnum(cmd[i]) || cmd[i] == '_')
 		{
 			size = get_index(&cmd[i]);
 			key = ft_strndup(&cmd[i], size);
@@ -48,6 +48,10 @@ char	*handle_dollar(t_data *data, char *cmd, int *c)
 			(*c) += size;
 			return (value);
 		}
+		else if (status == 2 && cmd[i] == '\"')
+			return ("$");
+		else
+			break ;
 	}
 	return (NULL);
 }
@@ -79,10 +83,9 @@ char	*expansion(t_data *data, char *cmd)
 		quote_status(cmd[i], &quotes);
 		if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] && cmd[i + 1] == '?')
 			(handle_exit_status(&new), i += 1);
-		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1] \
-		&& (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_'))
+		else if (quotes != 1 && cmd[i] == '$' && cmd[i + 1])
 		{
-			tmp = handle_dollar(data, &cmd[i], &i);
+			tmp = handle_dollar(data, &cmd[i], quotes, &i);
 			new = ft_stradd(new, tmp);
 		}
 		else

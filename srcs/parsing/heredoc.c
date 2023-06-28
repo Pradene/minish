@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 16:40:48 by lpradene          #+#    #+#             */
-/*   Updated: 2023/05/24 16:40:50 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:43:45 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	read_heredoc(t_data *data, char *limiter, int fd)
 			free_d(data);
 			exit(0);
 		}
-		if (!strcmp(limiter, line))
+		if (!ft_strcmp(limiter, line))
 			break ;
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);

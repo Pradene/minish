@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/17 20:55:34 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/28 13:04:13 by tmalless         ###   ########.fr       */
+/*   Created: 2022/11/07 14:43:56 by tmalless          #+#    #+#             */
+/*   Updated: 2023/06/28 15:37:21 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	sig_handler(int sig)
+int	ft_isdigit(int c)
 {
-	t_data	*data;
-
-	(void)sig;
-	data = singleton(NULL);
-	if (!data)
-		return ;
-	printf("\n");
-	if (!data->exec)
-	{
-		g_exit = 130;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
+	if (c > 47 && c < 58)
+		return (1);
+	else
+		return (0);
 }

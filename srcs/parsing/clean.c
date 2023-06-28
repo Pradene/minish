@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:03:13 by tmalless          #+#    #+#             */
-/*   Updated: 2023/05/10 16:14:33 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/28 16:32:35 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*clean_cmd(char *cmd)
 		return (NULL);
 	i = -1;
 	quote = 0;
-	new = calloc(1, sizeof(char));
+	new = ft_calloc(1, sizeof(char));
 	while (cmd[++i])
 	{
 		if ((quote == 0 && ft_strchr("\'\"", cmd[i])) \
@@ -118,7 +118,7 @@ char	**clean_cmds(char **cmds)
 	new[dsize(cmds) + count(cmds)] = NULL;
 	i = -1;
 	j = 0;
-	while (cmds[++i])
+	while (cmds && cmds[++i])
 	{
 		if (space(cmds[i]))
 			addtocmd(new, cmds, &i, &j);

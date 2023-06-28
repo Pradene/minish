@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:29:45 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 12:54:55 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:46:42 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char	*handle_other(char **s)
 	if (!(**s))
 		return (NULL);
 	quote = 0;
-	str = calloc(4096, sizeof(char));
+	str = ft_calloc(4096, sizeof(char));
 	if (!str)
 		return (NULL);
 	while (**s)

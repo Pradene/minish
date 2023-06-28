@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_export.c                                     :+:      :+:    :+:   */
+/*   export_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 16:31:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/02 16:31:22 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/28 15:42:23 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	print_export(char **env)
 	while (env[++i])
 	{
 		j = -1;
-		printf("declare -x ");
+		printf("export ");
 		while (env[i][++j] && env[i][j] != '=')
 			printf("%c", env[i][j]);
 		if (!env[i][j])

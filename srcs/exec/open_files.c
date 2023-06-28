@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:22:05 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/14 16:22:06 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:47:36 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	check_file_error(t_node *node)
 {
 	if (node->type != HEREDOC && !node->file)
 		return (prerror("Ambiguous redirect\n"), 1);
-	if (node->type != HEREDOC && strchr(node->file, '*'))
+	if (node->type != HEREDOC && ft_strchr(node->file, '*'))
 		return (prerror("Ambiguous redirect\n"), 1);
 	return (0);
 }

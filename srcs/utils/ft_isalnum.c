@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   ft_isalnum.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/17 20:55:34 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/28 13:04:13 by tmalless         ###   ########.fr       */
+/*   Created: 2022/11/07 15:02:35 by tmalless          #+#    #+#             */
+/*   Updated: 2023/06/28 15:37:05 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	sig_handler(int sig)
+int	ft_isalnum(int c)
 {
-	t_data	*data;
-
-	(void)sig;
-	data = singleton(NULL);
-	if (!data)
-		return ;
-	printf("\n");
-	if (!data->exec)
-	{
-		g_exit = 130;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
+	if (c < '0' || c > 'z')
+		return (0);
+	else if (c > '9' && c < 'A')
+		return (0);
+	else if (c > 'Z' && c < 'a')
+		return (0);
+	else
+		return (1);
 }
