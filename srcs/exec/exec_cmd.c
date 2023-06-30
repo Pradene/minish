@@ -35,6 +35,7 @@ void	execute(t_data *data, t_node *node, char **env)
 
 void	exec_cmd_child(t_data *data, t_node *node)
 {
+	signal(SIGQUIT, sigquit_child);
 	signal(SIGINT, sig_child);
 	if (open_files(data, node))
 	{
@@ -68,7 +69,14 @@ void	exec_cmd(t_data *data, t_node *node)
 	if (pid == 0)
 		exec_cmd_child(data, node);
 	error = waitpid(pid, &status, WUNTRACED);
-	g_exit = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		g_exit = status;
+		if (g_exit != 131)
+			g_exit += 128;
+	}
+	else
+		g_exit = WEXITSTATUS(status);
 }
 
 void	exec_node(t_data *data, t_node *node)

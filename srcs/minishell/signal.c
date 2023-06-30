@@ -20,12 +20,17 @@ void	sig_handler(int sig)
 	data = singleton(NULL);
 	if (!data)
 		return ;
-	printf("\n");
 	if (!data->exec)
 	{
+		printf("\n");
 		g_exit = 130;
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
+}
+
+void	sigquit_handler(int sig)
+{
+	(void)sig;
 }

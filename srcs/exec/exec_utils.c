@@ -33,6 +33,19 @@ void	connect_cmd(t_node *left, t_node *right, int fd[2])
 	c->fd_in = fd[0];
 }
 
+void	sigquit_child(int sig)
+{
+	t_data	*data;
+
+	(void)sig;
+	data = singleton(NULL);
+	if (!data)
+		exit(131);
+	free_data(data);
+	write(2, "Quit (core dumped)\n", 19);
+	exit(131);
+}
+
 void	sig_child(int sig)
 {
 	t_data	*data;

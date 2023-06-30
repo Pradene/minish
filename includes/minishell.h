@@ -143,6 +143,7 @@ void		dfree(char **ss);
 int			dsize(char **ss);
 void		free_data(t_data *data);
 void		sig_handler(int sig);
+void		sigquit_handler(int sig);
 
 // EXPANSION
 char		**expand(t_data *data, char **cmds);
@@ -203,6 +204,7 @@ char		**clean_cmds(char **tab);
 // EXEC UTILS
 void		connect_cmd(t_node *left, t_node *right, int fd[2]);
 void		sig_child(int sig);
+void		sigquit_child(int sig);
 int			open_files(t_data *data, t_node *node);
 
 // EXEC
