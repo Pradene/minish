@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/28 15:39:03 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 21:22:25 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,13 @@ void		pwd(t_data *data, t_node *node);
 char		**unset(t_data *data, t_node *node);
 
 // WILD CARD
-char		**wild_card(t_data *data, char **cmds);
+char		**wild_card(char **cmds, int i);
+char		**add_dir(char *s, char **tab, int d_number);
+int			corresponding_dir(char *dir, char **motif, int stars);
+int			handle_star(char *cmd);
+int			wc_in_quotes(char *s);
+char		**create_motif(char *cmd, char **motif);
+int			is_quote(char c);
 
 // SINGLETON
 t_data		*singleton(t_data *data);

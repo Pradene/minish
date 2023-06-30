@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 20:57:11 by lpradene          #+#    #+#             */
-/*   Updated: 2023/03/17 20:57:12 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/30 21:24:15 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	check_options(char *arg)
 {
 	int	i;
 
-	if (arg[0] != '-')
+	if (arg[0] != '-' || ft_strlen(arg) == 1)
 		return (0);
 	i = 0;
 	while (arg[++i])

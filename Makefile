@@ -37,6 +37,9 @@ PARSING_FILES =	clean.c \
 				print_tree.c \
 				token.c \
 				wild_cards.c \
+				wild_cards_utils.c \
+				wild_cards_motif.c \
+				wild_cards_dirs.c \
 				tmp.c
 
 UTILS_FILES	= ft_addchar.c \
