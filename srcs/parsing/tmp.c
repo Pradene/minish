@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tmp.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpradene <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 21:35:49 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/01 21:35:52 by lpradene         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:07:09 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	free_tmp(t_node *node)
 		close(node->fd_out);
 	if (!node)
 		return ;
+	node->fd_in = -1;
+	node->fd_out = -1;
 	free(node);
 	node = NULL;
 }

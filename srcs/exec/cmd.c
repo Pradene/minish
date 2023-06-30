@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 22:11:08 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 15:24:14 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:19:56 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,9 @@ static int	check_quotes(char *s)
 
 void	get_cmd(t_data *data)
 {
-	char	*prompt;
 	char	*s;
 
-	prompt = get_prompt();
-	if (!prompt)
-		error(NULL);
-	s = readline(prompt);
-	free(prompt);
+	s = readline("Minishell > ");
 	if (!s)
 	{
 		printf("exit\n");

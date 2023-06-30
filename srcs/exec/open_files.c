@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:22:05 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 15:47:36 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:13:32 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	replace_fd(int *old, int new)
 {
-	if (*old)
+	if (*old != -1)
 		close(*old);
 	*old = new;
 }

@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 16:40:48 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 15:43:45 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:08:00 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	free_d(t_data *data)
 		close(data->fd1);
 	if (data->fd0 != -1)
 		close(data->fd0);
+	data->fd0 = -1;
+	data->fd1 = -1;
 	dfree(data->env);
 	tmp_clear(&data->tmp);
 	data->tmp = NULL;

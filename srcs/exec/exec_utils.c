@@ -6,17 +6,17 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:36:21 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 12:38:32 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:11:28 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	change_fd(int old, int new)
+void	change_fd(int *old, int new)
 {
-	dup2(old, new);
-	close(old);
-	old = -1;
+	dup2(*old, new);
+	close(*old);
+	*old = -1;
 }
 
 void	connect_cmd(t_node *left, t_node *right, int fd[2])

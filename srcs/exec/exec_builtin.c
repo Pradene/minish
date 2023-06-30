@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 15:27:04 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 12:38:31 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:14:22 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,6 @@ void	exec_builtin(t_data *data, t_node *node)
 	dup2(data->fd1, STDOUT_FILENO);
 	close(data->fd0);
 	close(data->fd1);
+	data->fd0 = -1;
+	data->fd1 = -1;
 }

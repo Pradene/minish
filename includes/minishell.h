@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 06:31:12 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/30 21:22:25 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:11:26 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ char		*ft_itoa(int n);
 int			max(int n1, int n2);
 int			size_tree(t_node *node);
 void		quote_status(char c, int *quote);
-void		change_fd(int old, int new);
+void		change_fd(int *old, int new);
 
 // MINISHELL
 void		error(char *msg);

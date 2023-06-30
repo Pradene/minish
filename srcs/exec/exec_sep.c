@@ -6,7 +6,7 @@
 /*   By: tmalless <tmalless@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:36:13 by lpradene          #+#    #+#             */
-/*   Updated: 2023/06/27 14:55:20 by tmalless         ###   ########.fr       */
+/*   Updated: 2023/06/30 22:20:30 by tmalless         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	exec_and(t_data *data, t_node *left, t_node *right)
 
 void	exec(t_data *data, t_node *node)
 {
-	if (!node || !node->type || (node->type == CMD && !node->cmd))
+	if (!node || !node->type)
 		return ;
 	if (node->type == CMD)
 		exec_node(data, node);
