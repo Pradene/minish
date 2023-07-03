@@ -42,7 +42,6 @@ void	sigquit_child(int sig)
 	if (!data)
 		exit(131);
 	free_data(data);
-	write(2, "Quit (core dumped)\n", 19);
 	exit(131);
 }
 
@@ -51,7 +50,6 @@ void	sig_child(int sig)
 	t_data	*data;
 
 	(void)sig;
-	write(2, "\n", 1);
 	data = singleton(NULL);
 	if (!data)
 		exit(130);

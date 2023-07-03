@@ -74,6 +74,9 @@ void	exec_cmd(t_data *data, t_node *node)
 		g_exit = status;
 		if (g_exit != 131)
 			g_exit += 128;
+		else
+			printf("Quit (core dumped)");
+		printf("\n");
 	}
 	else
 		g_exit = WEXITSTATUS(status);
