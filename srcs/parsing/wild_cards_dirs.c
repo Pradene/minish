@@ -62,6 +62,8 @@ int	corresponding_dir(char *dir, char **motif, int stars)
 	z[1] = 0;
 	if (!motif)
 		return (1);
+	if (dir[0] == '.')
+		return (0);
 	if ((stars == 0 || stars == 2) && motif[0])
 	{
 		if (ft_strncmp(motif[0], dir, ft_strlen(motif[0])) != 0)

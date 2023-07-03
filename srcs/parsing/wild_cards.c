@@ -41,16 +41,6 @@ char	**wild_carder(char *cmd)
 	return (ans);
 }
 
-/* int	cmd_nbrs(char **cmds)
-{
-	int	i;
-
-	i = 0;
-	while (cmds[i])
-		i++;
-	return (i);
-} */
-
 void	wild_card3(char **new_cmd, char **old_cmd, int i, int j)
 {
 	int	n;
