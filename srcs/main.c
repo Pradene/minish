@@ -39,6 +39,7 @@ int	main(int ac, char **av, char **envp)
 	data.c_heredoc = 0;
 	data.fd0 = -1;
 	data.fd1 = -1;
+	data.parse = 1;
 	set_attribute();
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, SIG_IGN);

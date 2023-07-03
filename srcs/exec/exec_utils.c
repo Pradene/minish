@@ -51,6 +51,7 @@ void	sig_child(int sig)
 	t_data	*data;
 
 	(void)sig;
+	write(2, "\n", 1);
 	data = singleton(NULL);
 	if (!data)
 		exit(130);

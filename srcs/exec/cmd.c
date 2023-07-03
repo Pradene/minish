@@ -42,7 +42,7 @@ void	get_cmd(t_data *data)
 {
 	char	*s;
 
-	s = readline("Minishell > ");
+	s = readline("minishell > ");
 	if (!s)
 	{
 		printf("exit\n");
@@ -54,6 +54,7 @@ void	get_cmd(t_data *data)
 		return (free(s));
 	parse(data, &data->root, &s);
 	data->c_heredoc = 0;
+	data->parse = 1;
 	data->exec = 1;
 	exec(data, data->root);
 	data->exec = 0;

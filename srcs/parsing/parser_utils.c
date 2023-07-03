@@ -56,11 +56,12 @@ int	issep(char *s)
 
 void	print_error(t_data *data, char *token)
 {
-	if (data->c_heredoc)
+	if (data->c_heredoc || !data->parse)
 		return ;
 	write(2, "syntax error near unexpected token `", 36);
 	write(2, token, ft_strlen(token));
 	write(2, "\'\n", 2);
+	data->parse = 0;
 }
 
 t_type	get_type(char *s)

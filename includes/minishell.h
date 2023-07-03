@@ -87,6 +87,7 @@ typedef struct s_data
 	t_tmp	*tmp;
 	int		fd0;
 	int		fd1;
+	int		parse;
 	int		exec;
 	int		c_heredoc;
 	t_list	*tokens;
