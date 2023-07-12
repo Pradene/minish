@@ -74,10 +74,8 @@ static int	intcmp(char *s1, char *s2)
 		j += 1;
 	while (s1[i] || s2[j])
 	{
-		if (s1[i] != s2[j])
+		if (s1[i++] != s2[j++])
 			return (1);
-		i += 1;
-		j += 1;
 	}
 	return (0);
 }
@@ -87,8 +85,6 @@ void	ex(t_data *data, t_node *node)
 	long long	n;
 	char		*s;
 
-	if (node->fd_in != -1 || node->fd_out != -1)
-		return ;
 	if (dsize(node->cmd) > 2)
 		return (g_exit = 1, prerror("exit: too many arguments\n"));
 	printf("exit\n");
@@ -103,7 +99,8 @@ void	ex(t_data *data, t_node *node)
 			(free_data(data), free(s));
 			exit(2);
 		}
-		(free_data(data), free(s));
+		free_data(data);
+		free(s);
 		exit(n % 256);
 	}
 	free_data(data);
